@@ -1,0 +1,7 @@
+{
+    "name": "blaze",
+    "version": "0.0.1",
+    "development": {
+        "thlorenz/tap.c": "*"
+    }
+}
