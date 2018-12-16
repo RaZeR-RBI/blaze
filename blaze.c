@@ -63,7 +63,6 @@ static int MAX_TEXTURES;
 static int MAX_SPRITES_PER_TEXTURE;
 static StreamBatchList *stream_batches = NULL;
 
-static GLuint __lastTexture = 0;
 static char *__lastError = NULL;
 
 static StreamBatchList *alloc_stream_batch(int max_sprites_per_tex)
@@ -100,6 +99,8 @@ int BLZ_Shutdown()
 
 int BLZ_Init(int max_textures, int max_sprites_per_tex)
 {
+	MAX_SPRITES_PER_TEXTURE = max_sprites_per_tex;
+	MAX_TEXTURES = max_textures;
 	if (stream_batches != NULL)
 	{
 		BLZ_Shutdown();

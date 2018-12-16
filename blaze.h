@@ -72,7 +72,8 @@ struct BLZ_Color
     unsigned char r, g, b, a;
 };
 
-struct _BLZ_StaticBatch BLZ_StaticBatch;
+struct BLZ_StaticBatch;
+typedef struct BLZ_StaticBatch BLZ_StaticBatch;
 
 #ifdef __cplusplus
 extern "C"
