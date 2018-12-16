@@ -1,7 +1,7 @@
 #ifndef _BLAZE_H
 #define _BLAZE_H
 
-#include <stdint.h>
+#include <GL/glcorearb.h>
 
 #ifndef APIENTRY
 #if defined(__WIN32__)
@@ -38,7 +38,7 @@
 #ifdef __cplusplus
 #define NULL 0
 #else
-#define NULL ((void *)0)
+#define NULL ((int *)0)
 #endif
 #endif /* NULL */
 #endif
@@ -50,22 +50,29 @@ typedef enum
     FlipH = 1,
     FlipV = 2,
     Both = FlipH | FlipV
-} blzSpriteEffects;
+} BLZ_SpriteEffects;
 
-typedef struct
+struct BLZ_Vector2
 {
     float x, y;
-} blzVector2;
+};
 
-typedef struct
+struct BLZ_RectangleF
 {
     float x, y, w, h;
-} blzRectangleF;
+};
 
-typedef struct
+struct BLZ_Rectangle
 {
-    uint32_t x, y, w, h;
-} blzRectangle;
+    unsigned int x, y, w, h;
+};
+
+struct BLZ_Color
+{
+    unsigned char r, g, b, a;
+};
+
+struct _BLZ_StaticBatch BLZ_StaticBatch;
 
 #ifdef __cplusplus
 extern "C"
@@ -73,14 +80,29 @@ extern "C"
 #endif
 
 /* ---------------------------------- API ----------------------------------- */
-extern APIENTRY void APICALL blzInit(int32_t max_textures, int32_t max_sprites_per_tex);
-extern APIENTRY void APICALL blzShutdown();
+// Init and shutdown
+extern APIENTRY int APICALL BLZ_Init(int max_textures, int max_sprites_per_tex);
+extern APIENTRY int APICALL BLZ_Shutdown();
 
-extern APIENTRY void APICALL blzBegin();
-extern APIENTRY void APICALL blzFlush();
-extern APIENTRY void APICALL blzEnd();
+extern APIENTRY char* APICALL BLZ_GetLastError();
 
-// TODO: Draw and batch upload
+// Dynamic drawing
+extern APIENTRY int APICALL BLZ_Begin();
+extern APIENTRY int APICALL BLZ_Draw(
+    GLuint texture,
+    struct BLZ_Vector2 position,
+    struct BLZ_Rectangle* srcRectangle,
+    float rotation,
+    struct BLZ_Vector2 origin,
+    struct BLZ_Vector2 scale,
+    BLZ_SpriteEffects effects,
+    float layerDepth);
+
+extern APIENTRY int APICALL BLZ_Flush();
+extern APIENTRY int APICALL BLZ_End();
+
+
+// TODO: Static drawing
 
 #ifdef __cplusplus
 }
