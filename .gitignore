@@ -2,6 +2,10 @@
 **/build/**
 # Clib dependencies
 **/deps/**
+# VS Code
+**/.vscode/**
+# Test binaries
+*.test
 
 # Prerequisites
 *.d

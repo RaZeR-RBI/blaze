@@ -44,13 +44,13 @@
 #endif
 
 /* ------------------------------- Data types ------------------------------- */
-typedef enum
+enum BLZ_SpriteEffects
 {
     None = 0,
     FlipH = 1,
     FlipV = 2,
     Both = FlipH | FlipV
-} BLZ_SpriteEffects;
+};
 
 struct BLZ_Vector2
 {
@@ -81,29 +81,29 @@ extern "C"
 #endif
 
 /* ---------------------------------- API ----------------------------------- */
-// Init and shutdown
+/* Init and shutdown */
 extern APIENTRY int APICALL BLZ_Init(int max_textures, int max_sprites_per_tex);
 extern APIENTRY int APICALL BLZ_Shutdown();
 
 extern APIENTRY char* APICALL BLZ_GetLastError();
 
-// Dynamic drawing
+/* Dynamic drawing */
 extern APIENTRY int APICALL BLZ_Begin();
 extern APIENTRY int APICALL BLZ_Draw(
     GLuint texture,
-    struct BLZ_Vector2 position,
-    struct BLZ_Rectangle* srcRectangle,
+    struct BLZ_Vector2 *position,
+    struct BLZ_Rectangle *srcRectangle,
     float rotation,
-    struct BLZ_Vector2 origin,
-    struct BLZ_Vector2 scale,
-    BLZ_SpriteEffects effects,
+    struct BLZ_Vector2 *origin,
+    struct BLZ_Vector2 *scale,
+    enum BLZ_SpriteEffects effects,
     float layerDepth);
 
 extern APIENTRY int APICALL BLZ_Flush();
 extern APIENTRY int APICALL BLZ_End();
 
 
-// TODO: Static drawing
+/* TODO: Static drawing */
 
 #ifdef __cplusplus
 }

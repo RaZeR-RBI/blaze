@@ -1,3 +1,4 @@
+#include "blaze.h"
 #include <stdlib.h>
 #include <GL/glcorearb.h>
 
@@ -8,7 +9,7 @@
 	do                      \
 	{                       \
 		__lastError = NULL; \
-		return 0;           \
+		return 1;           \
 	} while (0);
 #define fail(msg)          \
 	do                     \
@@ -36,18 +37,19 @@ typedef struct
 
 typedef struct
 {
-	// TODO: Add VBOs and VAO here
+	GLuint vao, vbo;
 } StaticBuffer;
 
-typedef struct
+struct BLZ_StaticBatch
 {
 	GLuint texture;
 	StaticBuffer buffer;
-} BLZ_StaticBatch;
+};
 
 typedef struct
 {
-	// TODO: Add streaming VBOs (and maybe a VAO) here
+	GLuint vao;
+	GLuint vbo[3];
 } DynamicBuffer;
 
 typedef struct _StreamBatchList
@@ -92,6 +94,7 @@ int BLZ_Shutdown()
 			next = cur->next;
 			free(cur->vertices);
 			free(cur);
+			cur = next;
 		} while (next != NULL);
 	}
 	success();
@@ -99,6 +102,8 @@ int BLZ_Shutdown()
 
 int BLZ_Init(int max_textures, int max_sprites_per_tex)
 {
+	int i;
+	StreamBatchList *cur;
 	MAX_SPRITES_PER_TEXTURE = max_sprites_per_tex;
 	MAX_TEXTURES = max_textures;
 	if (stream_batches != NULL)
@@ -107,8 +112,7 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex)
 	}
 	stream_batches = alloc_stream_batch(max_sprites_per_tex);
 	check_alloc(stream_batches);
-	int i;
-	StreamBatchList *cur = stream_batches;
+	cur = stream_batches;
 	for (i = 1; i < max_textures; i++)
 	{
 		cur->next = alloc_stream_batch(max_sprites_per_tex);
@@ -120,19 +124,33 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex)
 
 int BLZ_Begin()
 {
-	// TODO
+
 	fail("Not implemented");
 }
 
 int BLZ_Flush()
 {
-	// TODO
+
 	fail("Not implemented");
 }
 
 int BLZ_End()
 {
 	BLZ_Flush();
-	// TODO
+
+	fail("Not implemented");
+}
+
+int BLZ_Draw(
+	GLuint texture,
+	struct BLZ_Vector2 *position,
+	struct BLZ_Rectangle *srcRectangle,
+	float rotation,
+	struct BLZ_Vector2 *origin,
+	struct BLZ_Vector2 *scale,
+	enum BLZ_SpriteEffects effects,
+	float layerDepth)
+{
+
 	fail("Not implemented");
 }
