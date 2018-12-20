@@ -79,6 +79,8 @@ struct BLZ_Color
 struct BLZ_StaticBatch;
 typedef struct BLZ_StaticBatch BLZ_StaticBatch;
 
+typedef void (*glGetProcAddress)(const char* name);
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -86,6 +88,7 @@ extern "C"
 
 /* ---------------------------------- API ----------------------------------- */
 /* Init and shutdown */
+extern APIENTRY int APICALL BLZ_Load(glGetProcAddress loader);
 extern APIENTRY int APICALL BLZ_Init(int max_textures, int max_sprites_per_tex);
 extern APIENTRY int APICALL BLZ_Shutdown();
 

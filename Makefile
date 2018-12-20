@@ -26,10 +26,10 @@ $(LIBNAME): blaze.c blaze.h $(SOIL_OBJS)
 	$(CC) $(CFLAGS) -fPIC blaze.h blaze.c
 	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS)
 
-$(LIBNAME_TEST): blaze.c blaze.h $(SOIL_OBJS)
+$(LIBNAME_TEST): blaze.c blaze.h $(SOIL_OBJS) glad.o
 	$(info >>> Compiling a shared library with TEST flag $@)
 	$(CC) $(CFLAGS) -fPIC -g blaze.h blaze.c -D TEST
-	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS)
+	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o
 
 common.o: test/common.h test/common.c
 	$(CC99) -c -g test/common.h test/common.c
@@ -48,6 +48,9 @@ test_%.out: test_%.o $(LIBNAME_TEST) tap.o common.o
 deps/SOIL/%.o: deps/SOIL/%.c
 	$(info >>> Compiling $@)
 	$(CC) -fPIC -c $< -o $@ -I "./deps/"
+
+glad.o: glad/src/glad.c
+	$(CC) -std=c89 -fPIC -c $< -o $@ -I "./glad/include/"
 
 clean:
 	rm -rf *.o

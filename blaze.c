@@ -1,11 +1,13 @@
 #include "blaze.h"
 #include "./deps/SOIL/SOIL.h"
+#include "./glad/include/glad/glad.h"
 
 #include <stdlib.h>
 #include <GL/glcorearb.h>
 
 #define calloc(s) calloc(1, s)
 #define malloc(n, s) malloc(n *s)
+#define BUFFER_COUNT 3
 
 #ifdef TEST
 #define static
@@ -23,14 +25,16 @@
 		__lastError = msg; \
 		return BLZ_FALSE;  \
 	} while (0);
-#define fail_if_null(p, msg) \
+#define fail_cmp(val, cmp, msg) \
 	do                       \
 	{                        \
-		if (p == NULL)       \
+		if (val == cmp)       \
 		{                    \
 			fail(msg);       \
 		}                    \
 	} while (0);
+#define fail_if_null(val, msg) fail_cmp(val, NULL, msg)
+#define fail_if_false(val, msg) fail_cmp(val, BLZ_FALSE, msg)
 #define check_alloc(p) fail_if_null(p, "Could not allocate memory")
 
 struct Vertex
@@ -41,7 +45,7 @@ struct Vertex
 	GLfloat u, v;
 };
 
-struct StaticBuffer
+struct Buffer
 {
 	GLuint vao, vbo;
 };
@@ -49,13 +53,7 @@ struct StaticBuffer
 struct BLZ_StaticBatch
 {
 	GLuint texture;
-	struct StaticBuffer buffer;
-};
-
-struct DynamicBuffer
-{
-	GLuint vao;
-	GLuint vbo[3];
+	struct Buffer buffer;
 };
 
 struct StreamBatchList
@@ -64,11 +62,12 @@ struct StreamBatchList
 	struct StreamBatchList *next;
 	int quad_count;
 	struct Vertex *vertices;
-	struct DynamicBuffer buffer;
+	struct Buffer buffer[BUFFER_COUNT];
 };
 
 static int MAX_TEXTURES;
 static int MAX_SPRITES_PER_TEXTURE;
+static unsigned char BUFFER_INDEX = 0;
 static struct StreamBatchList *stream_batches = NULL;
 
 static char *__lastError = NULL;
@@ -89,6 +88,15 @@ static struct StreamBatchList *alloc_stream_batch(int max_sprites_per_tex)
 }
 
 /* Public API */
+int BLZ_Load(glGetProcAddress loader)
+{
+	int result = gladLoadGLLoader((GLADloadproc)loader);
+	if (!result) {
+		fail("Could not load the OpenGL library");
+	}
+	success();
+}
+
 int BLZ_Shutdown()
 {
 	if (stream_batches != NULL)
@@ -140,8 +148,12 @@ int BLZ_Flush()
 
 int BLZ_End()
 {
-	BLZ_Flush();
-	fail("Not implemented");
+	fail_if_false(BLZ_Flush(), "Could not flush the sprite queue");
+	BUFFER_INDEX++;
+	if (BUFFER_INDEX >= BUFFER_COUNT) {
+		BUFFER_INDEX -= BUFFER_COUNT;
+	}
+	success();
 }
 
 int BLZ_Draw(
