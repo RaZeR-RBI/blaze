@@ -31,16 +31,19 @@ $(LIBNAME_TEST): blaze.c blaze.h $(SOIL_OBJS)
 	$(CC) $(CFLAGS) -fPIC -g blaze.h blaze.c -D TEST
 	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS)
 
+common.o: test/common.h test/common.c
+	$(CC99) -c -g test/common.h test/common.c
+
 tap.o: deps/tap.c/tap.c
-	$(CC) -c $< -o $@
+	$(CC) -g -c $< -o $@
 
 test_%.o: test/test_%.c
 	$(info >>> Compiling $@)
-	$(CC99) -c $< -o $@
+	$(CC99) -g -c $< -o $@
 
-test_%.out: test_%.o $(LIBNAME_TEST) tap.o
+test_%.out: test_%.o $(LIBNAME_TEST) tap.o common.o
 	$(info >>> Linking $@)
-	$(CC99) $< $(LDFLAGS) -L. -l:$(LIBNAME_TEST) -l:tap.o -o $@
+	$(CC99) $< $(LDFLAGS) -L. -l:$(LIBNAME_TEST) -l:tap.o -l:common.o -o $@
 
 deps/SOIL/%.o: deps/SOIL/%.c
 	$(info >>> Compiling $@)
