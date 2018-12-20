@@ -1,6 +1,7 @@
 #ifndef _BLAZE_H
 #define _BLAZE_H
 
+#include "./deps/SOIL/SOIL.h"
 #include <GL/glcorearb.h>
 
 #ifndef APIENTRY
@@ -44,12 +45,15 @@
 #endif
 
 /* ------------------------------- Data types ------------------------------- */
+#define BLZ_TRUE 1
+#define BLZ_FALSE 0
+
 enum BLZ_SpriteEffects
 {
-    None = 0,
-    FlipH = 1,
-    FlipV = 2,
-    Both = FlipH | FlipV
+    NONE = 0,
+    FLIP_H = 1,
+    FLIP_V = 2,
+    BOTH = FLIP_H | FLIP_V
 };
 
 struct BLZ_Vector2
@@ -102,8 +106,59 @@ extern APIENTRY int APICALL BLZ_Draw(
 extern APIENTRY int APICALL BLZ_Flush();
 extern APIENTRY int APICALL BLZ_End();
 
-
 /* TODO: Static drawing */
+
+/* Image loading */
+enum BLZ_ImageChannels
+{
+	AUTO = SOIL_LOAD_AUTO,
+	GRAYSCALE = SOIL_LOAD_L,
+	GRAYSCALE_ALPHA = SOIL_LOAD_LA,
+	RGB = SOIL_LOAD_RGB,
+	RGBA = SOIL_LOAD_RGBA
+};
+
+enum BLZ_ImageFlags
+{
+	POWER_OF_TWO = 1,
+	MIPMAPS = 2,
+	TEXTURE_REPEATS = 4,
+	MULTIPLY_ALPHA = 8,
+	INVERT_Y = 16,
+	COMPRESS_TO_DXT = 32,
+	DDS_LOAD_DIRECT = 64,
+	NTSC_SAFE_RGB = 128,
+	CoCg_Y = 256,
+	TEXTURE_RECTANGLE = 512
+};
+
+enum BLZ_SaveImageFormat
+{
+	TGA = SOIL_SAVE_TYPE_TGA,
+	BMP = SOIL_SAVE_TYPE_BMP,
+	DDS = SOIL_SAVE_TYPE_DDS
+};
+
+extern APIENTRY int APICALL BLZ_LoadTextureFromFile(
+	const char *filename,
+	enum BLZ_ImageChannels channels,
+	unsigned int texture_id,
+	enum BLZ_ImageFlags flags);
+
+extern APIENTRY int APICALL BLZ_LoadTextureFromMemory(
+	const unsigned char *const buffer,
+	int buffer_length,
+	enum BLZ_ImageChannels force_channels,
+	unsigned int texture_id,
+	enum BLZ_ImageFlags flags
+);
+
+extern APIENTRY int APICALL BLZ_SaveScreenshot(
+	const char *filename,
+	enum BLZ_SaveImageFormat format,
+	int x, int y,
+	int width, int height
+);
 
 #ifdef __cplusplus
 }

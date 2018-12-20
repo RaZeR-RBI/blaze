@@ -1,6 +1,7 @@
 #ifndef __TEST_COMMON_H__
 #define __TEST_COMMON_H__
 
+#define TEST
 #include "../blaze.h"
 #include "../deps/tap.c/tap.h"
 

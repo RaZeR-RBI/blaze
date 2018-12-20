@@ -1,21 +1,27 @@
 #include "blaze.h"
+#include "./deps/SOIL/SOIL.h"
+
 #include <stdlib.h>
 #include <GL/glcorearb.h>
 
 #define calloc(s) calloc(1, s)
 #define malloc(n, s) malloc(n *s)
 
+#ifdef TEST
+#define static
+#endif
+
 #define success()           \
 	do                      \
 	{                       \
 		__lastError = NULL; \
-		return 1;           \
+		return BLZ_TRUE;    \
 	} while (0);
 #define fail(msg)          \
 	do                     \
 	{                      \
 		__lastError = msg; \
-		return -1;         \
+		return BLZ_FALSE;  \
 	} while (0);
 #define fail_if_null(p, msg) \
 	do                       \
@@ -27,54 +33,54 @@
 	} while (0);
 #define check_alloc(p) fail_if_null(p, "Could not allocate memory")
 
-typedef struct
+struct Vertex
 {
 	GLfloat x, y, z;
 	GLfloat padding;
 	GLfloat r, g, b, a;
 	GLfloat u, v;
-} Vertex;
+};
 
-typedef struct
+struct StaticBuffer
 {
 	GLuint vao, vbo;
-} StaticBuffer;
+};
 
 struct BLZ_StaticBatch
 {
 	GLuint texture;
-	StaticBuffer buffer;
+	struct StaticBuffer buffer;
 };
 
-typedef struct
+struct DynamicBuffer
 {
 	GLuint vao;
 	GLuint vbo[3];
-} DynamicBuffer;
+};
 
-typedef struct _StreamBatchList
+struct StreamBatchList
 {
 	GLuint texture;
-	struct _StreamBatchList *next;
+	struct StreamBatchList *next;
 	int quad_count;
-	Vertex *vertices;
-	DynamicBuffer buffer;
-} StreamBatchList;
+	struct Vertex *vertices;
+	struct DynamicBuffer buffer;
+};
 
 static int MAX_TEXTURES;
 static int MAX_SPRITES_PER_TEXTURE;
-static StreamBatchList *stream_batches = NULL;
+static struct StreamBatchList *stream_batches = NULL;
 
 static char *__lastError = NULL;
 
-static StreamBatchList *alloc_stream_batch(int max_sprites_per_tex)
+static struct StreamBatchList *alloc_stream_batch(int max_sprites_per_tex)
 {
-	StreamBatchList *result = calloc(sizeof(StreamBatchList));
+	struct StreamBatchList *result = calloc(sizeof(struct StreamBatchList));
 	if (result == NULL)
 	{
 		return NULL;
 	}
-	result->vertices = malloc(max_sprites_per_tex * 4, sizeof(Vertex));
+	result->vertices = malloc(max_sprites_per_tex * 4, sizeof(struct Vertex));
 	if (result->vertices == NULL)
 	{
 		return NULL;
@@ -87,8 +93,8 @@ int BLZ_Shutdown()
 {
 	if (stream_batches != NULL)
 	{
-		StreamBatchList *cur = stream_batches;
-		StreamBatchList *next = NULL;
+		struct StreamBatchList *cur = stream_batches;
+		struct StreamBatchList *next = NULL;
 		do
 		{
 			next = cur->next;
@@ -103,7 +109,7 @@ int BLZ_Shutdown()
 int BLZ_Init(int max_textures, int max_sprites_per_tex)
 {
 	int i;
-	StreamBatchList *cur;
+	struct StreamBatchList *cur;
 	MAX_SPRITES_PER_TEXTURE = max_sprites_per_tex;
 	MAX_TEXTURES = max_textures;
 	if (stream_batches != NULL)
@@ -124,20 +130,17 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex)
 
 int BLZ_Begin()
 {
-
 	fail("Not implemented");
 }
 
 int BLZ_Flush()
 {
-
 	fail("Not implemented");
 }
 
 int BLZ_End()
 {
 	BLZ_Flush();
-
 	fail("Not implemented");
 }
 
@@ -151,6 +154,52 @@ int BLZ_Draw(
 	enum BLZ_SpriteEffects effects,
 	float layerDepth)
 {
-
 	fail("Not implemented");
+}
+
+int BLZ_LoadTextureFromFile(
+	const char *filename,
+	enum BLZ_ImageChannels channels,
+	unsigned int texture_id,
+	enum BLZ_ImageFlags flags)
+{
+	return SOIL_load_OGL_texture(
+		filename,
+		channels,
+		texture_id,
+		flags
+	);
+}
+
+int BLZ_LoadTextureFromMemory(
+	const unsigned char *const buffer,
+	int buffer_length,
+	enum BLZ_ImageChannels force_channels,
+	unsigned int texture_id,
+	enum BLZ_ImageFlags flags)
+{
+	int width, height, channels;
+	unsigned int result;
+	unsigned char* data = SOIL_load_image_from_memory(
+		buffer, buffer_length,
+		&width, &height, &channels,
+		force_channels
+	);
+	fail_if_null(data, "Could not load the image")
+	result = SOIL_create_OGL_texture(
+		data, width, height, channels, texture_id, flags);
+	return result;
+}
+
+int BLZ_SaveScreenshot(
+	const char *filename,
+	enum BLZ_SaveImageFormat format,
+	int x, int y,
+	int width, int height
+)
+{
+	return SOIL_save_screenshot(
+		filename,
+		format, x, y, width, height
+	);
 }
