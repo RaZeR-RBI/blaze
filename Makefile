@@ -28,8 +28,8 @@ $(LIBNAME): blaze.c blaze.h $(SOIL_OBJS)
 
 $(LIBNAME_TEST): blaze.c blaze.h $(SOIL_OBJS) glad.o
 	$(info >>> Compiling a shared library with TEST flag $@)
-	$(CC) $(CFLAGS) -fPIC -g blaze.h blaze.c -D TEST
-	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o
+	$(CC) $(CFLAGS) -fPIC -g blaze.h blaze.c -D TEST -ftest-coverage -fprofile-arcs
+	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o -lgcov
 
 common.o: test/common.h test/common.c
 	$(CC99) -c -g test/common.h test/common.c
@@ -50,11 +50,13 @@ deps/SOIL/%.o: deps/SOIL/%.c
 	$(CC) -fPIC -c $< -o $@ -I "./deps/"
 
 glad.o: glad/src/glad.c
-	$(CC) -std=c89 -fPIC -c $< -o $@ -I "./glad/include/"
+	$(CC) -std=c89 -fPIC -c $< -o $@ -I "./glad/include/" -g
 
 clean:
 	rm -rf *.o
 	rm -rf *.a
+	rm -rf *.gcno
+	rm -rf *.gcda
 	rm -rf *$(DLLEXT)
 	rm -rf *.out
 	rm -rf deps/SOIL/*.o

@@ -6,6 +6,10 @@
 **/.vscode/**
 # Test binaries
 *.test
+# Test coverage information files
+*.gcda
+*.gcda.info
+*.gcno
 
 # Prerequisites
 *.d

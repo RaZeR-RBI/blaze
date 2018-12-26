@@ -2,6 +2,7 @@
 #include "./deps/SOIL/SOIL.h"
 #include "./glad/include/glad/glad.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <GL/glcorearb.h>
 
@@ -13,12 +14,13 @@
 #define static
 #endif
 
-#define success()           \
-	do                      \
-	{                       \
-		__lastError = NULL; \
-		return BLZ_TRUE;    \
+#define return_success(result) \
+	do                         \
+	{                          \
+		__lastError = NULL;    \
+		return result;         \
 	} while (0);
+#define success() return_success(BLZ_TRUE)
 #define fail(msg)          \
 	do                     \
 	{                      \
@@ -26,16 +28,24 @@
 		return BLZ_FALSE;  \
 	} while (0);
 #define fail_cmp(val, cmp, msg) \
-	do                       \
-	{                        \
-		if (val == cmp)       \
-		{                    \
-			fail(msg);       \
-		}                    \
+	do                          \
+	{                           \
+		if (val == cmp)         \
+		{                       \
+			fail(msg);          \
+		}                       \
 	} while (0);
 #define fail_if_null(val, msg) fail_cmp(val, NULL, msg)
 #define fail_if_false(val, msg) fail_cmp(val, BLZ_FALSE, msg)
 #define check_alloc(p) fail_if_null(p, "Could not allocate memory")
+#define validate(expr)                       \
+	do                                       \
+	{                                        \
+		if (!(expr))                         \
+		{                                    \
+			fail("Invalid parameter value, should be " #expr); \
+		}                                    \
+	} while (0);
 
 struct Vertex
 {
@@ -88,12 +98,21 @@ static struct StreamBatchList *alloc_stream_batch(int max_sprites_per_tex)
 }
 
 /* Public API */
+int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex)
+{
+	if (MAX_TEXTURES <= 0 || MAX_SPRITES_PER_TEXTURE <= 0)
+	{
+		fail("Not initialized");
+	}
+	*max_textures = MAX_TEXTURES;
+	*max_sprites_per_tex = MAX_SPRITES_PER_TEXTURE;
+	success();
+}
+
 int BLZ_Load(glGetProcAddress loader)
 {
 	int result = gladLoadGLLoader((GLADloadproc)loader);
-	if (!result) {
-		fail("Could not load the OpenGL library");
-	}
+	fail_if_false(result, "Could not load the OpenGL library");
 	success();
 }
 
@@ -111,6 +130,7 @@ int BLZ_Shutdown()
 			cur = next;
 		} while (next != NULL);
 	}
+	MAX_TEXTURES = MAX_SPRITES_PER_TEXTURE = 0;
 	success();
 }
 
@@ -118,12 +138,14 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex)
 {
 	int i;
 	struct StreamBatchList *cur;
-	MAX_SPRITES_PER_TEXTURE = max_sprites_per_tex;
-	MAX_TEXTURES = max_textures;
+	validate(max_textures > 0);
+	validate(max_sprites_per_tex > 0);
 	if (stream_batches != NULL)
 	{
 		BLZ_Shutdown();
 	}
+	MAX_SPRITES_PER_TEXTURE = max_sprites_per_tex;
+	MAX_TEXTURES = max_textures;
 	stream_batches = alloc_stream_batch(max_sprites_per_tex);
 	check_alloc(stream_batches);
 	cur = stream_batches;
@@ -136,21 +158,17 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex)
 	success();
 }
 
-int BLZ_Begin()
-{
-	fail("Not implemented");
-}
-
 int BLZ_Flush()
 {
 	fail("Not implemented");
 }
 
-int BLZ_End()
+int BLZ_Present()
 {
 	fail_if_false(BLZ_Flush(), "Could not flush the sprite queue");
 	BUFFER_INDEX++;
-	if (BUFFER_INDEX >= BUFFER_COUNT) {
+	if (BUFFER_INDEX >= BUFFER_COUNT)
+	{
 		BUFFER_INDEX -= BUFFER_COUNT;
 	}
 	success();
@@ -179,8 +197,7 @@ int BLZ_LoadTextureFromFile(
 		filename,
 		channels,
 		texture_id,
-		flags
-	);
+		flags);
 }
 
 int BLZ_LoadTextureFromMemory(
@@ -192,26 +209,28 @@ int BLZ_LoadTextureFromMemory(
 {
 	int width, height, channels;
 	unsigned int result;
-	unsigned char* data = SOIL_load_image_from_memory(
+	unsigned char *data = SOIL_load_image_from_memory(
 		buffer, buffer_length,
 		&width, &height, &channels,
-		force_channels
-	);
-	fail_if_null(data, "Could not load the image")
+		force_channels);
+	const char *last_result = SOIL_last_result();
+	if (data == NULL)
+	{
+		printf("Error: %s\n", last_result);
+	}
+	fail_if_null(data, "Could not load image");
 	result = SOIL_create_OGL_texture(
 		data, width, height, channels, texture_id, flags);
-	return result;
+	return_success(result);
 }
 
 int BLZ_SaveScreenshot(
 	const char *filename,
 	enum BLZ_SaveImageFormat format,
 	int x, int y,
-	int width, int height
-)
+	int width, int height)
 {
 	return SOIL_save_screenshot(
 		filename,
-		format, x, y, width, height
-	);
+		format, x, y, width, height);
 }
