@@ -128,6 +128,7 @@ extern "C"
 		int *max_sprites_per_tex,
 		enum BLZ_InitFlags *flags);
 
+	extern APIENTRY int APICALL BLZ_SetViewport(int w, int h);
 	extern APIENTRY int APICALL BLZ_Shutdown();
 	extern APIENTRY char *APICALL BLZ_GetLastError();
 

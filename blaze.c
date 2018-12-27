@@ -70,6 +70,12 @@ static struct StreamBatch *stream_batches = NULL;
 
 static char *__lastError = NULL;
 
+static GLfloat orthoMatrix[16] =
+	{0, 0, 0, 0,
+	 0, 0, 0, 0,
+	 0, 0, 0, 0,
+	 -1.0f, 1.0f, -1.0f, 1.0f};
+
 static struct Buffer create_buffer()
 {
 	struct Buffer result;
@@ -89,6 +95,12 @@ static struct Buffer create_buffer()
 	return result;
 }
 
+static void free_buffer(struct Buffer buffer)
+{
+	glDeleteVertexArrays(1, &buffer.vao);
+	glDeleteBuffers(1, &buffer.vbo);
+}
+
 /* Public API */
 int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex,
 				   enum BLZ_InitFlags *flags)
@@ -103,6 +115,15 @@ int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex,
 	success();
 }
 
+int BLZ_SetViewport(int w, int h)
+{
+	validate(w > 0);
+	validate(h > 0);
+	orthoMatrix[0] = 2.0f / (GLfloat)w;
+	orthoMatrix[5] = -2.0f / (GLfloat)h;
+	success();
+}
+
 int BLZ_Load(glGetProcAddress loader)
 {
 	int result = gladLoadGLLoader((GLADloadproc)loader);
@@ -112,9 +133,20 @@ int BLZ_Load(glGetProcAddress loader)
 
 int BLZ_Shutdown()
 {
+	int i;
+	struct StreamBatch cur;
 	if (stream_batches != NULL)
 	{
-		/* TODO: Free OpenGL objects here */
+		for (i = 0; i < MAX_TEXTURES; i++)
+		{
+			cur = *(stream_batches + i);
+			free_buffer(cur.buffer[0]);
+			if (!HAS_FLAG(NO_TRIPLEBUFFER))
+			{
+				free_buffer(cur.buffer[1]);
+				free_buffer(cur.buffer[2]);
+			}
+		}
 		free(stream_batches);
 	}
 	MAX_TEXTURES = MAX_SPRITES_PER_TEXTURE = 0;
