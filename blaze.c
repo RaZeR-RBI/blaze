@@ -4,15 +4,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <GL/glcorearb.h>
+#include <string.h>
 
 #define calloc_one(s) calloc(1, s)
 #define BUFFER_COUNT 3
 #define HAS_FLAG(flag) (FLAGS & flag) == flag
-
-#ifdef TEST
-#define static
-#endif
 
 #define return_success(result) \
 	do                         \
@@ -47,14 +43,6 @@
 		}                                                      \
 	} while (0);
 
-struct Vertex
-{
-	GLfloat x, y, z;
-	GLfloat padding;
-	GLfloat r, g, b, a;
-	GLfloat u, v;
-};
-
 struct Buffer
 {
 	GLuint vao, vbo;
@@ -70,7 +58,7 @@ struct StreamBatch
 {
 	GLuint texture;
 	int quad_count;
-	struct Vertex *vertices;
+	struct BLZ_Vertex *vertices;
 	struct Buffer buffer[BUFFER_COUNT];
 };
 
@@ -81,6 +69,25 @@ static unsigned char BUFFER_INDEX = 0;
 static struct StreamBatch *stream_batches = NULL;
 
 static char *__lastError = NULL;
+
+static struct Buffer create_buffer()
+{
+	struct Buffer result;
+	GLuint vao, vbo;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0); /* x|y|z|padding */
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0); /* r|g|b|a */
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0); /* u|v */
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	result.vao = vao;
+	result.vbo = vbo;
+	return result;
+}
 
 /* Public API */
 int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex,
@@ -117,8 +124,9 @@ int BLZ_Shutdown()
 int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags)
 {
 	int i;
-	const int VERT_SIZE = MAX_SPRITES_PER_TEXTURE * sizeof(struct Vertex) * 4;
-	struct Vertex *vertices;
+	const int VERT_COUNT = MAX_SPRITES_PER_TEXTURE * 4;
+	struct BLZ_Vertex *vertices;
+	struct StreamBatch *cur;
 	validate(max_textures > 0);
 	validate(max_sprites_per_tex > 0);
 	if (stream_batches != NULL)
@@ -133,10 +141,13 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags
 	check_alloc(stream_batches);
 	for (i = 0; i < MAX_TEXTURES; i++)
 	{
-		vertices = malloc(VERT_SIZE);
+		cur = (stream_batches + i);
+		vertices = calloc(VERT_COUNT, sizeof(struct BLZ_Vertex));
 		check_alloc(vertices);
-		(stream_batches + i)->vertices = vertices;
-		/* TODO: Allocate OpenGL objects */
+		cur->vertices = vertices;
+		cur->buffer[0] = create_buffer();
+		cur->buffer[1] = create_buffer();
+		cur->buffer[2] = create_buffer();
 	}
 	success();
 }
@@ -171,6 +182,39 @@ int BLZ_Draw(
 	float layerDepth)
 {
 	fail("Not implemented");
+}
+
+int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
+{
+	struct StreamBatch *batch;
+	int i;
+	size_t offset;
+	for (i = 0; i < MAX_TEXTURES; i++)
+	{
+		batch = (stream_batches + i);
+		if (batch->texture == texture &&
+			batch->quad_count >= MAX_SPRITES_PER_TEXTURE)
+		{
+			/* this batch is already filled, skip it */
+			continue;
+		}
+		if (batch->texture == texture || batch->texture == 0)
+		{
+			/* we found existing not-full batch or an empty one */
+			break;
+		}
+	}
+	if (i >= MAX_TEXTURES && batch->texture > 0 && batch->texture != texture)
+	{
+		/* we ran out of limits and must flush and repeat */
+		BLZ_Flush();
+		BLZ_LowerDraw(texture, quad);
+	}
+	offset = batch->quad_count * 4;
+	/* set the vertex data */
+	memcpy((batch->vertices + offset), quad, sizeof(struct BLZ_SpriteQuad));
+	batch->quad_count++;
+	success();
 }
 
 int BLZ_LoadTextureFromFile(

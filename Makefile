@@ -24,12 +24,12 @@ all: $(LIBNAME) $(TEST_NAMES)
 $(LIBNAME): blaze.c blaze.h $(SOIL_OBJS)
 	$(info >>> Compiling a shared library $@)
 	$(CC) $(CFLAGS) -fPIC blaze.h blaze.c
-	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS)
+	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) -ldl
 
 $(LIBNAME_TEST): blaze.c blaze.h $(SOIL_OBJS) glad.o
 	$(info >>> Compiling a shared library with TEST flag $@)
 	$(CC) $(CFLAGS) -fPIC -g blaze.h blaze.c -D TEST -ftest-coverage -fprofile-arcs
-	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o -lgcov
+	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o -lgcov -ldl
 
 common.o: test/common.h test/common.c
 	$(CC99) -c -g test/common.h test/common.c

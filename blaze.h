@@ -2,7 +2,7 @@
 #define _BLAZE_H
 
 #include "./deps/SOIL/SOIL.h"
-#include <GL/glcorearb.h>
+#include "./glad/include/glad/glad.h"
 
 #ifndef APIENTRY
 #if defined(__WIN32__)
@@ -61,6 +61,11 @@ struct BLZ_Vector2
 	float x, y;
 };
 
+struct BLZ_Vector3
+{
+	float x, y, z;
+};
+
 struct BLZ_Vector4
 {
 	float x, y, z, w;
@@ -81,11 +86,17 @@ struct BLZ_Color
 	unsigned char r, g, b, a;
 };
 
+struct BLZ_Vertex
+{
+	GLfloat x, y, z;
+	GLfloat padding;
+	GLfloat r, g, b, a;
+	GLfloat u, v;
+};
+
 struct BLZ_SpriteQuad
 {
-	struct BLZ_Vector4 corners[4];
-	struct BLZ_Vector4 colors[4];
-	struct BLZ_Vector2 texcoord[4];
+	struct BLZ_Vertex vertices[4];
 };
 
 struct BLZ_StaticBatch;
