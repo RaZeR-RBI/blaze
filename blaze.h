@@ -152,6 +152,11 @@ extern "C"
 
 	/* TODO: Static drawing */
 
+	/* Shaders */
+	extern APIENTRY GLuint APICALL BLZ_CompileShader(char *vert, char *frag);
+	extern APIENTRY int APICALL BLZ_UseShader(GLuint program);
+	extern APIENTRY GLuint BLZ_GetDefaultShader();
+
 	/* Image loading */
 	enum BLZ_ImageChannels
 	{

@@ -76,6 +76,32 @@ static GLfloat orthoMatrix[16] =
 	 0, 0, 0, 0,
 	 -1.0f, 1.0f, -1.0f, 1.0f};
 
+static GLchar vertexSource[] =
+	"#version 130\n"
+	"uniform mat4 u_mvpMatrix;"
+	"in vec4 in_Position;"
+	"in vec4 in_Color;"
+	"in vec2 in_Texcoord;"
+	"out vec4 ex_Color;"
+	"out vec2 ex_Texcoord;"
+	"void main() {"
+	"  ex_Color = in_Color;"
+	"  ex_Texcoord = in_Texcoord;"
+	"  gl_Position = u_mvpMatrix * in_Position;"
+	"}";
+
+static GLchar fragmentSource[] =
+	"#version 130\n"
+	"in vec4 ex_Color;"
+	"in vec2 ex_Texcoord;"
+	"out vec4 outColor;"
+	"uniform sampler2D tex;"
+	"void main() {"
+	"  outColor = texture(tex, ex_Texcoord) * ex_Color;"
+	"}";
+
+static GLuint SHADER_DEFAULT;
+
 static struct Buffer create_buffer()
 {
 	struct Buffer result;
@@ -124,10 +150,81 @@ int BLZ_SetViewport(int w, int h)
 	success();
 }
 
+static GLuint compile_shader(GLenum type, char *src)
+{
+	int compiled;
+	int log_length;
+	char *log_string;
+	GLuint shader = glCreateShader(type);
+	glShaderSource(shader, 1, (const GLchar **)&src, 0);
+	glCompileShader(shader);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+	if (!compiled)
+	{
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
+		log_string = malloc(log_length);
+		glGetShaderInfoLog(shader, log_length, &log_length, log_string);
+		printf("Error compiling shader: %s\n", log_string);
+		free(log_string);
+		return 0;
+	}
+	return shader;
+}
+
+GLuint BLZ_CompileShader(char *vert, char *frag)
+{
+	GLuint program, vertex_shader, fragment_shader;
+	int is_linked, log_length;
+	char *log_string;
+	vertex_shader = compile_shader(GL_VERTEX_SHADER, vert);
+	fail_if_false(vertex_shader, "Could not compile vertex shader");
+	fragment_shader = compile_shader(GL_FRAGMENT_SHADER, frag);
+	fail_if_false(fragment_shader, "Could not compile fragment shader");
+	program = glCreateProgram();
+	glAttachShader(program, vertex_shader);
+	glAttachShader(program, fragment_shader);
+	glBindAttribLocation(program, 0, "in_Position");
+	glBindAttribLocation(program, 1, "in_Color");
+	glBindAttribLocation(program, 2, "in_Texcoord");
+	glLinkProgram(program);
+	glGetProgramiv(program, GL_LINK_STATUS, &is_linked);
+	if (!is_linked)
+	{
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_length);
+		log_string = malloc(log_length);
+		glGetProgramInfoLog(program, log_length, &log_length, log_string);
+		printf("Error linking shader: %s\n", log_string);
+		free(log_string);
+		return 0;
+	}
+	return program;
+}
+
+int BLZ_UseShader(GLuint program)
+{
+	GLenum result;
+	glUseProgram(program);
+	result = glGetError();
+	if (result == GL_NO_ERROR)
+	{
+		success();
+	}
+	printf("glUseProgram: error %d\n", result);
+	fail("Could not use shader program");
+}
+
+GLuint BLZ_GetDefaultShader()
+{
+	return SHADER_DEFAULT;
+}
+
 int BLZ_Load(glGetProcAddress loader)
 {
 	int result = gladLoadGLLoader((GLADloadproc)loader);
 	fail_if_false(result, "Could not load the OpenGL library");
+	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
+	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
+	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
 	success();
 }
 
