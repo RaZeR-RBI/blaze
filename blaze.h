@@ -101,6 +101,8 @@ struct BLZ_SpriteQuad
 
 struct BLZ_StaticBatch;
 typedef struct BLZ_StaticBatch BLZ_StaticBatch;
+struct BLZ_Texture;
+typedef struct BLZ_Texture BLZ_Texture;
 
 typedef void (*glGetProcAddress)(const char *name);
 
@@ -155,6 +157,7 @@ extern "C"
 	/* Shaders */
 	extern APIENTRY GLuint APICALL BLZ_CompileShader(char *vert, char *frag);
 	extern APIENTRY int APICALL BLZ_UseShader(GLuint program);
+	extern APIENTRY int APICALL BLZ_DeleteShader(GLuint program);
 	extern APIENTRY GLuint BLZ_GetDefaultShader();
 
 	/* Image loading */
@@ -188,13 +191,13 @@ extern "C"
 		DDS = SOIL_SAVE_TYPE_DDS
 	};
 
-	extern APIENTRY int APICALL BLZ_LoadTextureFromFile(
+	extern APIENTRY BLZ_Texture* APICALL BLZ_LoadTextureFromFile(
 		const char *filename,
 		enum BLZ_ImageChannels channels,
 		unsigned int texture_id,
 		enum BLZ_ImageFlags flags);
 
-	extern APIENTRY int APICALL BLZ_LoadTextureFromMemory(
+	extern APIENTRY BLZ_Texture* APICALL BLZ_LoadTextureFromMemory(
 		const unsigned char *const buffer,
 		int buffer_length,
 		enum BLZ_ImageChannels force_channels,
@@ -206,6 +209,8 @@ extern "C"
 		enum BLZ_SaveImageFormat format,
 		int x, int y,
 		int width, int height);
+
+	extern APIENTRY int APICALL BLZ_FreeImage(struct BLZ_Texture *texture);
 
 #ifdef __cplusplus
 }

@@ -48,9 +48,15 @@ struct Buffer
 	GLuint vao, vbo;
 };
 
+struct BLZ_Texture
+{
+	GLuint id;
+	int width, height;
+};
+
 struct BLZ_StaticBatch
 {
-	GLuint texture;
+	struct BLZ_Texture texture;
 	struct Buffer buffer;
 };
 
@@ -101,6 +107,7 @@ static GLchar fragmentSource[] =
 	"}";
 
 static GLuint SHADER_DEFAULT;
+static unsigned char FRAMESKIP = 0;
 
 static struct Buffer create_buffer()
 {
@@ -213,6 +220,12 @@ int BLZ_UseShader(GLuint program)
 	fail("Could not use shader program");
 }
 
+int BLZ_DeleteShader(GLuint program)
+{
+	glDeleteShader(program);
+	success();
+}
+
 GLuint BLZ_GetDefaultShader()
 {
 	return SHADER_DEFAULT;
@@ -266,6 +279,10 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags
 	MAX_TEXTURES = max_textures;
 	FLAGS = flags;
 	BUFFER_INDEX = 0;
+	if (!HAS_FLAG(NO_TRIPLEBUFFER))
+	{
+		FRAMESKIP = 1;
+	}
 	stream_batches = calloc(MAX_TEXTURES, sizeof(struct StreamBatch));
 	check_alloc(stream_batches);
 	for (i = 0; i < MAX_TEXTURES; i++)
@@ -283,7 +300,40 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags
 
 int BLZ_Flush()
 {
-	fail("Not implemented");
+	unsigned char to_draw, to_fill;
+	struct StreamBatch batch;
+	int i, buf_size;
+	if (HAS_FLAG(NO_TRIPLEBUFFER) || FRAMESKIP)
+	{
+		to_draw = to_fill = 0;
+	}
+	else
+	{
+		to_draw = BUFFER_INDEX,
+		to_fill = BUFFER_INDEX + 1;
+		if (to_fill >= BUFFER_COUNT)
+		{
+			to_fill -= BUFFER_COUNT;
+		}
+	}
+	for (i = 0; i < MAX_TEXTURES; i++)
+	{
+		batch = *(stream_batches + i);
+		buf_size = batch.quad_count * 4 * sizeof(struct BLZ_Vertex);
+		if (buf_size == 0 || batch.texture == 0)
+		{
+			/* we've reached the end of the queue */
+			break;
+		}
+		/* fill the buffer */
+		glBindBuffer(GL_ARRAY_BUFFER, batch.buffer[to_fill].vbo);
+		glBufferData(GL_ARRAY_BUFFER, buf_size, batch.vertices, GL_STREAM_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		/* bind the VAO and draw it */
+		glBindVertexArray(batch.buffer[to_draw].vao);
+		glDrawArrays(GL_TRIANGLES, 0, batch.quad_count * 4);
+	}
+	success();
 }
 
 int BLZ_Present()
@@ -291,6 +341,7 @@ int BLZ_Present()
 	fail_if_false(BLZ_Flush(), "Could not flush the sprite queue");
 	if (!HAS_FLAG(NO_TRIPLEBUFFER))
 	{
+		FRAMESKIP = 0;
 		BUFFER_INDEX++;
 		if (BUFFER_INDEX >= BUFFER_COUNT)
 		{
@@ -310,6 +361,7 @@ int BLZ_Draw(
 	enum BLZ_SpriteEffects effects,
 	float layerDepth)
 {
+	/* TODO: Implement vertex calculation */
 	fail("Not implemented");
 }
 
@@ -346,28 +398,45 @@ int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
 	success();
 }
 
-int BLZ_LoadTextureFromFile(
+static void fill_texture_info(struct BLZ_Texture *texture)
+{
+	glBindTexture(GL_TEXTURE_2D, texture->id);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &texture->width);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &texture->height);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+BLZ_Texture *BLZ_LoadTextureFromFile(
 	const char *filename,
 	enum BLZ_ImageChannels channels,
 	unsigned int texture_id,
 	enum BLZ_ImageFlags flags)
 {
-	return SOIL_load_OGL_texture(
+	struct BLZ_Texture *texture;
+	unsigned int id = SOIL_load_OGL_texture(
 		filename,
 		channels,
 		texture_id,
 		flags);
+	if (!id)
+	{
+		return NULL;
+	}
+	texture = malloc(sizeof(struct BLZ_Texture));
+	texture->id = id;
+	fill_texture_info(texture);
+	return texture;
 }
 
-int BLZ_LoadTextureFromMemory(
+BLZ_Texture *BLZ_LoadTextureFromMemory(
 	const unsigned char *const buffer,
 	int buffer_length,
 	enum BLZ_ImageChannels force_channels,
 	unsigned int texture_id,
 	enum BLZ_ImageFlags flags)
 {
+	struct BLZ_Texture *texture;
 	int width, height, channels;
-	unsigned int result;
 	unsigned char *data = SOIL_load_image_from_memory(
 		buffer, buffer_length,
 		&width, &height, &channels,
@@ -376,11 +445,13 @@ int BLZ_LoadTextureFromMemory(
 	if (data == NULL)
 	{
 		printf("Error: %s\n", last_result);
+		return NULL;
 	}
-	fail_if_null(data, "Could not load image");
-	result = SOIL_create_OGL_texture(
+	texture = malloc(sizeof(BLZ_Texture));
+	texture->id = SOIL_create_OGL_texture(
 		data, width, height, channels, texture_id, flags);
-	return_success(result);
+	fill_texture_info(texture);
+	return texture;
 }
 
 int BLZ_SaveScreenshot(

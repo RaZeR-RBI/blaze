@@ -18,8 +18,8 @@ int main()
 		return -1;
 	}
 	plan(3);
-	ok(BLZ_LoadTextureFromFile("test/pnggrad8rgb.png", AUTO, 0, 0));
-	ok(BLZ_LoadTextureFromMemory(MINIMAL_PNG, MINIMAL_PNG_LEN, AUTO, 0, 0));
+	ok(BLZ_LoadTextureFromFile("test/pnggrad8rgb.png", AUTO, 0, 0) != NULL);
+	ok(BLZ_LoadTextureFromMemory(MINIMAL_PNG, MINIMAL_PNG_LEN, AUTO, 0, 0) != NULL);
 	ok(!BLZ_LoadTextureFromMemory(MINIMAL_PNG, 1, AUTO, 0, 0));
 	Test_Shutdown();
 	done_testing();
