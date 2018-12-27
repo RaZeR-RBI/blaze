@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <GL/glcorearb.h>
 
-#define calloc(s) calloc(1, s)
-#define malloc(n, s) malloc(n *s)
+#define calloc_one(s) calloc(1, s)
 #define BUFFER_COUNT 3
+#define HAS_FLAG(flag) (FLAGS & flag) == flag
 
 #ifdef TEST
 #define static
@@ -38,13 +38,13 @@
 #define fail_if_null(val, msg) fail_cmp(val, NULL, msg)
 #define fail_if_false(val, msg) fail_cmp(val, BLZ_FALSE, msg)
 #define check_alloc(p) fail_if_null(p, "Could not allocate memory")
-#define validate(expr)                       \
-	do                                       \
-	{                                        \
-		if (!(expr))                         \
-		{                                    \
+#define validate(expr)                                         \
+	do                                                         \
+	{                                                          \
+		if (!(expr))                                           \
+		{                                                      \
 			fail("Invalid parameter value, should be " #expr); \
-		}                                    \
+		}                                                      \
 	} while (0);
 
 struct Vertex
@@ -66,10 +66,9 @@ struct BLZ_StaticBatch
 	struct Buffer buffer;
 };
 
-struct StreamBatchList
+struct StreamBatch
 {
 	GLuint texture;
-	struct StreamBatchList *next;
 	int quad_count;
 	struct Vertex *vertices;
 	struct Buffer buffer[BUFFER_COUNT];
@@ -77,28 +76,15 @@ struct StreamBatchList
 
 static int MAX_TEXTURES;
 static int MAX_SPRITES_PER_TEXTURE;
+static enum BLZ_InitFlags FLAGS = 0;
 static unsigned char BUFFER_INDEX = 0;
-static struct StreamBatchList *stream_batches = NULL;
+static struct StreamBatch *stream_batches = NULL;
 
 static char *__lastError = NULL;
 
-static struct StreamBatchList *alloc_stream_batch(int max_sprites_per_tex)
-{
-	struct StreamBatchList *result = calloc(sizeof(struct StreamBatchList));
-	if (result == NULL)
-	{
-		return NULL;
-	}
-	result->vertices = malloc(max_sprites_per_tex * 4, sizeof(struct Vertex));
-	if (result->vertices == NULL)
-	{
-		return NULL;
-	}
-	return result;
-}
-
 /* Public API */
-int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex)
+int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex,
+				   enum BLZ_InitFlags *flags)
 {
 	if (MAX_TEXTURES <= 0 || MAX_SPRITES_PER_TEXTURE <= 0)
 	{
@@ -106,6 +92,7 @@ int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex)
 	}
 	*max_textures = MAX_TEXTURES;
 	*max_sprites_per_tex = MAX_SPRITES_PER_TEXTURE;
+	*flags = FLAGS;
 	success();
 }
 
@@ -120,24 +107,18 @@ int BLZ_Shutdown()
 {
 	if (stream_batches != NULL)
 	{
-		struct StreamBatchList *cur = stream_batches;
-		struct StreamBatchList *next = NULL;
-		do
-		{
-			next = cur->next;
-			free(cur->vertices);
-			free(cur);
-			cur = next;
-		} while (next != NULL);
+		/* TODO: Free OpenGL objects here */
+		free(stream_batches);
 	}
 	MAX_TEXTURES = MAX_SPRITES_PER_TEXTURE = 0;
 	success();
 }
 
-int BLZ_Init(int max_textures, int max_sprites_per_tex)
+int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags)
 {
 	int i;
-	struct StreamBatchList *cur;
+	const int VERT_SIZE = MAX_SPRITES_PER_TEXTURE * sizeof(struct Vertex) * 4;
+	struct Vertex *vertices;
 	validate(max_textures > 0);
 	validate(max_sprites_per_tex > 0);
 	if (stream_batches != NULL)
@@ -146,14 +127,16 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex)
 	}
 	MAX_SPRITES_PER_TEXTURE = max_sprites_per_tex;
 	MAX_TEXTURES = max_textures;
-	stream_batches = alloc_stream_batch(max_sprites_per_tex);
+	FLAGS = flags;
+	BUFFER_INDEX = 0;
+	stream_batches = calloc(MAX_TEXTURES, sizeof(struct StreamBatch));
 	check_alloc(stream_batches);
-	cur = stream_batches;
-	for (i = 1; i < max_textures; i++)
+	for (i = 0; i < MAX_TEXTURES; i++)
 	{
-		cur->next = alloc_stream_batch(max_sprites_per_tex);
-		check_alloc(cur->next);
-		cur = cur->next;
+		vertices = malloc(VERT_SIZE);
+		check_alloc(vertices);
+		(stream_batches + i)->vertices = vertices;
+		/* TODO: Allocate OpenGL objects */
 	}
 	success();
 }
@@ -166,10 +149,13 @@ int BLZ_Flush()
 int BLZ_Present()
 {
 	fail_if_false(BLZ_Flush(), "Could not flush the sprite queue");
-	BUFFER_INDEX++;
-	if (BUFFER_INDEX >= BUFFER_COUNT)
+	if (!HAS_FLAG(NO_TRIPLEBUFFER))
 	{
-		BUFFER_INDEX -= BUFFER_COUNT;
+		BUFFER_INDEX++;
+		if (BUFFER_INDEX >= BUFFER_COUNT)
+		{
+			BUFFER_INDEX -= BUFFER_COUNT;
+		}
 	}
 	success();
 }

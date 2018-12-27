@@ -31,18 +31,18 @@
             <td class="headerValue">blaze.gcda.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">52</td>
-            <td class="headerCovTableEntry">66</td>
-            <td class="headerCovTableEntryMed">78.8 %</td>
+            <td class="headerCovTableEntry">43</td>
+            <td class="headerCovTableEntry">56</td>
+            <td class="headerCovTableEntryMed">76.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2018-12-26 17:02:01</td>
+            <td class="headerValue">2018-12-27 12:43:18</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">7</td>
-            <td class="headerCovTableEntry">11</td>
-            <td class="headerCovTableEntryLo">63.6 %</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryLo">60.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -68,9 +68,9 @@
 <span class="lineNum">       6 </span>            : #include &lt;stdlib.h&gt;
 <span class="lineNum">       7 </span>            : #include &lt;GL/glcorearb.h&gt;
 <span class="lineNum">       8 </span>            : 
-<span class="lineNum">       9 </span>            : #define calloc(s) calloc(1, s)
-<span class="lineNum">      10 </span>            : #define malloc(n, s) malloc(n *s)
-<span class="lineNum">      11 </span>            : #define BUFFER_COUNT 3
+<span class="lineNum">       9 </span>            : #define calloc_one(s) calloc(1, s)
+<span class="lineNum">      10 </span>            : #define BUFFER_COUNT 3
+<span class="lineNum">      11 </span>            : #define HAS_FLAG(flag) (FLAGS &amp; flag) == flag
 <span class="lineNum">      12 </span>            : 
 <span class="lineNum">      13 </span>            : #ifdef TEST
 <span class="lineNum">      14 </span>            : #define static
@@ -100,13 +100,13 @@
 <span class="lineNum">      38 </span>            : #define fail_if_null(val, msg) fail_cmp(val, NULL, msg)
 <span class="lineNum">      39 </span>            : #define fail_if_false(val, msg) fail_cmp(val, BLZ_FALSE, msg)
 <span class="lineNum">      40 </span>            : #define check_alloc(p) fail_if_null(p, &quot;Could not allocate memory&quot;)
-<span class="lineNum">      41 </span>            : #define validate(expr)                       \
-<span class="lineNum">      42 </span>            :         do                                       \
-<span class="lineNum">      43 </span>            :         {                                        \
-<span class="lineNum">      44 </span>            :                 if (!(expr))                         \
-<span class="lineNum">      45 </span>            :                 {                                    \
+<span class="lineNum">      41 </span>            : #define validate(expr)                                         \
+<span class="lineNum">      42 </span>            :         do                                                         \
+<span class="lineNum">      43 </span>            :         {                                                          \
+<span class="lineNum">      44 </span>            :                 if (!(expr))                                           \
+<span class="lineNum">      45 </span>            :                 {                                                      \
 <span class="lineNum">      46 </span>            :                         fail(&quot;Invalid parameter value, should be &quot; #expr); \
-<span class="lineNum">      47 </span>            :                 }                                    \
+<span class="lineNum">      47 </span>            :                 }                                                      \
 <span class="lineNum">      48 </span>            :         } while (0);
 <span class="lineNum">      49 </span>            : 
 <span class="lineNum">      50 </span>            : struct Vertex
@@ -128,174 +128,160 @@
 <span class="lineNum">      66 </span>            :         struct Buffer buffer;
 <span class="lineNum">      67 </span>            : };
 <span class="lineNum">      68 </span>            : 
-<span class="lineNum">      69 </span>            : struct StreamBatchList
+<span class="lineNum">      69 </span>            : struct StreamBatch
 <span class="lineNum">      70 </span>            : {
 <span class="lineNum">      71 </span>            :         GLuint texture;
-<span class="lineNum">      72 </span>            :         struct StreamBatchList *next;
-<span class="lineNum">      73 </span>            :         int quad_count;
-<span class="lineNum">      74 </span>            :         struct Vertex *vertices;
-<span class="lineNum">      75 </span>            :         struct Buffer buffer[BUFFER_COUNT];
-<span class="lineNum">      76 </span>            : };
-<span class="lineNum">      77 </span>            : 
-<span class="lineNum">      78 </span>            : static int MAX_TEXTURES;
-<span class="lineNum">      79 </span>            : static int MAX_SPRITES_PER_TEXTURE;
+<span class="lineNum">      72 </span>            :         int quad_count;
+<span class="lineNum">      73 </span>            :         struct Vertex *vertices;
+<span class="lineNum">      74 </span>            :         struct Buffer buffer[BUFFER_COUNT];
+<span class="lineNum">      75 </span>            : };
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            : static int MAX_TEXTURES;
+<span class="lineNum">      78 </span>            : static int MAX_SPRITES_PER_TEXTURE;
+<span class="lineNum">      79 </span>            : static enum BLZ_InitFlags FLAGS = 0;
 <span class="lineNum">      80 </span>            : static unsigned char BUFFER_INDEX = 0;
-<span class="lineNum">      81 </span>            : static struct StreamBatchList *stream_batches = NULL;
+<span class="lineNum">      81 </span>            : static struct StreamBatch *stream_batches = NULL;
 <span class="lineNum">      82 </span>            : 
-<a name="83"><span class="lineNum">      83 </span>            : static char *__lastError = NULL;</a>
-<span class="lineNum">      84 </span>            : 
-<span class="lineNum">      85 </span><span class="lineCov">         15 : static struct StreamBatchList *alloc_stream_batch(int max_sprites_per_tex)</span>
-<span class="lineNum">      86 </span>            : {
-<span class="lineNum">      87 </span><span class="lineCov">         15 :         struct StreamBatchList *result = calloc(sizeof(struct StreamBatchList));</span>
-<span class="lineNum">      88 </span><span class="lineCov">         15 :         if (result == NULL)</span>
-<span class="lineNum">      89 </span>            :         {
-<span class="lineNum">      90 </span><span class="lineNoCov">          0 :                 return NULL;</span>
-<span class="lineNum">      91 </span>            :         }
-<span class="lineNum">      92 </span><span class="lineCov">         15 :         result-&gt;vertices = malloc(max_sprites_per_tex * 4, sizeof(struct Vertex));</span>
-<span class="lineNum">      93 </span><span class="lineCov">         15 :         if (result-&gt;vertices == NULL)</span>
-<span class="lineNum">      94 </span>            :         {
-<span class="lineNum">      95 </span><span class="lineNoCov">          0 :                 return NULL;</span>
-<span class="lineNum">      96 </span>            :         }
-<span class="lineNum">      97 </span><span class="lineCov">         15 :         return result;</span>
-<span class="lineNum">      98 </span>            : }
-<a name="99"><span class="lineNum">      99 </span>            : </a>
-<span class="lineNum">     100 </span>            : /* Public API */
-<span class="lineNum">     101 </span><span class="lineCov">          3 : int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex)</span>
-<span class="lineNum">     102 </span>            : {
-<span class="lineNum">     103 </span><span class="lineCov">          3 :         if (MAX_TEXTURES &lt;= 0 || MAX_SPRITES_PER_TEXTURE &lt;= 0)</span>
-<span class="lineNum">     104 </span>            :         {
-<span class="lineNum">     105 </span><span class="lineCov">          1 :                 fail(&quot;Not initialized&quot;);</span>
-<span class="lineNum">     106 </span>            :         }
-<span class="lineNum">     107 </span><span class="lineCov">          2 :         *max_textures = MAX_TEXTURES;</span>
-<span class="lineNum">     108 </span><span class="lineCov">          2 :         *max_sprites_per_tex = MAX_SPRITES_PER_TEXTURE;</span>
-<span class="lineNum">     109 </span><span class="lineCov">          2 :         success();</span>
-<a name="110"><span class="lineNum">     110 </span>            : }</a>
-<span class="lineNum">     111 </span>            : 
-<span class="lineNum">     112 </span><span class="lineCov">          2 : int BLZ_Load(glGetProcAddress loader)</span>
-<span class="lineNum">     113 </span>            : {
-<span class="lineNum">     114 </span><span class="lineCov">          2 :         int result = gladLoadGLLoader((GLADloadproc)loader);</span>
-<span class="lineNum">     115 </span><span class="lineCov">          2 :         fail_if_false(result, &quot;Could not load the OpenGL library&quot;);</span>
-<span class="lineNum">     116 </span><span class="lineCov">          2 :         success();</span>
-<a name="117"><span class="lineNum">     117 </span>            : }</a>
-<span class="lineNum">     118 </span>            : 
-<span class="lineNum">     119 </span><span class="lineCov">          2 : int BLZ_Shutdown()</span>
-<span class="lineNum">     120 </span>            : {
-<span class="lineNum">     121 </span><span class="lineCov">          2 :         if (stream_batches != NULL)</span>
-<span class="lineNum">     122 </span>            :         {
-<span class="lineNum">     123 </span><span class="lineCov">          2 :                 struct StreamBatchList *cur = stream_batches;</span>
-<span class="lineNum">     124 </span><span class="lineCov">          2 :                 struct StreamBatchList *next = NULL;</span>
-<span class="lineNum">     125 </span>            :                 do
-<span class="lineNum">     126 </span>            :                 {
-<span class="lineNum">     127 </span><span class="lineCov">         15 :                         next = cur-&gt;next;</span>
-<span class="lineNum">     128 </span><span class="lineCov">         15 :                         free(cur-&gt;vertices);</span>
-<span class="lineNum">     129 </span><span class="lineCov">         15 :                         free(cur);</span>
-<span class="lineNum">     130 </span><span class="lineCov">         15 :                         cur = next;</span>
-<span class="lineNum">     131 </span><span class="lineCov">         15 :                 } while (next != NULL);</span>
-<span class="lineNum">     132 </span>            :         }
-<span class="lineNum">     133 </span><span class="lineCov">          2 :         MAX_TEXTURES = MAX_SPRITES_PER_TEXTURE = 0;</span>
-<span class="lineNum">     134 </span><span class="lineCov">          2 :         success();</span>
-<a name="135"><span class="lineNum">     135 </span>            : }</a>
-<span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span><span class="lineCov">          3 : int BLZ_Init(int max_textures, int max_sprites_per_tex)</span>
-<span class="lineNum">     138 </span>            : {
-<span class="lineNum">     139 </span>            :         int i;
-<span class="lineNum">     140 </span>            :         struct StreamBatchList *cur;
-<span class="lineNum">     141 </span><span class="lineCov">          3 :         validate(max_textures &gt; 0);</span>
-<span class="lineNum">     142 </span><span class="lineCov">          2 :         validate(max_sprites_per_tex &gt; 0);</span>
-<span class="lineNum">     143 </span><span class="lineCov">          2 :         if (stream_batches != NULL)</span>
-<span class="lineNum">     144 </span>            :         {
-<span class="lineNum">     145 </span><span class="lineCov">          1 :                 BLZ_Shutdown();</span>
-<span class="lineNum">     146 </span>            :         }
-<span class="lineNum">     147 </span><span class="lineCov">          2 :         MAX_SPRITES_PER_TEXTURE = max_sprites_per_tex;</span>
-<span class="lineNum">     148 </span><span class="lineCov">          2 :         MAX_TEXTURES = max_textures;</span>
-<span class="lineNum">     149 </span><span class="lineCov">          2 :         stream_batches = alloc_stream_batch(max_sprites_per_tex);</span>
-<span class="lineNum">     150 </span><span class="lineCov">          2 :         check_alloc(stream_batches);</span>
-<span class="lineNum">     151 </span><span class="lineCov">          2 :         cur = stream_batches;</span>
-<span class="lineNum">     152 </span><span class="lineCov">         15 :         for (i = 1; i &lt; max_textures; i++)</span>
+<span class="lineNum">      83 </span>            : static char *__lastError = NULL;
+<a name="84"><span class="lineNum">      84 </span>            : </a>
+<span class="lineNum">      85 </span>            : /* Public API */
+<span class="lineNum">      86 </span><span class="lineCov">          3 : int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex,</span>
+<span class="lineNum">      87 </span>            :                                    enum BLZ_InitFlags *flags)
+<span class="lineNum">      88 </span>            : {
+<span class="lineNum">      89 </span><span class="lineCov">          3 :         if (MAX_TEXTURES &lt;= 0 || MAX_SPRITES_PER_TEXTURE &lt;= 0)</span>
+<span class="lineNum">      90 </span>            :         {
+<span class="lineNum">      91 </span><span class="lineCov">          1 :                 fail(&quot;Not initialized&quot;);</span>
+<span class="lineNum">      92 </span>            :         }
+<span class="lineNum">      93 </span><span class="lineCov">          2 :         *max_textures = MAX_TEXTURES;</span>
+<span class="lineNum">      94 </span><span class="lineCov">          2 :         *max_sprites_per_tex = MAX_SPRITES_PER_TEXTURE;</span>
+<span class="lineNum">      95 </span><span class="lineCov">          2 :         *flags = FLAGS;</span>
+<span class="lineNum">      96 </span><span class="lineCov">          2 :         success();</span>
+<a name="97"><span class="lineNum">      97 </span>            : }</a>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span><span class="lineCov">          2 : int BLZ_Load(glGetProcAddress loader)</span>
+<span class="lineNum">     100 </span>            : {
+<span class="lineNum">     101 </span><span class="lineCov">          2 :         int result = gladLoadGLLoader((GLADloadproc)loader);</span>
+<span class="lineNum">     102 </span><span class="lineCov">          2 :         fail_if_false(result, &quot;Could not load the OpenGL library&quot;);</span>
+<span class="lineNum">     103 </span><span class="lineCov">          2 :         success();</span>
+<a name="104"><span class="lineNum">     104 </span>            : }</a>
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span><span class="lineCov">          2 : int BLZ_Shutdown()</span>
+<span class="lineNum">     107 </span>            : {
+<span class="lineNum">     108 </span><span class="lineCov">          2 :         if (stream_batches != NULL)</span>
+<span class="lineNum">     109 </span>            :         {
+<span class="lineNum">     110 </span>            :                 /* TODO: Free OpenGL objects here */
+<span class="lineNum">     111 </span><span class="lineCov">          2 :                 free(stream_batches);</span>
+<span class="lineNum">     112 </span>            :         }
+<span class="lineNum">     113 </span><span class="lineCov">          2 :         MAX_TEXTURES = MAX_SPRITES_PER_TEXTURE = 0;</span>
+<span class="lineNum">     114 </span><span class="lineCov">          2 :         success();</span>
+<a name="115"><span class="lineNum">     115 </span>            : }</a>
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span><span class="lineCov">          3 : int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags)</span>
+<span class="lineNum">     118 </span>            : {
+<span class="lineNum">     119 </span>            :         int i;
+<span class="lineNum">     120 </span><span class="lineCov">          3 :         const int VERT_SIZE = MAX_SPRITES_PER_TEXTURE * sizeof(struct Vertex) * 4;</span>
+<span class="lineNum">     121 </span>            :         struct Vertex *vertices;
+<span class="lineNum">     122 </span><span class="lineCov">          3 :         validate(max_textures &gt; 0);</span>
+<span class="lineNum">     123 </span><span class="lineCov">          2 :         validate(max_sprites_per_tex &gt; 0);</span>
+<span class="lineNum">     124 </span><span class="lineCov">          2 :         if (stream_batches != NULL)</span>
+<span class="lineNum">     125 </span>            :         {
+<span class="lineNum">     126 </span><span class="lineCov">          1 :                 BLZ_Shutdown();</span>
+<span class="lineNum">     127 </span>            :         }
+<span class="lineNum">     128 </span><span class="lineCov">          2 :         MAX_SPRITES_PER_TEXTURE = max_sprites_per_tex;</span>
+<span class="lineNum">     129 </span><span class="lineCov">          2 :         MAX_TEXTURES = max_textures;</span>
+<span class="lineNum">     130 </span><span class="lineCov">          2 :         FLAGS = flags;</span>
+<span class="lineNum">     131 </span><span class="lineCov">          2 :         BUFFER_INDEX = 0;</span>
+<span class="lineNum">     132 </span><span class="lineCov">          2 :         stream_batches = calloc(MAX_TEXTURES, sizeof(struct StreamBatch));</span>
+<span class="lineNum">     133 </span><span class="lineCov">          2 :         check_alloc(stream_batches);</span>
+<span class="lineNum">     134 </span><span class="lineCov">         17 :         for (i = 0; i &lt; MAX_TEXTURES; i++)</span>
+<span class="lineNum">     135 </span>            :         {
+<span class="lineNum">     136 </span><span class="lineCov">         15 :                 vertices = malloc(VERT_SIZE);</span>
+<span class="lineNum">     137 </span><span class="lineCov">         15 :                 check_alloc(vertices);</span>
+<span class="lineNum">     138 </span><span class="lineCov">         15 :                 (stream_batches + i)-&gt;vertices = vertices;</span>
+<span class="lineNum">     139 </span>            :                 /* TODO: Allocate OpenGL objects */
+<span class="lineNum">     140 </span>            :         }
+<span class="lineNum">     141 </span><span class="lineCov">          2 :         success();</span>
+<a name="142"><span class="lineNum">     142 </span>            : }</a>
+<span class="lineNum">     143 </span>            : 
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 : int BLZ_Flush()</span>
+<span class="lineNum">     145 </span>            : {
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :         fail(&quot;Not implemented&quot;);</span>
+<a name="147"><span class="lineNum">     147 </span>            : }</a>
+<span class="lineNum">     148 </span>            : 
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 : int BLZ_Present()</span>
+<span class="lineNum">     150 </span>            : {
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         fail_if_false(BLZ_Flush(), &quot;Could not flush the sprite queue&quot;);</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         if (!HAS_FLAG(NO_TRIPLEBUFFER))</span>
 <span class="lineNum">     153 </span>            :         {
-<span class="lineNum">     154 </span><span class="lineCov">         13 :                 cur-&gt;next = alloc_stream_batch(max_sprites_per_tex);</span>
-<span class="lineNum">     155 </span><span class="lineCov">         13 :                 check_alloc(cur-&gt;next);</span>
-<span class="lineNum">     156 </span><span class="lineCov">         13 :                 cur = cur-&gt;next;</span>
-<span class="lineNum">     157 </span>            :         }
-<span class="lineNum">     158 </span><span class="lineCov">          2 :         success();</span>
-<a name="159"><span class="lineNum">     159 </span>            : }</a>
-<span class="lineNum">     160 </span>            : 
-<span class="lineNum">     161 </span><span class="lineNoCov">          0 : int BLZ_Flush()</span>
-<span class="lineNum">     162 </span>            : {
-<span class="lineNum">     163 </span><span class="lineNoCov">          0 :         fail(&quot;Not implemented&quot;);</span>
-<a name="164"><span class="lineNum">     164 </span>            : }</a>
-<span class="lineNum">     165 </span>            : 
-<span class="lineNum">     166 </span><span class="lineNoCov">          0 : int BLZ_Present()</span>
-<span class="lineNum">     167 </span>            : {
-<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         fail_if_false(BLZ_Flush(), &quot;Could not flush the sprite queue&quot;);</span>
-<span class="lineNum">     169 </span><span class="lineNoCov">          0 :         BUFFER_INDEX++;</span>
-<span class="lineNum">     170 </span><span class="lineNoCov">          0 :         if (BUFFER_INDEX &gt;= BUFFER_COUNT)</span>
-<span class="lineNum">     171 </span>            :         {
-<span class="lineNum">     172 </span><span class="lineNoCov">          0 :                 BUFFER_INDEX -= BUFFER_COUNT;</span>
-<span class="lineNum">     173 </span>            :         }
-<span class="lineNum">     174 </span><span class="lineNoCov">          0 :         success();</span>
-<a name="175"><span class="lineNum">     175 </span>            : }</a>
-<span class="lineNum">     176 </span>            : 
-<span class="lineNum">     177 </span><span class="lineNoCov">          0 : int BLZ_Draw(</span>
-<span class="lineNum">     178 </span>            :         GLuint texture,
-<span class="lineNum">     179 </span>            :         struct BLZ_Vector2 *position,
-<span class="lineNum">     180 </span>            :         struct BLZ_Rectangle *srcRectangle,
-<span class="lineNum">     181 </span>            :         float rotation,
-<span class="lineNum">     182 </span>            :         struct BLZ_Vector2 *origin,
-<span class="lineNum">     183 </span>            :         struct BLZ_Vector2 *scale,
-<span class="lineNum">     184 </span>            :         enum BLZ_SpriteEffects effects,
-<span class="lineNum">     185 </span>            :         float layerDepth)
-<span class="lineNum">     186 </span>            : {
-<span class="lineNum">     187 </span><span class="lineNoCov">          0 :         fail(&quot;Not implemented&quot;);</span>
-<a name="188"><span class="lineNum">     188 </span>            : }</a>
-<span class="lineNum">     189 </span>            : 
-<span class="lineNum">     190 </span><span class="lineCov">          1 : int BLZ_LoadTextureFromFile(</span>
-<span class="lineNum">     191 </span>            :         const char *filename,
-<span class="lineNum">     192 </span>            :         enum BLZ_ImageChannels channels,
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :                 BUFFER_INDEX++;</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :                 if (BUFFER_INDEX &gt;= BUFFER_COUNT)</span>
+<span class="lineNum">     156 </span>            :                 {
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :                         BUFFER_INDEX -= BUFFER_COUNT;</span>
+<span class="lineNum">     158 </span>            :                 }
+<span class="lineNum">     159 </span>            :         }
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         success();</span>
+<a name="161"><span class="lineNum">     161 </span>            : }</a>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 : int BLZ_Draw(</span>
+<span class="lineNum">     164 </span>            :         GLuint texture,
+<span class="lineNum">     165 </span>            :         struct BLZ_Vector2 *position,
+<span class="lineNum">     166 </span>            :         struct BLZ_Rectangle *srcRectangle,
+<span class="lineNum">     167 </span>            :         float rotation,
+<span class="lineNum">     168 </span>            :         struct BLZ_Vector2 *origin,
+<span class="lineNum">     169 </span>            :         struct BLZ_Vector2 *scale,
+<span class="lineNum">     170 </span>            :         enum BLZ_SpriteEffects effects,
+<span class="lineNum">     171 </span>            :         float layerDepth)
+<span class="lineNum">     172 </span>            : {
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :         fail(&quot;Not implemented&quot;);</span>
+<a name="174"><span class="lineNum">     174 </span>            : }</a>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineCov">          1 : int BLZ_LoadTextureFromFile(</span>
+<span class="lineNum">     177 </span>            :         const char *filename,
+<span class="lineNum">     178 </span>            :         enum BLZ_ImageChannels channels,
+<span class="lineNum">     179 </span>            :         unsigned int texture_id,
+<span class="lineNum">     180 </span>            :         enum BLZ_ImageFlags flags)
+<span class="lineNum">     181 </span>            : {
+<span class="lineNum">     182 </span><span class="lineCov">          1 :         return SOIL_load_OGL_texture(</span>
+<span class="lineNum">     183 </span>            :                 filename,
+<span class="lineNum">     184 </span>            :                 channels,
+<span class="lineNum">     185 </span>            :                 texture_id,
+<span class="lineNum">     186 </span>            :                 flags);
+<a name="187"><span class="lineNum">     187 </span>            : }</a>
+<span class="lineNum">     188 </span>            : 
+<span class="lineNum">     189 </span><span class="lineCov">          2 : int BLZ_LoadTextureFromMemory(</span>
+<span class="lineNum">     190 </span>            :         const unsigned char *const buffer,
+<span class="lineNum">     191 </span>            :         int buffer_length,
+<span class="lineNum">     192 </span>            :         enum BLZ_ImageChannels force_channels,
 <span class="lineNum">     193 </span>            :         unsigned int texture_id,
 <span class="lineNum">     194 </span>            :         enum BLZ_ImageFlags flags)
 <span class="lineNum">     195 </span>            : {
-<span class="lineNum">     196 </span><span class="lineCov">          1 :         return SOIL_load_OGL_texture(</span>
-<span class="lineNum">     197 </span>            :                 filename,
-<span class="lineNum">     198 </span>            :                 channels,
-<span class="lineNum">     199 </span>            :                 texture_id,
-<span class="lineNum">     200 </span>            :                 flags);
-<a name="201"><span class="lineNum">     201 </span>            : }</a>
-<span class="lineNum">     202 </span>            : 
-<span class="lineNum">     203 </span><span class="lineCov">          2 : int BLZ_LoadTextureFromMemory(</span>
-<span class="lineNum">     204 </span>            :         const unsigned char *const buffer,
-<span class="lineNum">     205 </span>            :         int buffer_length,
-<span class="lineNum">     206 </span>            :         enum BLZ_ImageChannels force_channels,
-<span class="lineNum">     207 </span>            :         unsigned int texture_id,
-<span class="lineNum">     208 </span>            :         enum BLZ_ImageFlags flags)
-<span class="lineNum">     209 </span>            : {
-<span class="lineNum">     210 </span>            :         int width, height, channels;
-<span class="lineNum">     211 </span>            :         unsigned int result;
-<span class="lineNum">     212 </span><span class="lineCov">          2 :         unsigned char *data = SOIL_load_image_from_memory(</span>
-<span class="lineNum">     213 </span>            :                 buffer, buffer_length,
-<span class="lineNum">     214 </span>            :                 &amp;width, &amp;height, &amp;channels,
-<span class="lineNum">     215 </span>            :                 force_channels);
-<span class="lineNum">     216 </span><span class="lineCov">          2 :         const char *last_result = SOIL_last_result();</span>
-<span class="lineNum">     217 </span><span class="lineCov">          2 :         if (data == NULL)</span>
-<span class="lineNum">     218 </span>            :         {
-<span class="lineNum">     219 </span><span class="lineCov">          1 :                 printf(&quot;Error: %s\n&quot;, last_result);</span>
-<span class="lineNum">     220 </span>            :         }
-<span class="lineNum">     221 </span><span class="lineCov">          2 :         fail_if_null(data, &quot;Could not load image&quot;);</span>
-<span class="lineNum">     222 </span><span class="lineCov">          1 :         result = SOIL_create_OGL_texture(</span>
-<span class="lineNum">     223 </span>            :                 data, width, height, channels, texture_id, flags);
-<span class="lineNum">     224 </span><span class="lineCov">          1 :         return_success(result);</span>
-<a name="225"><span class="lineNum">     225 </span>            : }</a>
-<span class="lineNum">     226 </span>            : 
-<span class="lineNum">     227 </span><span class="lineNoCov">          0 : int BLZ_SaveScreenshot(</span>
-<span class="lineNum">     228 </span>            :         const char *filename,
-<span class="lineNum">     229 </span>            :         enum BLZ_SaveImageFormat format,
-<span class="lineNum">     230 </span>            :         int x, int y,
-<span class="lineNum">     231 </span>            :         int width, int height)
-<span class="lineNum">     232 </span>            : {
-<span class="lineNum">     233 </span><span class="lineNoCov">          0 :         return SOIL_save_screenshot(</span>
-<span class="lineNum">     234 </span>            :                 filename,
-<span class="lineNum">     235 </span>            :                 format, x, y, width, height);
-<span class="lineNum">     236 </span>            : }
+<span class="lineNum">     196 </span>            :         int width, height, channels;
+<span class="lineNum">     197 </span>            :         unsigned int result;
+<span class="lineNum">     198 </span><span class="lineCov">          2 :         unsigned char *data = SOIL_load_image_from_memory(</span>
+<span class="lineNum">     199 </span>            :                 buffer, buffer_length,
+<span class="lineNum">     200 </span>            :                 &amp;width, &amp;height, &amp;channels,
+<span class="lineNum">     201 </span>            :                 force_channels);
+<span class="lineNum">     202 </span><span class="lineCov">          2 :         const char *last_result = SOIL_last_result();</span>
+<span class="lineNum">     203 </span><span class="lineCov">          2 :         if (data == NULL)</span>
+<span class="lineNum">     204 </span>            :         {
+<span class="lineNum">     205 </span><span class="lineCov">          1 :                 printf(&quot;Error: %s\n&quot;, last_result);</span>
+<span class="lineNum">     206 </span>            :         }
+<span class="lineNum">     207 </span><span class="lineCov">          2 :         fail_if_null(data, &quot;Could not load image&quot;);</span>
+<span class="lineNum">     208 </span><span class="lineCov">          1 :         result = SOIL_create_OGL_texture(</span>
+<span class="lineNum">     209 </span>            :                 data, width, height, channels, texture_id, flags);
+<span class="lineNum">     210 </span><span class="lineCov">          1 :         return_success(result);</span>
+<a name="211"><span class="lineNum">     211 </span>            : }</a>
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 : int BLZ_SaveScreenshot(</span>
+<span class="lineNum">     214 </span>            :         const char *filename,
+<span class="lineNum">     215 </span>            :         enum BLZ_SaveImageFormat format,
+<span class="lineNum">     216 </span>            :         int x, int y,
+<span class="lineNum">     217 </span>            :         int width, int height)
+<span class="lineNum">     218 </span>            : {
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :         return SOIL_save_screenshot(</span>
+<span class="lineNum">     220 </span>            :                 filename,
+<span class="lineNum">     221 </span>            :                 format, x, y, width, height);
+<span class="lineNum">     222 </span>            : }
 </pre>
       </td>
     </tr>

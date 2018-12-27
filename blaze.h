@@ -61,6 +61,11 @@ struct BLZ_Vector2
 	float x, y;
 };
 
+struct BLZ_Vector4
+{
+	float x, y, z, w;
+};
+
 struct BLZ_RectangleF
 {
 	float x, y, w, h;
@@ -76,6 +81,13 @@ struct BLZ_Color
 	unsigned char r, g, b, a;
 };
 
+struct BLZ_SpriteQuad
+{
+	struct BLZ_Vector4 corners[4];
+	struct BLZ_Vector4 colors[4];
+	struct BLZ_Vector2 texcoord[4];
+};
+
 struct BLZ_StaticBatch;
 typedef struct BLZ_StaticBatch BLZ_StaticBatch;
 
@@ -86,13 +98,26 @@ extern "C"
 {
 #endif
 
-	/* ---------------------------------- API ----------------------------------- */
+	/* -------------------------------- API --------------------------------- */
 	/* Init and shutdown */
-	extern APIENTRY int APICALL BLZ_Load(glGetProcAddress loader);
-	extern APIENTRY int APICALL BLZ_Init(int max_textures, int max_sprites_per_tex);
-	extern APIENTRY int APICALL BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex);
-	extern APIENTRY int APICALL BLZ_Shutdown();
+	enum BLZ_InitFlags
+	{
+		DEFAULT = 0,
+		NO_TRIPLEBUFFER = 1
+	};
 
+	extern APIENTRY int APICALL BLZ_Load(glGetProcAddress loader);
+	extern APIENTRY int APICALL BLZ_Init(
+		int max_textures,
+		int max_sprites_per_tex,
+		enum BLZ_InitFlags flags);
+
+	extern APIENTRY int APICALL BLZ_GetOptions(
+		int *max_textures,
+		int *max_sprites_per_tex,
+		enum BLZ_InitFlags *flags);
+
+	extern APIENTRY int APICALL BLZ_Shutdown();
 	extern APIENTRY char *APICALL BLZ_GetLastError();
 
 	/* Dynamic drawing */
@@ -105,6 +130,10 @@ extern "C"
 		struct BLZ_Vector2 *scale,
 		enum BLZ_SpriteEffects effects,
 		float layerDepth);
+
+	extern APIENTRY int APICALL BLZ_LowerDraw(
+		GLuint texture,
+		struct BLZ_SpriteQuad *quad);
 
 	extern APIENTRY int APICALL BLZ_Flush();
 	extern APIENTRY int APICALL BLZ_Present();
