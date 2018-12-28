@@ -48,16 +48,16 @@ struct Buffer
 	GLuint vao, vbo;
 };
 
-struct BLZ_Texture
-{
-	GLuint id;
-	int width, height;
-};
-
 struct BLZ_StaticBatch
 {
 	struct BLZ_Texture texture;
 	struct Buffer buffer;
+};
+
+struct BLZ_Shader
+{
+	GLuint program;
+	GLint mvp_param;
 };
 
 struct StreamBatch
@@ -76,11 +76,13 @@ static struct StreamBatch *stream_batches = NULL;
 
 static char *__lastError = NULL;
 
+#define NEAR 1.0f
+#define FAR 2.0f
 static GLfloat orthoMatrix[16] =
 	{0, 0, 0, 0,
 	 0, 0, 0, 0,
-	 0, 0, 0, 0,
-	 -1.0f, 1.0f, -1.0f, 1.0f};
+	 0, 0, -2.0f / (FAR - NEAR), 0,
+	 -1.0f, 1.0f, -(FAR + NEAR) / (FAR - NEAR), 1.0f};
 
 static GLchar vertexSource[] =
 	"#version 130\n"
@@ -106,7 +108,7 @@ static GLchar fragmentSource[] =
 	"  outColor = texture(tex, ex_Texcoord) * ex_Color;"
 	"}";
 
-static GLuint SHADER_DEFAULT;
+static BLZ_Shader *SHADER_DEFAULT;
 static unsigned char FRAMESKIP = 0;
 
 static struct Buffer create_buffer()
@@ -178,15 +180,34 @@ static GLuint compile_shader(GLenum type, char *src)
 	return shader;
 }
 
-GLuint BLZ_CompileShader(char *vert, char *frag)
+GLint BLZ_GetUniformLocation(struct BLZ_Shader *shader, const char *name)
 {
+	if (shader == NULL || name == NULL)
+	{
+		return -1;
+	}
+	return glGetUniformLocation(shader->program, (const GLchar *)name);
+}
+
+BLZ_Shader *BLZ_CompileShader(char *vert, char *frag)
+{
+	struct BLZ_Shader *shader;
 	GLuint program, vertex_shader, fragment_shader;
 	int is_linked, log_length;
 	char *log_string;
+	validate(vert != NULL);
+	validate(frag != NULL);
+	shader = malloc(sizeof(struct BLZ_Shader));
 	vertex_shader = compile_shader(GL_VERTEX_SHADER, vert);
-	fail_if_false(vertex_shader, "Could not compile vertex shader");
+	if (!vertex_shader)
+	{
+		return NULL;
+	}
 	fragment_shader = compile_shader(GL_FRAGMENT_SHADER, frag);
-	fail_if_false(fragment_shader, "Could not compile fragment shader");
+	if (!fragment_shader)
+	{
+		return NULL;
+	}
 	program = glCreateProgram();
 	glAttachShader(program, vertex_shader);
 	glAttachShader(program, fragment_shader);
@@ -202,15 +223,23 @@ GLuint BLZ_CompileShader(char *vert, char *frag)
 		glGetProgramInfoLog(program, log_length, &log_length, log_string);
 		printf("Error linking shader: %s\n", log_string);
 		free(log_string);
-		return 0;
+		return NULL;
 	}
-	return program;
+	shader->program = program;
+	shader->mvp_param = BLZ_GetUniformLocation(shader, "u_mvpMatrix");
+	if (shader->mvp_param == -1)
+	{
+		printf("Incompatible shader: missing 'uniform mat4 u_mvpMatrix");
+		return NULL;
+	}
+	return shader;
 }
 
-int BLZ_UseShader(GLuint program)
+int BLZ_UseShader(BLZ_Shader *program)
 {
 	GLenum result;
-	glUseProgram(program);
+	validate(program != NULL);
+	glUseProgram(program->program);
 	result = glGetError();
 	if (result == GL_NO_ERROR)
 	{
@@ -220,13 +249,15 @@ int BLZ_UseShader(GLuint program)
 	fail("Could not use shader program");
 }
 
-int BLZ_DeleteShader(GLuint program)
+int BLZ_DeleteShader(BLZ_Shader *program)
 {
-	glDeleteShader(program);
+	validate(program != NULL);
+	glDeleteShader(program->program);
+	free(program);
 	success();
 }
 
-GLuint BLZ_GetDefaultShader()
+BLZ_Shader *BLZ_GetDefaultShader()
 {
 	return SHADER_DEFAULT;
 }
@@ -234,6 +265,7 @@ GLuint BLZ_GetDefaultShader()
 int BLZ_Load(glGetProcAddress loader)
 {
 	int result = gladLoadGLLoader((GLADloadproc)loader);
+	validate(loader != NULL);
 	fail_if_false(result, "Could not load the OpenGL library");
 	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
 	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
@@ -339,20 +371,23 @@ int BLZ_Flush()
 int BLZ_Present()
 {
 	fail_if_false(BLZ_Flush(), "Could not flush the sprite queue");
-	if (!HAS_FLAG(NO_TRIPLEBUFFER))
+	if (!HAS_FLAG(NO_TRIPLEBUFFER) && FRAMESKIP == 0)
 	{
-		FRAMESKIP = 0;
 		BUFFER_INDEX++;
 		if (BUFFER_INDEX >= BUFFER_COUNT)
 		{
 			BUFFER_INDEX -= BUFFER_COUNT;
 		}
 	}
+	if (FRAMESKIP > 0)
+	{
+		FRAMESKIP--;
+	}
 	success();
 }
 
 int BLZ_Draw(
-	GLuint texture,
+	struct BLZ_Texture texture,
 	struct BLZ_Vector2 *position,
 	struct BLZ_Rectangle *srcRectangle,
 	float rotation,
@@ -406,7 +441,7 @@ static void fill_texture_info(struct BLZ_Texture *texture)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-BLZ_Texture *BLZ_LoadTextureFromFile(
+struct BLZ_Texture *BLZ_LoadTextureFromFile(
 	const char *filename,
 	enum BLZ_ImageChannels channels,
 	unsigned int texture_id,
@@ -428,7 +463,7 @@ BLZ_Texture *BLZ_LoadTextureFromFile(
 	return texture;
 }
 
-BLZ_Texture *BLZ_LoadTextureFromMemory(
+struct BLZ_Texture *BLZ_LoadTextureFromMemory(
 	const unsigned char *const buffer,
 	int buffer_length,
 	enum BLZ_ImageChannels force_channels,
@@ -447,11 +482,22 @@ BLZ_Texture *BLZ_LoadTextureFromMemory(
 		printf("Error: %s\n", last_result);
 		return NULL;
 	}
-	texture = malloc(sizeof(BLZ_Texture));
+	texture = malloc(sizeof(struct BLZ_Texture));
 	texture->id = SOIL_create_OGL_texture(
 		data, width, height, channels, texture_id, flags);
 	fill_texture_info(texture);
 	return texture;
+}
+
+int BLZ_FreeImage(struct BLZ_Texture *texture)
+{
+	if (texture == NULL)
+	{
+		success();
+	}
+	glDeleteTextures(1, &texture->id);
+	free(texture);
+	success();
 }
 
 int BLZ_SaveScreenshot(
@@ -464,3 +510,51 @@ int BLZ_SaveScreenshot(
 		filename,
 		format, x, y, width, height);
 }
+
+/* glUniform shims */
+#define PARAM1(type) type v0
+#define PARAM2(type) PARAM1(type), type v1
+#define PARAM3(type) PARAM2(type), type v2
+#define PARAM4(type) PARAM3(type), type v3
+#define PASS_PARAM1 v0
+#define PASS_PARAM2 PASS_PARAM1, v1
+#define PASS_PARAM3 PASS_PARAM2, v2
+#define PASS_PARAM4 PASS_PARAM3, v3
+
+#define UNIFORM_VEC(postfix, type, n)                            \
+	void BLZ_Uniform##n##postfix(GLint location, PARAM##n(type)) \
+	{                                                            \
+		glUniform##n##postfix(location, PASS_PARAM##n);          \
+	}
+
+#define UNIFORM_MAT(size)                                             \
+	void BLZ_UniformMatrix##size##fv(                                 \
+		GLint location,                                               \
+		GLsizei count,                                                \
+		GLboolean transpose,                                          \
+		const GLfloat *value)                                         \
+	{                                                                 \
+		glUniformMatrix##size##fv(location, count, transpose, value); \
+	}
+
+UNIFORM_VEC(f, GLfloat, 1)
+UNIFORM_VEC(f, GLfloat, 2)
+UNIFORM_VEC(f, GLfloat, 3)
+UNIFORM_VEC(f, GLfloat, 4)
+UNIFORM_VEC(i, GLint, 1)
+UNIFORM_VEC(i, GLint, 2)
+UNIFORM_VEC(i, GLint, 3)
+UNIFORM_VEC(i, GLint, 4)
+UNIFORM_VEC(ui, GLuint, 1)
+UNIFORM_VEC(ui, GLuint, 2)
+UNIFORM_VEC(ui, GLuint, 3)
+UNIFORM_VEC(ui, GLuint, 4)
+UNIFORM_MAT(2)
+UNIFORM_MAT(3)
+UNIFORM_MAT(4)
+UNIFORM_MAT(2x3)
+UNIFORM_MAT(3x2)
+UNIFORM_MAT(2x4)
+UNIFORM_MAT(4x2)
+UNIFORM_MAT(3x4)
+UNIFORM_MAT(4x3)
