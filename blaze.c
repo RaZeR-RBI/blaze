@@ -77,13 +77,15 @@ static struct StreamBatch *stream_batches = NULL;
 
 static char *__lastError = NULL;
 
-#define NEAR 1.0f
-#define FAR 2.0f
+#define NEAR 0.9f
+#define FAR 2.1f
+#define LAYER_DEPTH(depth) 1.0f + depth
+
 static GLfloat orthoMatrix[16] =
-	{0, 0, 0, 0,
-	 0, 0, 0, 0,
-	 0, 0, -2.0f / (FAR - NEAR), 0,
-	 -1.0f, 1.0f, -(FAR + NEAR) / (FAR - NEAR), 1.0f};
+	{0, 0, 0, -1,
+	 0, 0, 0, 1,
+	 0, 0, 2 / (FAR - NEAR), (NEAR + FAR) / (NEAR - FAR),
+	 0, 0, 0, 1};
 
 static GLchar vertexSource[] =
 	"#version 130\n"
@@ -106,7 +108,8 @@ static GLchar fragmentSource[] =
 	"out vec4 outColor;"
 	"uniform sampler2D tex;"
 	"void main() {"
-	"  outColor = texture(tex, ex_Texcoord) * ex_Color;"
+	/* "  outColor = texture(tex, ex_Texcoord) * ex_Color;" */
+	"  outColor = vec4(0.2, 0.3, 0.4, 1.0);"
 	"}";
 
 static BLZ_Shader *SHADER_DEFAULT;
@@ -158,6 +161,16 @@ int BLZ_SetViewport(int w, int h)
 	orthoMatrix[0] = 2.0f / (GLfloat)w;
 	orthoMatrix[5] = -2.0f / (GLfloat)h;
 	success();
+}
+
+void BLZ_SetClearColor(struct BLZ_Vector4 color)
+{
+	glClearColor(color.x, color.y, color.z, color.w);
+}
+
+void BLZ_Clear(enum BLZ_ClearOptions options)
+{
+	glClear(options);
 }
 
 static GLuint compile_shader(GLenum type, char *src)
@@ -364,7 +377,8 @@ int BLZ_Flush()
 		glBindBuffer(GL_ARRAY_BUFFER, batch.buffer[to_fill].vbo);
 		glBufferData(GL_ARRAY_BUFFER, buf_size, batch.vertices, GL_STREAM_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		/* bind the VAO and draw it */
+		/* bind our texture and the VAO and draw it */
+		glBindTexture(GL_TEXTURE_2D, batch.texture);
 		glBindVertexArray(batch.buffer[to_draw].vao);
 		glDrawArrays(GL_TRIANGLES, 0, batch.quad_count * 4);
 	}
@@ -433,7 +447,7 @@ int BLZ_Present()
 	} while (0);
 
 int BLZ_Draw(
-	struct BLZ_Texture texture,
+	struct BLZ_Texture *texture,
 	struct BLZ_Vector2 position,
 	struct BLZ_Rectangle *srcRectangle,
 	float rotation,
@@ -449,8 +463,8 @@ int BLZ_Draw(
 	struct BLZ_Vector2 t_tl, t_tr, t_bl, t_br;
 	struct BLZ_Vector2 tmp;
 	struct BLZ_SpriteQuad quad;
-	int width = srcRectangle == NULL ? texture.width : srcRectangle->w;
-	int height = srcRectangle == NULL ? texture.height : srcRectangle->h;
+	int width = srcRectangle == NULL ? texture->width : srcRectangle->w;
+	int height = srcRectangle == NULL ? texture->height : srcRectangle->h;
 	if (scale != NULL)
 	{
 		width *= scale->x;
@@ -468,7 +482,7 @@ int BLZ_Draw(
 	}
 	vec_rotate(tmp, width, rotation);
 	vec_add(p_tr, p_tl, tmp);
-	vec_rotate(tmp, height, rotation + HALF_PI);
+	vec_rotate(tmp, height, rotation - HALF_PI);
 	vec_add(p_br, p_tr, tmp);
 	vec_rotate(tmp, -width, rotation);
 	vec_add(p_bl, p_br, tmp);
@@ -480,6 +494,18 @@ int BLZ_Draw(
 		vec_set(t_tr, 1, 0);
 		vec_set(t_br, 1, 1);
 		vec_set(t_bl, 0, 1);
+	}
+	else
+	{
+		vec_set(t_tl,
+				srcRectangle->x / texture->width,
+				srcRectangle->y / texture->height);
+		t_tr.x = t_tl.x + srcRectangle->w / texture->width;
+		t_tr.y = t_tl.y;
+		t_bl.x = t_tl.x;
+		t_bl.y = t_tl.y + srcRectangle->h / texture->height;
+		t_br.x = t_tr.x;
+		t_br.y = t_bl.y;
 	}
 
 	/* set the vertex values */
@@ -500,12 +526,12 @@ int BLZ_Draw(
 	set_vertex(3, u, t_bl.x);
 	set_vertex(3, v, t_bl.y);
 
-	set_all_vertices(z, layerDepth);
+	set_all_vertices(z, LAYER_DEPTH(layerDepth));
 	set_all_vertices(r, color.x);
 	set_all_vertices(g, color.y);
 	set_all_vertices(b, color.z);
 	set_all_vertices(a, color.w);
-	return BLZ_LowerDraw(texture.id, &quad);
+	return BLZ_LowerDraw(texture->id, &quad);
 }
 
 int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
@@ -597,7 +623,7 @@ struct BLZ_Texture *BLZ_LoadTextureFromMemory(
 	return texture;
 }
 
-int BLZ_FreeImage(struct BLZ_Texture *texture)
+int BLZ_FreeTexture(struct BLZ_Texture *texture)
 {
 	if (texture == NULL)
 	{

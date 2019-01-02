@@ -56,6 +56,14 @@ enum BLZ_SpriteEffects
 	BOTH = FLIP_H | FLIP_V
 };
 
+enum BLZ_ClearOptions
+{
+	COLOR_BUFFER = GL_COLOR_BUFFER_BIT,
+	DEPTH_BUFFER = GL_DEPTH_BUFFER_BIT,
+	STENCIL_BUFFER = GL_STENCIL_BUFFER_BIT,
+	ALL = COLOR_BUFFER | DEPTH_BUFFER | STENCIL_BUFFER
+};
+
 struct BLZ_Vector2
 {
 	float x, y;
@@ -140,9 +148,13 @@ extern "C"
 	extern APIENTRY int APICALL BLZ_Shutdown();
 	extern APIENTRY char *APICALL BLZ_GetLastError();
 
+	/* Wrapper functions */
+	extern APIENTRY void APICALL BLZ_SetClearColor(struct BLZ_Vector4 color);
+	extern APIENTRY void APICALL BLZ_Clear(enum BLZ_ClearOptions options);
+
 	/* Dynamic drawing */
 	extern APIENTRY int APICALL BLZ_Draw(
-		struct BLZ_Texture texture,
+		struct BLZ_Texture* texture,
 		struct BLZ_Vector2 position,
 		struct BLZ_Rectangle *srcRectangle,
 		float rotation,

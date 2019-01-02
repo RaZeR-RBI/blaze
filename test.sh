@@ -1,6 +1,7 @@
 export LD_LIBRARY_PATH=.
 ./test_init_shutdown.out
 ./test_png_loading.out
+./test_draw_dynamic.out
 gcov blaze.c
 geninfo .
 rm -rf docs/coverage/*

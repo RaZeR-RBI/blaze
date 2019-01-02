@@ -23,13 +23,14 @@ int Test_Init()
 
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	window = SDL_CreateWindow("TEST",
 							  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-							  512, 512, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+							  WINDOW_WIDTH, WINDOW_HEIGHT,
+							  SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (!window)
 		die("Unable to create window");
 	checkSDLError(__LINE__);
@@ -46,7 +47,5 @@ int Test_Init()
 
 void Test_Shutdown()
 {
-	SDL_GL_DeleteContext(context);
-	SDL_DestroyWindow(window);
 	SDL_Quit();
 }

@@ -18,6 +18,8 @@
 	} while (0);
 
 #define TEST
+#define WINDOW_WIDTH 512
+#define WINDOW_HEIGHT 512
 #include <SDL2/SDL.h>
 #include "../blaze.h"
 #include "../deps/tap.c/tap.h"
