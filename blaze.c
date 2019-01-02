@@ -2,6 +2,7 @@
 #include "./deps/SOIL/SOIL.h"
 #include "./glad/include/glad/glad.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -243,6 +244,8 @@ int BLZ_UseShader(BLZ_Shader *program)
 	result = glGetError();
 	if (result == GL_NO_ERROR)
 	{
+		BLZ_UniformMatrix4fv(program->mvp_param, 1, GL_FALSE,
+							 (const GLfloat *)&orthoMatrix);
 		success();
 	}
 	printf("glUseProgram: error %d\n", result);
@@ -386,18 +389,123 @@ int BLZ_Present()
 	success();
 }
 
+#define vec_add(to, one, two)     \
+	do                            \
+	{                             \
+		to.x = (one).x + (two).x; \
+		to.y = (one).y + (two).y; \
+	} while (0);
+#define vec_sub(to, one, two)     \
+	do                            \
+	{                             \
+		to.x = (one).x - (two).x; \
+		to.y = (one).y - (two).y; \
+	} while (0);
+#define vec_rotate(to, length, angle)        \
+	do                                       \
+	{                                        \
+		to.x = length * (float)cos(-angle);  \
+		to.y = length * -(float)sin(-angle); \
+	} while (0);
+#define vec_set(to, xval, yval) \
+	do                          \
+	{                           \
+		to.x = xval;            \
+		to.y = yval;            \
+	} while (0);
+
+#define PI 3.14159265f
+#define HALF_PI PI / 2
+
+#define set_vertex(index, field, val)     \
+	do                                    \
+	{                                     \
+		quad.vertices[index].field = val; \
+	} while (0);
+
+#define set_all_vertices(field, val) \
+	do                               \
+	{                                \
+		set_vertex(0, field, val);   \
+		set_vertex(1, field, val);   \
+		set_vertex(2, field, val);   \
+		set_vertex(3, field, val);   \
+	} while (0);
+
 int BLZ_Draw(
 	struct BLZ_Texture texture,
-	struct BLZ_Vector2 *position,
+	struct BLZ_Vector2 position,
 	struct BLZ_Rectangle *srcRectangle,
 	float rotation,
 	struct BLZ_Vector2 *origin,
 	struct BLZ_Vector2 *scale,
+	struct BLZ_Vector4 color,
 	enum BLZ_SpriteEffects effects,
 	float layerDepth)
 {
-	/* TODO: Implement vertex calculation */
-	fail("Not implemented");
+	/* position: top-left, top-right, bottom-left, bottom-right */
+	struct BLZ_Vector2 p_tl, p_tr, p_bl, p_br;
+	/* same for texture coordinates */
+	struct BLZ_Vector2 t_tl, t_tr, t_bl, t_br;
+	struct BLZ_Vector2 tmp;
+	struct BLZ_SpriteQuad quad;
+	int width = srcRectangle == NULL ? texture.width : srcRectangle->w;
+	int height = srcRectangle == NULL ? texture.height : srcRectangle->h;
+	if (scale != NULL)
+	{
+		width *= scale->x;
+		height *= scale->y;
+	}
+
+	/* calculate corner positions in clockwise order starting from top left */
+	if (origin == NULL)
+	{
+		p_tl = position;
+	}
+	else
+	{
+		vec_sub(p_tl, position, *origin);
+	}
+	vec_rotate(tmp, width, rotation);
+	vec_add(p_tr, p_tl, tmp);
+	vec_rotate(tmp, height, rotation + HALF_PI);
+	vec_add(p_br, p_tr, tmp);
+	vec_rotate(tmp, -width, rotation);
+	vec_add(p_bl, p_br, tmp);
+
+	/* calculate texture coordinates */
+	if (srcRectangle == NULL)
+	{
+		vec_set(t_tl, 0, 0);
+		vec_set(t_tr, 1, 0);
+		vec_set(t_br, 1, 1);
+		vec_set(t_bl, 0, 1);
+	}
+
+	/* set the vertex values */
+	set_vertex(0, x, p_tl.x);
+	set_vertex(0, y, p_tl.y);
+	set_vertex(0, u, t_tl.x);
+	set_vertex(0, v, t_tl.y);
+	set_vertex(1, x, p_tr.x);
+	set_vertex(1, y, p_tr.y);
+	set_vertex(1, u, t_tr.x);
+	set_vertex(1, v, t_tr.y);
+	set_vertex(2, x, p_br.x);
+	set_vertex(2, y, p_br.y);
+	set_vertex(2, u, t_br.x);
+	set_vertex(2, v, t_br.y);
+	set_vertex(3, x, p_bl.x);
+	set_vertex(3, y, p_bl.y);
+	set_vertex(3, u, t_bl.x);
+	set_vertex(3, v, t_bl.y);
+
+	set_all_vertices(z, layerDepth);
+	set_all_vertices(r, color.x);
+	set_all_vertices(g, color.y);
+	set_all_vertices(b, color.z);
+	set_all_vertices(a, color.w);
+	return BLZ_LowerDraw(texture.id, &quad);
 }
 
 int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
@@ -512,6 +620,7 @@ int BLZ_SaveScreenshot(
 }
 
 /* glUniform shims */
+/* LCOV_EXCL_START */
 #define PARAM1(type) type v0
 #define PARAM2(type) PARAM1(type), type v1
 #define PARAM3(type) PARAM2(type), type v2
@@ -558,3 +667,4 @@ UNIFORM_MAT(2x4)
 UNIFORM_MAT(4x2)
 UNIFORM_MAT(3x4)
 UNIFORM_MAT(4x3)
+/* LCOV_EXCL_STOP */

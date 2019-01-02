@@ -143,11 +143,12 @@ extern "C"
 	/* Dynamic drawing */
 	extern APIENTRY int APICALL BLZ_Draw(
 		struct BLZ_Texture texture,
-		struct BLZ_Vector2 *position,
+		struct BLZ_Vector2 position,
 		struct BLZ_Rectangle *srcRectangle,
 		float rotation,
 		struct BLZ_Vector2 *origin,
 		struct BLZ_Vector2 *scale,
+		struct BLZ_Vector4 color,
 		enum BLZ_SpriteEffects effects,
 		float layerDepth);
 

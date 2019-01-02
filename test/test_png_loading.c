@@ -17,8 +17,9 @@ int main()
 		printf("Could not initialize test suite\n");
 		return -1;
 	}
-	plan(3);
+	plan(4);
 	ok(BLZ_LoadTextureFromFile("test/pnggrad8rgb.png", AUTO, 0, 0) != NULL);
+	ok(BLZ_LoadTextureFromFile("does/not.exist", AUTO, 0, 0) == NULL);
 	ok(BLZ_LoadTextureFromMemory(MINIMAL_PNG, MINIMAL_PNG_LEN, AUTO, 0, 0) != NULL);
 	ok(!BLZ_LoadTextureFromMemory(MINIMAL_PNG, 1, AUTO, 0, 0));
 	Test_Shutdown();
