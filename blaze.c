@@ -108,13 +108,17 @@ static GLchar fragmentSource[] =
 	"out vec4 outColor;"
 	"uniform sampler2D tex;"
 	"void main() {"
-	/* "  outColor = texture(tex, ex_Texcoord) * ex_Color;" */
-	"  outColor = vec4(0.2, 0.3, 0.4, 1.0);"
+	"  outColor = texture(tex, ex_Texcoord) * ex_Color;"
+	/* "  outColor = vec4(0.2, 0.3, 0.4, 1.0);" */
 	"}";
 
 static BLZ_Shader *SHADER_DEFAULT;
+static BLZ_Shader *SHADER_CURRENT;
 static unsigned char FRAMESKIP = 0;
 
+static const int VERT_SIZE = sizeof(struct BLZ_Vertex);
+
+/* TODO: Reuse same VAO for all batches to minimize state changes */
 static struct Buffer create_buffer()
 {
 	struct Buffer result;
@@ -123,12 +127,16 @@ static struct Buffer create_buffer()
 	glBindVertexArray(vao);
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0); /* x|y|z|padding */
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0); /* r|g|b|a */
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0); /* u|v */
+	/* x|y|z|padding */
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)0);
+	/* r|g|b|a */
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)16);
+	/* u|v */
 	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)32);
+	glBindVertexArray(0);
 	result.vao = vao;
 	result.vbo = vbo;
 	return result;
@@ -160,6 +168,8 @@ int BLZ_SetViewport(int w, int h)
 	validate(h > 0);
 	orthoMatrix[0] = 2.0f / (GLfloat)w;
 	orthoMatrix[5] = -2.0f / (GLfloat)h;
+	BLZ_UniformMatrix4fv(SHADER_CURRENT->mvp_param, 1, GL_FALSE,
+						 (const GLfloat *)&orthoMatrix);
 	success();
 }
 
@@ -259,6 +269,7 @@ int BLZ_UseShader(BLZ_Shader *program)
 	{
 		BLZ_UniformMatrix4fv(program->mvp_param, 1, GL_FALSE,
 							 (const GLfloat *)&orthoMatrix);
+		SHADER_CURRENT = program;
 		success();
 	}
 	printf("glUseProgram: error %d\n", result);
@@ -314,7 +325,6 @@ int BLZ_Shutdown()
 int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags)
 {
 	int i;
-	const int VERT_COUNT = MAX_SPRITES_PER_TEXTURE * 4;
 	struct BLZ_Vertex *vertices;
 	struct StreamBatch *cur;
 	validate(max_textures > 0);
@@ -336,7 +346,7 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags
 	for (i = 0; i < MAX_TEXTURES; i++)
 	{
 		cur = (stream_batches + i);
-		vertices = calloc(VERT_COUNT, sizeof(struct BLZ_Vertex));
+		vertices = calloc(MAX_SPRITES_PER_TEXTURE * 4, sizeof(struct BLZ_Vertex));
 		check_alloc(vertices);
 		cur->vertices = vertices;
 		cur->buffer[0] = create_buffer();
@@ -350,6 +360,7 @@ int BLZ_Flush()
 {
 	unsigned char to_draw, to_fill;
 	struct StreamBatch batch;
+	struct StreamBatch *batch_ptr;
 	int i, buf_size;
 	if (HAS_FLAG(NO_TRIPLEBUFFER) || FRAMESKIP)
 	{
@@ -366,7 +377,8 @@ int BLZ_Flush()
 	}
 	for (i = 0; i < MAX_TEXTURES; i++)
 	{
-		batch = *(stream_batches + i);
+		batch_ptr = (stream_batches + i);
+		batch = *batch_ptr;
 		buf_size = batch.quad_count * 4 * sizeof(struct BLZ_Vertex);
 		if (buf_size == 0 || batch.texture == 0)
 		{
@@ -381,6 +393,8 @@ int BLZ_Flush()
 		glBindTexture(GL_TEXTURE_2D, batch.texture);
 		glBindVertexArray(batch.buffer[to_draw].vao);
 		glDrawArrays(GL_TRIANGLES, 0, batch.quad_count * 4);
+		batch_ptr->quad_count = 0;
+		batch_ptr->texture = 0;
 	}
 	success();
 }
@@ -527,6 +541,7 @@ int BLZ_Draw(
 	set_vertex(3, v, t_bl.y);
 
 	set_all_vertices(z, LAYER_DEPTH(layerDepth));
+	set_all_vertices(padding, 1.0f);
 	set_all_vertices(r, color.x);
 	set_all_vertices(g, color.y);
 	set_all_vertices(b, color.z);
@@ -564,6 +579,7 @@ int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
 	/* set the vertex data */
 	memcpy((batch->vertices + offset), quad, sizeof(struct BLZ_SpriteQuad));
 	batch->quad_count++;
+	batch->texture = texture;
 	success();
 }
 

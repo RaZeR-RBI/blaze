@@ -12,6 +12,7 @@ CFLAGS = -c -std=c89 -Wall -pedantic -Werror
 LDFLAGS = -lSDL2 -lSDL2main -lGL
 LIBNAME = libblaze$(DLLEXT)
 LIBNAME_TEST = libblaze-test$(DLLEXT)
+DEBUG = -g3 -fsanitize=address
 
 TESTS = $(wildcard test/test_*.c)
 TEST_NAMES = $(patsubst test/%.c, %.out, $(TESTS))
@@ -28,29 +29,29 @@ $(LIBNAME): blaze.c blaze.h $(SOIL_OBJS)
 
 $(LIBNAME_TEST): blaze.c blaze.h $(SOIL_OBJS) glad.o
 	$(info >>> Compiling a shared library with TEST flag $@)
-	$(CC) $(CFLAGS) -fPIC -g blaze.h blaze.c -D TEST -ftest-coverage -fprofile-arcs
+	$(CC) $(CFLAGS) -fPIC $(DEBUG) blaze.h blaze.c -D TEST -ftest-coverage -fprofile-arcs
 	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o -lgcov -ldl
 
 common.o: test/common.h test/common.c
-	$(CC99) -c -g test/common.h test/common.c
+	$(CC99) -c $(DEBUG) test/common.h test/common.c
 
 tap.o: deps/tap.c/tap.c
-	$(CC) -g -c $< -o $@
+	$(CC) $(DEBUG) -c $< -o $@
 
 test_%.o: test/test_%.c
 	$(info >>> Compiling $@)
-	$(CC99) -g -c $< -o $@
+	$(CC99) $(DEBUG) -c $< -o $@
 
 test_%.out: test_%.o $(LIBNAME_TEST) tap.o common.o
 	$(info >>> Linking $@)
-	$(CC99) $< $(LDFLAGS) -L. -l:$(LIBNAME_TEST) -l:tap.o -l:common.o -o $@
+	$(CC99) $< $(LDFLAGS) $(DEBUG) -L. -l:$(LIBNAME_TEST) -l:tap.o -l:common.o -o $@
 
 deps/SOIL/%.o: deps/SOIL/%.c
 	$(info >>> Compiling $@)
 	$(CC) -fPIC -c $< -o $@ -I "./deps/"
 
 glad.o: glad/src/glad.c
-	$(CC) -std=c89 -fPIC -c $< -o $@ -I "./glad/include/" -g
+	$(CC) -std=c89 -fPIC -c $< -o $@ -I "./glad/include/" $(DEBUG)
 
 clean:
 	rm -rf *.o

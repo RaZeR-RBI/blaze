@@ -2,7 +2,7 @@
     "name": "blaze",
     "version": "0.0.1",
     "dependencies": {
-        "razer-rbi/soil": "0.0.3"
+        "razer-rbi/soil": "0.0.4"
     },
     "development": {
         "thlorenz/tap.c": "*"
