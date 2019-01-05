@@ -1,7 +1,7 @@
 #include "common.h"
 #include "unistd.h"
 
-// #define ASSERT_FEEDBACK
+#define ASSERT_FEEDBACK
 
 #ifdef ASSERT_FEEDBACK
 #define INIT_FLAGS ENABLE_FEEDBACK

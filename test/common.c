@@ -56,6 +56,7 @@ GLuint create_buffer(GLenum type, int size, GLenum usage)
 	glGenBuffers(1, &bo);
 	glBindBuffer(type, bo);
 	glBufferData(type, (GLsizeiptr)size, NULL, usage);
+	return bo;
 }
 
 void Feedback_Enable(int count)
