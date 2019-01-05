@@ -1,6 +1,6 @@
 #include "common.h"
 
-int main()
+int main(int argc, char *argv[])
 {
 	int max_tex, max_sprites;
 	enum BLZ_InitFlags flags;

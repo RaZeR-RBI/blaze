@@ -9,7 +9,7 @@
 
 #define calloc_one(s) calloc(1, s)
 #define BUFFER_COUNT 3
-#define HAS_FLAG(flag) (FLAGS & flag) == flag
+#define HAS_FLAG(flag) ((FLAGS & flag) == flag)
 
 #define return_success(result) \
 	do                         \
@@ -77,14 +77,14 @@ static struct StreamBatch *stream_batches = NULL;
 
 static char *__lastError = NULL;
 
-#define NEAR 0.9f
-#define FAR 2.1f
+#define Z_NEAR 0.9f
+#define Z_FAR 2.1f
 #define LAYER_DEPTH(depth) 1.0f + depth
 
 static GLfloat orthoMatrix[16] =
 	{0, 0, 0, -1,
 	 0, 0, 0, 1,
-	 0, 0, 2 / (FAR - NEAR), (NEAR + FAR) / (NEAR - FAR),
+	 0, 0, 2 / (Z_FAR - Z_NEAR), (Z_NEAR + Z_FAR) / (Z_NEAR - Z_FAR),
 	 0, 0, 0, 1};
 
 static GLchar vertexSource[] =

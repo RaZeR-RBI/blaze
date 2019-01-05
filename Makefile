@@ -1,19 +1,22 @@
 .PHONY: all clean
 
-ifeq ($(OS),Windows_NT)
-    DLLEXT := .dll
-else
-    DLLEXT := .so
-endif
-
 INCLUDES = -I "./glad/include/"
 CC = gcc
-CC99 = c99
-CFLAGS = -c -std=c89 -Wall -pedantic -Werror $(INCLUDES)
-LDFLAGS = -lSDL2 -lSDL2main -lGL
+CFLAGS = -c -std=c99 -Wall -pedantic -Werror $(INCLUDES)
+LDFLAGS_TEST = -lSDL2main -lSDL2
+DEBUG = -ggdb
+
+ifeq ($(OS),Windows_NT)
+    DLLEXT := .dll
+    LDFLAGS_LIB = -lopengl32
+else
+    DLLEXT := .so
+	LDFLAGS_LIB = -lGL
+    DEBUG += -fsanitize=address
+endif
+
 LIBNAME = libblaze$(DLLEXT)
 LIBNAME_TEST = libblaze-test$(DLLEXT)
-DEBUG = -ggdb -fsanitize=address
 
 TESTS = $(wildcard test/test_*.c)
 TEST_NAMES = $(patsubst test/%.c, %.out, $(TESTS))
@@ -23,31 +26,31 @@ SOIL_OBJS = $(patsubst deps/SOIL/%.c, deps/SOIL/%.o, $(SOIL_SOURCES))
 
 all: $(LIBNAME) $(TEST_NAMES)
 
-$(LIBNAME): blaze.c blaze.h $(SOIL_OBJS)
+$(LIBNAME): blaze.c blaze.h $(SOIL_OBJS) glad.o
 	$(info >>> Compiling a shared library $@)
 	$(CC) $(CFLAGS) -fPIC blaze.h blaze.c
-	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) -ldl
+	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o $(LDFLAGS_LIB)
 
 $(LIBNAME_TEST): blaze.c blaze.h $(SOIL_OBJS) glad.o
 	$(info >>> Compiling a shared library with TEST flag $@)
 	$(CC) $(CFLAGS) -fPIC $(DEBUG) blaze.h blaze.c -D TEST -ftest-coverage -fprofile-arcs
-	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o -lgcov -ldl
+	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o -lgcov $(LDFLAGS_LIB)
 
 common.o: test/common.h test/common.c
-	$(CC99) -c $(DEBUG) test/common.h test/common.c
+	$(CC) -c $(DEBUG) test/common.h test/common.c $(INCLUDES)
 
 tap.o: deps/tap.c/tap.c
 	$(CC) $(DEBUG) -c $< -o $@
 
 test_%.o: test/test_%.c
 	$(info >>> Compiling $@)
-	$(CC99) $(DEBUG) -c $< -o $@
+	$(CC) $(DEBUG) -c $< -o $@
 
 test_%.out: test_%.o $(LIBNAME_TEST) tap.o common.o
 	$(info >>> Linking $@)
-	$(CC99) $< $(LDFLAGS) $(DEBUG) -L. -l:$(LIBNAME_TEST) -l:tap.o -l:common.o -o $@
+	$(CC) $< $(LDFLAGS_TEST) $(DEBUG) -L. -l:$(LIBNAME_TEST) -l:tap.o -l:common.o -o $@
 
-deps/SOIL/%.o: deps/SOIL/%.c
+deps/SOIL/%.o: deps/SOIL/%.c glad.o
 	$(info >>> Compiling $@)
 	$(CC) -fPIC -c $< -o $@ -I "./deps/" $(DEBUG)
 

@@ -18,7 +18,7 @@ struct BLZ_SpriteQuad fs_quad = {.vertices[0] = {-1, 1, 1.1, 1, 1, 1, 1, 1, 0, 0
 								 .vertices[2] = {1, -1, 1.1, 1, 1, 1, 1, 1, 0, 0},
 								 .vertices[3] = {1, 1, 1.1, 1, 1, 1, 1, 1, 0, 0}};
 
-int main()
+int main(int argc, char *argv[])
 {
 	int i;
 	char cwd[255];

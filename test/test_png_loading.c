@@ -11,7 +11,7 @@ unsigned char MINIMAL_PNG[] = {
 };
 unsigned int MINIMAL_PNG_LEN = 70;
 
-int main()
+int main(int argc, char *argv[])
 {
 	if (Test_Init() != 0) {
 		printf("Could not initialize test suite\n");

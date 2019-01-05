@@ -22,6 +22,11 @@
 #define WINDOW_HEIGHT 512
 #define OPENGL_MAJOR 3
 #define OPENGL_MINOR 2
+
+#ifdef __WIN32__
+#define SDL_MAIN_HANDLED
+#endif
+
 #include <SDL2/SDL.h>
 #include "../blaze.h"
 #include "../deps/tap.c/tap.h"
