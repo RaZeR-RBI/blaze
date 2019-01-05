@@ -6,9 +6,10 @@ else
     DLLEXT := .so
 endif
 
+INCLUDES = -I "./glad/include/"
 CC = gcc
 CC99 = c99
-CFLAGS = -c -std=c89 -Wall -pedantic -Werror
+CFLAGS = -c -std=c89 -Wall -pedantic -Werror $(INCLUDES)
 LDFLAGS = -lSDL2 -lSDL2main -lGL
 LIBNAME = libblaze$(DLLEXT)
 LIBNAME_TEST = libblaze-test$(DLLEXT)
@@ -51,7 +52,7 @@ deps/SOIL/%.o: deps/SOIL/%.c
 	$(CC) -fPIC -c $< -o $@ -I "./deps/" $(DEBUG)
 
 glad.o: glad/src/glad.c
-	$(CC) -std=c89 -fPIC -c $< -o $@ -I "./glad/include/" $(DEBUG)
+	$(CC) -std=c89 -fPIC -c $< -o $@ $(INCLUDES) $(DEBUG)
 
 clean:
 	rm -rf *.o
