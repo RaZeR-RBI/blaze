@@ -99,6 +99,7 @@ static GLchar vertexSource[] =
 	"  ex_Color = in_Color;"
 	"  ex_Texcoord = in_Texcoord;"
 	"  gl_Position = u_mvpMatrix * in_Position;"
+	/*"	gl_Position = in_Position;"*/
 	"}";
 
 static GLchar fragmentSource[] =
@@ -111,6 +112,7 @@ static GLchar fragmentSource[] =
 	"  outColor = texture(tex, ex_Texcoord) * ex_Color;"
 	/* "  outColor = vec4(0.2, 0.3, 0.4, 1.0);" */
 	"}";
+static const GLchar *varyings[] = {"gl_Position"};
 
 static BLZ_Shader *SHADER_DEFAULT;
 static BLZ_Shader *SHADER_CURRENT;
@@ -168,8 +170,11 @@ int BLZ_SetViewport(int w, int h)
 	validate(h > 0);
 	orthoMatrix[0] = 2.0f / (GLfloat)w;
 	orthoMatrix[5] = -2.0f / (GLfloat)h;
-	BLZ_UniformMatrix4fv(SHADER_CURRENT->mvp_param, 1, GL_FALSE,
-						 (const GLfloat *)&orthoMatrix);
+	if (SHADER_CURRENT->mvp_param != -1)
+	{
+		BLZ_UniformMatrix4fv(SHADER_CURRENT->mvp_param, 1, GL_FALSE,
+							 (const GLfloat *)&orthoMatrix);
+	}
 	success();
 }
 
@@ -238,6 +243,10 @@ BLZ_Shader *BLZ_CompileShader(char *vert, char *frag)
 	glBindAttribLocation(program, 0, "in_Position");
 	glBindAttribLocation(program, 1, "in_Color");
 	glBindAttribLocation(program, 2, "in_Texcoord");
+	if (HAS_FLAG(ENABLE_FEEDBACK))
+	{
+		glTransformFeedbackVaryings(program, 1, varyings, GL_INTERLEAVED_ATTRIBS);
+	}
 	glLinkProgram(program);
 	glGetProgramiv(program, GL_LINK_STATUS, &is_linked);
 	if (!is_linked)
@@ -251,11 +260,6 @@ BLZ_Shader *BLZ_CompileShader(char *vert, char *frag)
 	}
 	shader->program = program;
 	shader->mvp_param = BLZ_GetUniformLocation(shader, "u_mvpMatrix");
-	if (shader->mvp_param == -1)
-	{
-		printf("Incompatible shader: missing 'uniform mat4 u_mvpMatrix");
-		return NULL;
-	}
 	return shader;
 }
 
@@ -267,8 +271,11 @@ int BLZ_UseShader(BLZ_Shader *program)
 	result = glGetError();
 	if (result == GL_NO_ERROR)
 	{
-		BLZ_UniformMatrix4fv(program->mvp_param, 1, GL_FALSE,
-							 (const GLfloat *)&orthoMatrix);
+		if (program->mvp_param != -1)
+		{
+			BLZ_UniformMatrix4fv(program->mvp_param, 1, GL_FALSE,
+								 (const GLfloat *)&orthoMatrix);
+		}
 		SHADER_CURRENT = program;
 		success();
 	}
@@ -294,9 +301,6 @@ int BLZ_Load(glGetProcAddress loader)
 	int result = gladLoadGLLoader((GLADloadproc)loader);
 	validate(loader != NULL);
 	fail_if_false(result, "Could not load the OpenGL library");
-	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
-	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
-	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
 	success();
 }
 
@@ -317,6 +321,9 @@ int BLZ_Shutdown()
 			}
 		}
 		free(stream_batches);
+	}
+	if (SHADER_DEFAULT != NULL) {
+		free(SHADER_DEFAULT);
 	}
 	MAX_TEXTURES = MAX_SPRITES_PER_TEXTURE = 0;
 	success();
@@ -353,6 +360,9 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags
 		cur->buffer[1] = create_buffer();
 		cur->buffer[2] = create_buffer();
 	}
+	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
+	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
+	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
 	success();
 }
 

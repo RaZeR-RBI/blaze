@@ -32,4 +32,9 @@ SDL_GLContext context;
 int Test_Init();
 void Test_Shutdown();
 
+void Feedback_Enable(int count);
+void Feedback_Read(GLfloat* buffer, int count);
+void Feedback_Begin();
+void Feedback_End();
+
 #endif

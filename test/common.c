@@ -49,3 +49,33 @@ void Test_Shutdown()
 {
 	SDL_Quit();
 }
+
+GLuint create_buffer(GLenum type, int size, GLenum usage)
+{
+	GLuint bo;
+	glGenBuffers(1, &bo);
+	glBindBuffer(type, bo);
+	glBufferData(type, (GLsizeiptr)size, NULL, usage);
+}
+
+void Feedback_Enable(int count)
+{
+	GLuint tbo = create_buffer(GL_ARRAY_BUFFER, sizeof(GLfloat) * count, GL_STATIC_READ);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, tbo);
+}
+
+void Feedback_Read(GLfloat* buffer, int count)
+{
+	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(GLfloat) * count, buffer);
+}
+
+void Feedback_Begin()
+{
+	glBeginTransformFeedback(GL_TRIANGLES);
+}
+
+void Feedback_End()
+{
+	glEndTransformFeedback();
+	glFlush();
+}

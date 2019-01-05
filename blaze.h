@@ -130,7 +130,8 @@ extern "C"
 	enum BLZ_InitFlags
 	{
 		DEFAULT = 0,
-		NO_TRIPLEBUFFER = 1
+		NO_TRIPLEBUFFER = 1,
+		ENABLE_FEEDBACK = 2
 	};
 
 	extern APIENTRY int APICALL BLZ_Load(glGetProcAddress loader);

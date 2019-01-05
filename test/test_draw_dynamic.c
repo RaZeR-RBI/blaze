@@ -1,6 +1,16 @@
 #include "common.h"
 #include "unistd.h"
 
+// #define ASSERT_FEEDBACK
+
+#ifdef ASSERT_FEEDBACK
+#define INIT_FLAGS ENABLE_FEEDBACK
+#define FEEDBACK_COUNT 4
+#define FEEDBACK_SIZE FEEDBACK_COUNT * 4
+#else
+#define INIT_FLAGS DEFAULT
+#endif
+
 struct BLZ_Vector4 clearColor = {0, 0, 0, 0};
 /* TODO: Remove this debug data */
 struct BLZ_SpriteQuad fs_quad = {.vertices[0] = {-1, 1, 1.1, 1, 1, 1, 1, 1, 0, 0},
@@ -15,7 +25,12 @@ int main()
 	struct BLZ_Texture *texture;
 	struct BLZ_Vector4 white = {1, 1, 1, 0};
 	struct BLZ_Vector2 position = {20, 20};
-	if (getcwd(cwd, sizeof(cwd)) == NULL) {
+#ifdef ASSERT_FEEDBACK
+	GLfloat feedback[FEEDBACK_SIZE];
+	int j;
+#endif
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
 		printf("Could not get current directory - getcwd fail\n");
 		return -1;
 	}
@@ -25,12 +40,16 @@ int main()
 		printf("Could not initialize test suite\n");
 		return -1;
 	}
-	BLZ_Init(5, 100, DEFAULT);
+	BLZ_Init(5, 100, INIT_FLAGS);
 	BLZ_SetViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
+#ifdef ASSERT_FEEDBACK
+	Feedback_Enable(FEEDBACK_SIZE);
+#endif
 	texture = BLZ_LoadTextureFromFile("test/test_texture.png", AUTO, 0, NONE);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
-	if (texture == NULL) {
+	if (texture == NULL)
+	{
 		BAIL_OUT("Could not load texture file!");
 	}
 
@@ -40,11 +59,20 @@ int main()
 	for (i = 0; i < 5; i++)
 	{
 		BLZ_Clear(COLOR_BUFFER | DEPTH_BUFFER);
+#ifdef ASSERT_FEEDBACK
+		Feedback_Begin();
+#endif
 		BLZ_Draw(texture, position, NULL, 0.0f, NULL, NULL,
-		 white, NONE, 0.1f);
-		/* TODO: Remove this debug call */
-		// BLZ_LowerDraw(texture->id, &fs_quad);
-
+				 white, NONE, 0.1f);
+#ifdef ASSERT_FEEDBACK
+		Feedback_End();
+		Feedback_Read((GLfloat *)&feedback, FEEDBACK_SIZE);
+		printf("Frame %d\n", i);
+		for (j = 0; j < FEEDBACK_SIZE; j++)
+		{
+			printf("%d: %d\n", j, feedback[j]);
+		}
+#endif
 		BLZ_Present();
 		SDL_GL_SwapWindow(window);
 	}
