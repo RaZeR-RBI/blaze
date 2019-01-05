@@ -10,6 +10,11 @@
 *.gcda
 *.gcda.info
 *.gcno
+# Debugger outputs
+*.bin
+*.cap
+# Output screenshots
+*.bmp
 
 # Prerequisites
 *.d

@@ -392,7 +392,7 @@ int BLZ_Flush()
 		/* bind our texture and the VAO and draw it */
 		glBindTexture(GL_TEXTURE_2D, batch.texture);
 		glBindVertexArray(batch.buffer[to_draw].vao);
-		glDrawArrays(GL_TRIANGLES, 0, batch.quad_count * 4);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, batch.quad_count * 4);
 		batch_ptr->quad_count = 0;
 		batch_ptr->texture = 0;
 	}
@@ -527,18 +527,18 @@ int BLZ_Draw(
 	set_vertex(0, y, p_tl.y);
 	set_vertex(0, u, t_tl.x);
 	set_vertex(0, v, t_tl.y);
-	set_vertex(1, x, p_tr.x);
-	set_vertex(1, y, p_tr.y);
-	set_vertex(1, u, t_tr.x);
-	set_vertex(1, v, t_tr.y);
-	set_vertex(2, x, p_br.x);
-	set_vertex(2, y, p_br.y);
-	set_vertex(2, u, t_br.x);
-	set_vertex(2, v, t_br.y);
-	set_vertex(3, x, p_bl.x);
-	set_vertex(3, y, p_bl.y);
-	set_vertex(3, u, t_bl.x);
-	set_vertex(3, v, t_bl.y);
+	set_vertex(2, x, p_tr.x);
+	set_vertex(2, y, p_tr.y);
+	set_vertex(2, u, t_tr.x);
+	set_vertex(2, v, t_tr.y);
+	set_vertex(3, x, p_br.x);
+	set_vertex(3, y, p_br.y);
+	set_vertex(3, u, t_br.x);
+	set_vertex(3, v, t_br.y);
+	set_vertex(1, x, p_bl.x);
+	set_vertex(1, y, p_bl.y);
+	set_vertex(1, u, t_bl.x);
+	set_vertex(1, v, t_bl.y);
 
 	set_all_vertices(z, LAYER_DEPTH(layerDepth));
 	set_all_vertices(padding, 1.0f);

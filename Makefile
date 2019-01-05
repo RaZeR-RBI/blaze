@@ -12,7 +12,7 @@ CFLAGS = -c -std=c89 -Wall -pedantic -Werror
 LDFLAGS = -lSDL2 -lSDL2main -lGL
 LIBNAME = libblaze$(DLLEXT)
 LIBNAME_TEST = libblaze-test$(DLLEXT)
-DEBUG = -g3 -fsanitize=address
+DEBUG = -ggdb -fsanitize=address
 
 TESTS = $(wildcard test/test_*.c)
 TEST_NAMES = $(patsubst test/%.c, %.out, $(TESTS))
@@ -48,7 +48,7 @@ test_%.out: test_%.o $(LIBNAME_TEST) tap.o common.o
 
 deps/SOIL/%.o: deps/SOIL/%.c
 	$(info >>> Compiling $@)
-	$(CC) -fPIC -c $< -o $@ -I "./deps/"
+	$(CC) -fPIC -c $< -o $@ -I "./deps/" $(DEBUG)
 
 glad.o: glad/src/glad.c
 	$(CC) -std=c89 -fPIC -c $< -o $@ -I "./glad/include/" $(DEBUG)
