@@ -82,23 +82,23 @@ static char *__lastError = NULL;
 #define LAYER_DEPTH(depth) 1.0f + depth
 
 static GLfloat orthoMatrix[16] =
-	{0, 0, 0, -1,
-	 0, 0, 0, 1,
-	 0, 0, 2 / (Z_FAR - Z_NEAR), (Z_NEAR + Z_FAR) / (Z_NEAR - Z_FAR),
-	 0, 0, 0, 1};
+	{0, 0, 0, 0,
+	 0, 0, 0, 0,
+	 0, 0, 1, 0,
+	 -1, 1, 0, 1};
 
 static GLchar vertexSource[] =
 	"#version 130\n"
 	"uniform mat4 u_mvpMatrix;"
-	"in vec4 in_Position;"
-	"in vec4 in_Color;"
+	"in vec2 in_Position;"
 	"in vec2 in_Texcoord;"
+	"in vec4 in_Color;"
 	"out vec4 ex_Color;"
 	"out vec2 ex_Texcoord;"
 	"void main() {"
 	"  ex_Color = in_Color;"
 	"  ex_Texcoord = in_Texcoord;"
-	"  gl_Position = u_mvpMatrix * in_Position;"
+	"  gl_Position = u_mvpMatrix * vec4(in_Position, 1, 1);"
 	/*"	gl_Position = in_Position;"*/
 	"}";
 
@@ -129,15 +129,15 @@ static struct Buffer create_buffer()
 	glBindVertexArray(vao);
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	/* x|y|z|padding */
+	/* x|y| */
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)0);
-	/* r|g|b|a */
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)16);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)0);
 	/* u|v */
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)8);
+	/* r|g|b|a */
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)32);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)24);
 	glBindVertexArray(0);
 	result.vao = vao;
 	result.vbo = vbo;
@@ -241,8 +241,8 @@ BLZ_Shader *BLZ_CompileShader(char *vert, char *frag)
 	glAttachShader(program, vertex_shader);
 	glAttachShader(program, fragment_shader);
 	glBindAttribLocation(program, 0, "in_Position");
-	glBindAttribLocation(program, 1, "in_Color");
-	glBindAttribLocation(program, 2, "in_Texcoord");
+	glBindAttribLocation(program, 1, "in_Texcoord");
+	glBindAttribLocation(program, 2, "in_Color");
 	if (HAS_FLAG(ENABLE_FEEDBACK))
 	{
 		glTransformFeedbackVaryings(program, 1, varyings, GL_INTERLEAVED_ATTRIBS);
@@ -363,6 +363,8 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags
 	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
 	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
 	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 	success();
 }
 
@@ -478,8 +480,7 @@ int BLZ_Draw(
 	struct BLZ_Vector2 *origin,
 	struct BLZ_Vector2 *scale,
 	struct BLZ_Vector4 color,
-	enum BLZ_SpriteEffects effects,
-	float layerDepth)
+	enum BLZ_SpriteEffects effects)
 {
 	/* position: top-left, top-right, bottom-left, bottom-right */
 	struct BLZ_Vector2 p_tl, p_tr, p_bl, p_br;
@@ -512,6 +513,7 @@ int BLZ_Draw(
 	vec_add(p_bl, p_br, tmp);
 
 	/* calculate texture coordinates */
+	/* TODO: Implement SpriteEffects flipping */
 	if (srcRectangle == NULL)
 	{
 		vec_set(t_tl, 0, 0);
@@ -550,8 +552,6 @@ int BLZ_Draw(
 	set_vertex(1, u, t_bl.x);
 	set_vertex(1, v, t_bl.y);
 
-	set_all_vertices(z, LAYER_DEPTH(layerDepth));
-	set_all_vertices(padding, 1.0f);
 	set_all_vertices(r, color.x);
 	set_all_vertices(g, color.y);
 	set_all_vertices(b, color.z);

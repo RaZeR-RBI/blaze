@@ -1,7 +1,7 @@
 #include "common.h"
 #include "unistd.h"
 
-#define ASSERT_FEEDBACK
+/* #define ASSERT_FEEDBACK */
 
 #ifdef ASSERT_FEEDBACK
 #define INIT_FLAGS ENABLE_FEEDBACK
@@ -12,18 +12,13 @@
 #endif
 
 struct BLZ_Vector4 clearColor = {0, 0, 0, 0};
-/* TODO: Remove this debug data */
-struct BLZ_SpriteQuad fs_quad = {.vertices[0] = {-1, 1, 1.1, 1, 1, 1, 1, 1, 0, 0},
-								 .vertices[1] = {-1, -1, 1.1, 1, 1, 1, 1, 1, 0, 0},
-								 .vertices[2] = {1, -1, 1.1, 1, 1, 1, 1, 1, 0, 0},
-								 .vertices[3] = {1, 1, 1.1, 1, 1, 1, 1, 1, 0, 0}};
 
 int main(int argc, char *argv[])
 {
 	int i;
 	char cwd[255];
 	struct BLZ_Texture *texture;
-	struct BLZ_Vector4 white = {1, 1, 1, 0};
+	struct BLZ_Vector4 white = {1, 1, 1, 1};
 	struct BLZ_Vector2 position = {20, 20};
 #ifdef ASSERT_FEEDBACK
 	GLfloat feedback[FEEDBACK_SIZE];
@@ -46,8 +41,6 @@ int main(int argc, char *argv[])
 	Feedback_Enable(FEEDBACK_SIZE);
 #endif
 	texture = BLZ_LoadTextureFromFile("test/test_texture.png", AUTO, 0, NONE);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
 	if (texture == NULL)
 	{
 		BAIL_OUT("Could not load texture file!");
@@ -58,12 +51,11 @@ int main(int argc, char *argv[])
 	BLZ_SetClearColor(clearColor);
 	for (i = 0; i < 5; i++)
 	{
-		BLZ_Clear(COLOR_BUFFER | DEPTH_BUFFER);
+		BLZ_Clear(COLOR_BUFFER);
 #ifdef ASSERT_FEEDBACK
 		Feedback_Begin();
 #endif
-		BLZ_Draw(texture, position, NULL, 0.0f, NULL, NULL,
-				 white, NONE, 0.1f);
+		BLZ_Draw(texture, position, NULL, 0.0f, NULL, NULL, white, NONE);
 #ifdef ASSERT_FEEDBACK
 		Feedback_End();
 		Feedback_Read((GLfloat *)&feedback, FEEDBACK_SIZE);
