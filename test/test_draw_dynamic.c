@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
 #ifdef ASSERT_FEEDBACK
 		Feedback_Begin();
 #endif
+		/* TODO: Draw different variations with different parameters */
 		BLZ_Draw(texture, position, NULL, 0.0f, NULL, NULL, white, NONE);
 #ifdef ASSERT_FEEDBACK
 		Feedback_End();

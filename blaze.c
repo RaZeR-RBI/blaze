@@ -365,6 +365,7 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags
 	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
 	success();
 }
 
