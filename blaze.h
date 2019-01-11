@@ -311,5 +311,6 @@ BLZ_ASSERT(sizeof(struct BLZ_Vertex) == 32)
 BLZ_ASSERT(offsetof(struct BLZ_Vertex, x) == 0)
 BLZ_ASSERT(offsetof(struct BLZ_Vertex, u) == 8)
 BLZ_ASSERT(offsetof(struct BLZ_Vertex, r) == 16)
+#undef BLZ_ASSERT
 
 #endif

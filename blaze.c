@@ -46,7 +46,7 @@
 
 struct Buffer
 {
-	GLuint vao, vbo;
+	GLuint vao, vbo, ebo;
 };
 
 struct BLZ_StaticBatch
@@ -123,12 +123,16 @@ static const int VERT_SIZE = sizeof(struct BLZ_Vertex);
 /* TODO: Reuse same VAO for all batches to minimize state changes */
 static struct Buffer create_buffer()
 {
+	int INDICES_SIZE = MAX_SPRITES_PER_TEXTURE * 6 * sizeof(GLushort);
+	int i;
 	struct Buffer result;
-	GLuint vao, vbo;
+	GLushort *indices = malloc(INDICES_SIZE);
+	GLuint vao, vbo, ebo;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, VERT_SIZE * 4 * MAX_SPRITES_PER_TEXTURE, NULL, GL_STREAM_DRAW);
 	/* x|y| */
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)0);
@@ -138,6 +142,20 @@ static struct Buffer create_buffer()
 	/* r|g|b|a */
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)16);
+	/* indices */
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	for (i = 0; i < MAX_SPRITES_PER_TEXTURE; i++)
+	{
+		*(indices + (i * 6)) = (GLushort)(i * 4);
+		*(indices + (i * 6) + 1) = (GLushort)(i * 4 + 1);
+		*(indices + (i * 6) + 2) = (GLushort)(i * 4 + 2);
+		*(indices + (i * 6) + 3) = (GLushort)(i * 4 + 2);
+		*(indices + (i * 6) + 4) = (GLushort)(i * 4 + 1);
+		*(indices + (i * 6) + 5) = (GLushort)(i * 4 + 3);
+	}
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, INDICES_SIZE, indices, GL_STATIC_DRAW);
+	free(indices);
 	glBindVertexArray(0);
 	result.vao = vao;
 	result.vbo = vbo;
@@ -322,7 +340,8 @@ int BLZ_Shutdown()
 		}
 		free(stream_batches);
 	}
-	if (SHADER_DEFAULT != NULL) {
+	if (SHADER_DEFAULT != NULL)
+	{
 		free(SHADER_DEFAULT);
 	}
 	MAX_TEXTURES = MAX_SPRITES_PER_TEXTURE = 0;
@@ -405,7 +424,7 @@ int BLZ_Flush()
 		/* bind our texture and the VAO and draw it */
 		glBindTexture(GL_TEXTURE_2D, batch.texture);
 		glBindVertexArray(batch.buffer[to_draw].vao);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, batch.quad_count * 4);
+		glDrawElements(GL_TRIANGLES, batch.quad_count * 6, GL_UNSIGNED_SHORT, (void *)0);
 		batch_ptr->quad_count = 0;
 		batch_ptr->texture = 0;
 	}
@@ -442,11 +461,19 @@ int BLZ_Present()
 		to.x = (one).x - (two).x; \
 		to.y = (one).y - (two).y; \
 	} while (0);
-#define vec_rotate(to, length, angle)        \
-	do                                       \
-	{                                        \
-		to.x = length * (float)cos(-angle);  \
-		to.y = length * -(float)sin(-angle); \
+#define vec_rotate(to, length, angle)            \
+	do                                           \
+	{                                            \
+		if (angle != 0.0f)                       \
+		{                                        \
+			to.x = length * (float)cos(-angle);  \
+			to.y = length * -(float)sin(-angle); \
+		}                                        \
+		else                                     \
+		{                                        \
+			to.x = length;                       \
+			to.y = 0;                            \
+		}                                        \
 	} while (0);
 #define vec_set(to, xval, yval) \
 	do                          \
@@ -562,7 +589,7 @@ int BLZ_Draw(
 
 int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
 {
-	struct StreamBatch *batch;
+	struct StreamBatch *batch = NULL;
 	int i;
 	size_t offset;
 	for (i = 0; i < MAX_TEXTURES; i++)

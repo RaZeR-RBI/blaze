@@ -1,29 +1,43 @@
 #include "common.h"
 #include "unistd.h"
 
-/* #define ASSERT_FEEDBACK */
-
-#ifdef ASSERT_FEEDBACK
-#define INIT_FLAGS ENABLE_FEEDBACK
-#define FEEDBACK_COUNT 4
-#define FEEDBACK_SIZE FEEDBACK_COUNT * 4
-#else
-#define INIT_FLAGS DEFAULT
-#endif
-
 struct BLZ_Vector4 clearColor = {0, 0, 0, 0};
+struct BLZ_Vector4 colors[12] = {
+	{1, 0, 0, 1},
+	{0, 1, 0, 1},
+	{0, 0, 1, 1},
+	{1, 1, 0, 1},
+	{0, 1, 1, 1},
+	{1, 0, 1, 1},
+	{1, 0, 0, 0.5f},
+	{0, 1, 0, 0.5f},
+	{0, 0, 1, 0.5f},
+	{1, 1, 0, 0.5f},
+	{0, 1, 1, 0.5f},
+	{1, 0, 1, 0.5f},
+};
+
+#define DEGREES(x) ((x)*3.14159265f / 180.0f)
+#define MoveRight()       \
+	do                    \
+	{                     \
+		position.x += 40; \
+	} while (0);
+#define NextLine()        \
+	do                    \
+	{                     \
+		position.x = 20;  \
+		position.y += 40; \
+	} while (0);
 
 int main(int argc, char *argv[])
 {
-	int i;
+	int i, j;
 	char cwd[255];
 	struct BLZ_Texture *texture;
 	struct BLZ_Vector4 white = {1, 1, 1, 1};
 	struct BLZ_Vector2 position = {20, 20};
-#ifdef ASSERT_FEEDBACK
-	GLfloat feedback[FEEDBACK_SIZE];
-	int j;
-#endif
+	struct BLZ_Vector2 center = {8, 8}; /* texture center */
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		printf("Could not get current directory - getcwd fail\n");
@@ -35,11 +49,8 @@ int main(int argc, char *argv[])
 		printf("Could not initialize test suite\n");
 		return -1;
 	}
-	BLZ_Init(5, 100, INIT_FLAGS);
+	BLZ_Init(5, 100, DEFAULT);
 	BLZ_SetViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
-#ifdef ASSERT_FEEDBACK
-	Feedback_Enable(FEEDBACK_SIZE);
-#endif
 	texture = BLZ_LoadTextureFromFile("test/test_texture.png", AUTO, 0, NONE);
 	if (texture == NULL)
 	{
@@ -52,22 +63,30 @@ int main(int argc, char *argv[])
 	for (i = 0; i < 5; i++)
 	{
 		BLZ_Clear(COLOR_BUFFER);
-#ifdef ASSERT_FEEDBACK
-		Feedback_Begin();
-#endif
-		/* TODO: Draw different variations with different parameters */
-		BLZ_Draw(texture, position, NULL, 0.0f, NULL, NULL, white, NONE);
-#ifdef ASSERT_FEEDBACK
-		Feedback_End();
-		Feedback_Read((GLfloat *)&feedback, FEEDBACK_SIZE);
-		printf("Frame %d\n", i);
-		for (j = 0; j < FEEDBACK_SIZE; j++)
+		/* Different rotation angles */
+		for (j = 0; j < 12; j++)
 		{
-			printf("%d: %d\n", j, feedback[j]);
+			BLZ_Draw(texture, position, NULL, DEGREES(30.0f * j), NULL, NULL, white, NONE);
+			MoveRight();
 		}
-#endif
+		NextLine();
+		/* Different colors */
+		for (j = 0; j < 12; j++)
+		{
+			BLZ_Draw(texture, position, NULL, 0, NULL, NULL, colors[j], NONE);
+			MoveRight();
+		}
+		NextLine();
+		/* Rotate around specified origin */
+		for (j = 0; j < 12; j++)
+		{
+			BLZ_Draw(texture, position, NULL, DEGREES(30.0f * j), &center, NULL, white, NONE);
+			MoveRight();
+		}
+		NextLine();
 		BLZ_Present();
 		SDL_GL_SwapWindow(window);
+		position.y = 20;
 	}
 	/* create a screenshot and compare */
 	/* TODO */

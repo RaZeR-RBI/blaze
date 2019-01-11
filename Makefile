@@ -3,6 +3,7 @@
 INCLUDES = -I "./glad/include/"
 CC = gcc
 CFLAGS = -c -std=c99 -Wall -pedantic -Werror $(INCLUDES)
+OPTIMIZE = -O2
 LDFLAGS_TEST = -lSDL2main -lSDL2
 DEBUG = -ggdb
 
@@ -28,7 +29,7 @@ all: $(LIBNAME) $(TEST_NAMES)
 
 $(LIBNAME): blaze.c blaze.h $(SOIL_OBJS) glad.o
 	$(info >>> Compiling a shared library $@)
-	$(CC) $(CFLAGS) -fPIC blaze.h blaze.c
+	$(CC) $(CFLAGS) $(OPTIMIZE) -fPIC blaze.h blaze.c
 	$(CC) -shared -o $@ blaze.o $(SOIL_OBJS) glad.o $(LDFLAGS_LIB)
 
 $(LIBNAME_TEST): blaze.c blaze.h $(SOIL_OBJS) glad.o
@@ -52,10 +53,10 @@ test_%.out: test_%.o $(LIBNAME_TEST) tap.o common.o
 
 deps/SOIL/%.o: deps/SOIL/%.c glad.o
 	$(info >>> Compiling $@)
-	$(CC) -fPIC -c $< -o $@ -I "./deps/" $(DEBUG)
+	$(CC) $(OPTIMIZE) -fPIC -c $< -o $@ -I "./deps/"
 
 glad.o: glad/src/glad.c
-	$(CC) -std=c89 -fPIC -c $< -o $@ $(INCLUDES) $(DEBUG)
+	$(CC) $(OPTIMIZE) -fPIC -c $< -o $@ $(INCLUDES)
 
 clean:
 	rm -rf *.o
