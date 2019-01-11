@@ -1,6 +1,8 @@
 #ifndef _BLAZE_H
 #define _BLAZE_H
 
+#include "stddef.h"
+#include "./cassert.h"
 #include "./deps/SOIL/SOIL.h"
 #include "./glad/include/glad/glad.h"
 
@@ -58,12 +60,14 @@ struct BLZ_Color
 	unsigned char r, g, b, a;
 };
 
+#pragma pack(push,1)
 struct BLZ_Vertex
 {
 	GLfloat x, y;
 	GLfloat u, v;
 	GLfloat r, g, b, a;
 };
+#pragma pack(pop)
 
 struct BLZ_SpriteQuad
 {
@@ -300,5 +304,12 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+/* Compile-time assertions */
+#define BLZ_ASSERT(expr) CASSERT(expr, blaze_h)
+BLZ_ASSERT(sizeof(struct BLZ_Vertex) == 32)
+BLZ_ASSERT(offsetof(struct BLZ_Vertex, x) == 0)
+BLZ_ASSERT(offsetof(struct BLZ_Vertex, u) == 8)
+BLZ_ASSERT(offsetof(struct BLZ_Vertex, r) == 16)
 
 #endif

@@ -137,7 +137,7 @@ static struct Buffer create_buffer()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)8);
 	/* r|g|b|a */
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)24);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)16);
 	glBindVertexArray(0);
 	result.vao = vao;
 	result.vbo = vbo;
