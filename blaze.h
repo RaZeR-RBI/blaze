@@ -139,6 +139,7 @@ extern "C"
 	extern BLZAPIENTRY int BLZAPICALL BLZ_Present();
 
 	/* TODO: Static drawing */
+	/* TODO: Blend modes */
 
 	/* Shaders */
 	extern BLZAPIENTRY BLZ_Shader *BLZAPICALL BLZ_CompileShader(char *vert, char *frag);

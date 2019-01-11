@@ -120,7 +120,7 @@ static unsigned char FRAMESKIP = 0;
 
 static const int VERT_SIZE = sizeof(struct BLZ_Vertex);
 
-/* TODO: Reuse same VAO for all batches to minimize state changes */
+/* TODO: Optimization: Reuse same VAO for all batches to minimize state changes */
 static struct Buffer create_buffer()
 {
 	int INDICES_SIZE = MAX_SPRITES_PER_TEXTURE * 6 * sizeof(GLushort);
@@ -449,42 +449,6 @@ int BLZ_Present()
 	success();
 }
 
-#define vec_add(to, one, two)     \
-	do                            \
-	{                             \
-		to.x = (one).x + (two).x; \
-		to.y = (one).y + (two).y; \
-	} while (0);
-#define vec_sub(to, one, two)     \
-	do                            \
-	{                             \
-		to.x = (one).x - (two).x; \
-		to.y = (one).y - (two).y; \
-	} while (0);
-#define vec_rotate(to, length, angle)            \
-	do                                           \
-	{                                            \
-		if (angle != 0.0f)                       \
-		{                                        \
-			to.x = length * (float)cos(-angle);  \
-			to.y = length * -(float)sin(-angle); \
-		}                                        \
-		else                                     \
-		{                                        \
-			to.x = length;                       \
-			to.y = 0;                            \
-		}                                        \
-	} while (0);
-#define vec_set(to, xval, yval) \
-	do                          \
-	{                           \
-		to.x = xval;            \
-		to.y = yval;            \
-	} while (0);
-
-#define PI 3.14159265f
-#define HALF_PI PI / 2
-
 #define set_vertex(index, field, val)     \
 	do                                    \
 	{                                     \
@@ -514,54 +478,54 @@ int BLZ_Draw(
 	struct BLZ_Vector2 p_tl, p_tr, p_bl, p_br;
 	/* same for texture coordinates */
 	struct BLZ_Vector2 t_tl, t_tr, t_bl, t_br;
-	struct BLZ_Vector2 tmp;
 	struct BLZ_SpriteQuad quad;
-	int width = srcRectangle == NULL ? texture->width : srcRectangle->w;
-	int height = srcRectangle == NULL ? texture->height : srcRectangle->h;
+	GLfloat dx, dy;
+	GLfloat x = position.x;
+	GLfloat y = position.y;
+	GLfloat tw = (GLfloat)texture->width;
+	GLfloat th = (GLfloat)texture->height;
+	int w = srcRectangle == NULL ? tw : srcRectangle->w;
+	int h = srcRectangle == NULL ? th : srcRectangle->h;
+	GLfloat _sin = rotation == 0.0f ? 0.0f : sin(rotation);
+	GLfloat _cos = rotation == 0.0f ? 1.0f : cos(rotation);
+	GLfloat u1 = srcRectangle == NULL ? 0 : srcRectangle->x / tw;
+	GLfloat v1 = srcRectangle == NULL ? 0 : srcRectangle->y / th;
+	GLfloat u2 = srcRectangle == NULL ? 1 : u1 + (srcRectangle->w / tw);
+	GLfloat v2 = srcRectangle == NULL ? 1 : v1 + (srcRectangle->h / th);
 	if (scale != NULL)
 	{
-		width *= scale->x;
-		height *= scale->y;
+		w *= scale->x;
+		h *= scale->y;
 	}
-
-	/* calculate corner positions in clockwise order starting from top left */
 	if (origin == NULL)
 	{
-		p_tl = position;
+		dx = 0;
+		dy = 0;
 	}
 	else
 	{
-		vec_sub(p_tl, position, *origin);
+		dx = -origin->x;
+		dy = -origin->y;
 	}
-	vec_rotate(tmp, width, rotation);
-	vec_add(p_tr, p_tl, tmp);
-	vec_rotate(tmp, height, rotation - HALF_PI);
-	vec_add(p_br, p_tr, tmp);
-	vec_rotate(tmp, -width, rotation);
-	vec_add(p_bl, p_br, tmp);
+	p_tl.x = x + dx * _cos - dy * _sin;
+	p_tl.y = y + dx * _sin + dy * _cos;
+	p_tr.x = x + (dx + w) * _cos - dy * _sin;
+	p_tr.y = y + (dx + w) * _sin + dy * _cos;
+	p_bl.x = x + dx * _cos - (dy + h) * _sin;
+	p_bl.y = y + dx * _sin + (dy + h) * _cos;
+	p_br.x = x + (dx + w) * _cos - (dy + h) * _sin;
+	p_br.y = y + (dx + w) * _sin + (dy + h) * _cos;
 
 	/* calculate texture coordinates */
 	/* TODO: Implement SpriteEffects flipping */
-	if (srcRectangle == NULL)
-	{
-		vec_set(t_tl, 0, 0);
-		vec_set(t_tr, 1, 0);
-		vec_set(t_br, 1, 1);
-		vec_set(t_bl, 0, 1);
-	}
-	else
-	{
-		vec_set(t_tl,
-				srcRectangle->x / texture->width,
-				srcRectangle->y / texture->height);
-		t_tr.x = t_tl.x + srcRectangle->w / texture->width;
-		t_tr.y = t_tl.y;
-		t_bl.x = t_tl.x;
-		t_bl.y = t_tl.y + srcRectangle->h / texture->height;
-		t_br.x = t_tr.x;
-		t_br.y = t_bl.y;
-	}
-
+	t_tl.x = u1;
+	t_tl.y = v1;
+	t_tr.x = u2;
+	t_tr.y = v1;
+	t_bl.x = u1;
+	t_bl.y = v2;
+	t_br.x = u2;
+	t_br.y = v2;
 	/* set the vertex values */
 	set_vertex(0, x, p_tl.x);
 	set_vertex(0, y, p_tl.y);
