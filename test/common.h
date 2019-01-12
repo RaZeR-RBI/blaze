@@ -38,8 +38,17 @@ int Test_Init();
 void Test_Shutdown();
 
 void Feedback_Enable(int count);
-void Feedback_Read(GLfloat* buffer, int count);
+void Feedback_Read(GLfloat *buffer, int count);
 void Feedback_Begin();
 void Feedback_End();
+
+/*
+*	Compares render output with the reference file located in test/refs.
+*	"Likeness" ranges from 0.0 to 1.0, which means how many pixels should be
+*	equal. For example, if likeness is 0.9, then 90% of the pixels must be same
+*	in order to pass. Using 1.0 is not recommended due to possible differences
+*	in renderer implementations.
+*/
+int Validate_Output(const char *test_name, float likeness);
 
 #endif

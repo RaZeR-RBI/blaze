@@ -99,7 +99,6 @@ static GLchar vertexSource[] =
 	"  ex_Color = in_Color;"
 	"  ex_Texcoord = in_Texcoord;"
 	"  gl_Position = u_mvpMatrix * vec4(in_Position, 1, 1);"
-	/*"	gl_Position = in_Position;"*/
 	"}";
 
 static GLchar fragmentSource[] =
@@ -110,7 +109,6 @@ static GLchar fragmentSource[] =
 	"uniform sampler2D tex;"
 	"void main() {"
 	"  outColor = texture(tex, ex_Texcoord) * ex_Color;"
-	/* "  outColor = vec4(0.2, 0.3, 0.4, 1.0);" */
 	"}";
 static const GLchar *varyings[] = {"gl_Position"};
 
@@ -388,6 +386,8 @@ int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags
 	success();
 }
 
+struct StreamBatch *__lastBatch;
+GLuint __lastTexture;
 int BLZ_Flush()
 {
 	unsigned char to_draw, to_fill;
@@ -428,6 +428,8 @@ int BLZ_Flush()
 		batch_ptr->quad_count = 0;
 		batch_ptr->texture = 0;
 	}
+	__lastBatch = NULL;
+	__lastTexture = 0;
 	success();
 }
 
@@ -464,6 +466,14 @@ int BLZ_Present()
 		set_vertex(3, field, val);   \
 	} while (0);
 
+#define swap(tmp, one, two) \
+	do                      \
+	{                       \
+		tmp = one;          \
+		one = two;          \
+		two = tmp;          \
+	} while (0);
+
 int BLZ_Draw(
 	struct BLZ_Texture *texture,
 	struct BLZ_Vector2 position,
@@ -492,6 +502,7 @@ int BLZ_Draw(
 	GLfloat v1 = srcRectangle == NULL ? 0 : srcRectangle->y / th;
 	GLfloat u2 = srcRectangle == NULL ? 1 : u1 + (srcRectangle->w / tw);
 	GLfloat v2 = srcRectangle == NULL ? 1 : v1 + (srcRectangle->h / th);
+	GLfloat tmp;
 	if (scale != NULL)
 	{
 		w *= scale->x;
@@ -517,7 +528,21 @@ int BLZ_Draw(
 	p_br.y = y + (dx + w) * _sin + (dy + h) * _cos;
 
 	/* calculate texture coordinates */
-	/* TODO: Implement SpriteEffects flipping */
+	switch (effects)
+	{
+	case FLIP_H:
+		swap(tmp, u1, u2);
+		break;
+	case FLIP_V:
+		swap(tmp, v1, v2);
+		break;
+	case BOTH:
+		swap(tmp, u1, u2);
+		swap(tmp, v1, v2);
+		break;
+	default:
+		break;
+	}
 	t_tl.x = u1;
 	t_tl.y = v1;
 	t_tr.x = u2;
@@ -554,21 +579,31 @@ int BLZ_Draw(
 int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
 {
 	struct StreamBatch *batch = NULL;
-	int i;
+	int i = 0;
 	size_t offset;
-	for (i = 0; i < MAX_TEXTURES; i++)
+	if (__lastTexture > 0 && texture == __lastTexture)
 	{
-		batch = (stream_batches + i);
-		if (batch->texture == texture &&
-			batch->quad_count >= MAX_SPRITES_PER_TEXTURE)
+		if (__lastBatch != NULL && __lastBatch->quad_count < MAX_SPRITES_PER_TEXTURE)
 		{
-			/* this batch is already filled, skip it */
-			continue;
+			batch = __lastBatch;
 		}
-		if (batch->texture == texture || batch->texture == 0)
+	}
+	if (batch == NULL)
+	{
+		for (i = 0; i < MAX_TEXTURES; i++)
 		{
-			/* we found existing not-full batch or an empty one */
-			break;
+			batch = (stream_batches + i);
+			if (batch->texture == texture &&
+				batch->quad_count >= MAX_SPRITES_PER_TEXTURE)
+			{
+				/* this batch is already filled, skip it */
+				continue;
+			}
+			if (batch->texture == texture || batch->texture == 0)
+			{
+				/* we found existing not-full batch or an empty one */
+				break;
+			}
 		}
 	}
 	if (i >= MAX_TEXTURES && batch->texture > 0 && batch->texture != texture)
@@ -582,6 +617,8 @@ int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
 	memcpy((batch->vertices + offset), quad, sizeof(struct BLZ_SpriteQuad));
 	batch->quad_count++;
 	batch->texture = texture;
+	__lastBatch = batch;
+	__lastTexture = texture;
 	success();
 }
 
