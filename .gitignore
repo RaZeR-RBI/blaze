@@ -13,6 +13,7 @@
 # Debugger outputs
 *.bin
 *.cap
+*.trace
 # Output screenshots
 /*.bmp
 

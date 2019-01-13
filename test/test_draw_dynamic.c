@@ -97,7 +97,9 @@ int main(int argc, char *argv[])
 		printf("Could not initialize test suite\n");
 		return -1;
 	}
-	BLZ_Init(5, 100, DEFAULT);
+	/* setting low limits to hit more code branches */
+	/* in realistic use-cases numbers should be 10 or 100 times greater */
+	BLZ_Init(2, 100, DEFAULT);
 	BLZ_SetViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
 	textures[0] = BLZ_LoadTextureFromFile("test/test_texture.png", AUTO, 0, NONE);
 	textures[1] = BLZ_LoadTextureFromFile("test/test_texture2.png", AUTO, 0, NONE);

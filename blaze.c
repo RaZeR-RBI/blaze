@@ -131,7 +131,7 @@ static struct Buffer create_buffer()
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, VERT_SIZE * 4 * MAX_SPRITES_PER_TEXTURE, NULL, GL_STREAM_DRAW);
-	/* x|y| */
+	/* x|y */
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)0);
 	/* u|v */
@@ -606,11 +606,11 @@ int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
 			}
 		}
 	}
-	if (i >= MAX_TEXTURES && batch->texture > 0 && batch->texture != texture)
+	if (batch->quad_count >= MAX_SPRITES_PER_TEXTURE ||
+		(batch->texture != 0 && batch->texture != texture))
 	{
-		/* we ran out of limits and must flush and repeat */
-		BLZ_Flush();
-		BLZ_LowerDraw(texture, quad);
+		/* we ran out of limits */
+		fail("Sprite limit reached - increase limits in BLZ_Init(...)");
 	}
 	offset = batch->quad_count * 4;
 	/* set the vertex data */
