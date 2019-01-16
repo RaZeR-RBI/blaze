@@ -4,19 +4,21 @@ int main(int argc, char *argv[])
 {
 	int max_tex, max_sprites;
 	enum BLZ_InitFlags flags;
-	struct BLZ_SpriteBatch* batch = NULL;
-	if (Test_Init() != 0) {
+	struct BLZ_SpriteBatch *batch = NULL;
+	if (Test_Init() != 0)
+	{
 		printf("Could not initialize test suite\n");
 		return -1;
 	}
 	plan(13);
 
-	batch =BLZ_CreateBatch(5, 100, DEFAULT);
+	batch = BLZ_CreateBatch(5, 100, DEFAULT);
 	ok(batch != NULL, "initialized with 5, 100");
 	ok(BLZ_GetOptions(batch, &max_tex, &max_sprites, &flags), "retrieved options");
 	ok(max_tex == 5, "max texture count is 5");
 	ok(max_sprites == 100, "max sprite count per texture is 100");
 	ok(flags == DEFAULT, "default flags");
+	BLZ_FreeBatch(batch);
 	batch = BLZ_CreateBatch(10, 50, NO_BUFFERING);
 	ok(batch != NULL, "re-initialized");
 	ok(BLZ_GetOptions(batch, &max_tex, &max_sprites, &flags), "retrieved options again");

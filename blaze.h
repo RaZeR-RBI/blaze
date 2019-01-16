@@ -114,7 +114,7 @@ extern "C"
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Clear(enum BLZ_ClearOptions options);
 	extern BLZAPIENTRY void BLZAPICALL BLZ_SetBlendMode(const struct BLZ_BlendFunc func);
 
-	/* Dynamic batching */
+	/* Dynamic drawing */
 	enum BLZ_InitFlags
 	{
 		DEFAULT = 0,
@@ -134,9 +134,8 @@ extern "C"
 
 	extern BLZAPIENTRY int BLZAPICALL BLZ_FreeBatch(struct BLZ_SpriteBatch *batch);
 
-	/* Dynamic drawing */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_Draw(
-		struct BLZ_SpriteBatch* batch,
+		struct BLZ_SpriteBatch *batch,
 		struct BLZ_Texture *texture,
 		struct BLZ_Vector2 position,
 		struct BLZ_Rectangle *srcRectangle,
@@ -147,23 +146,53 @@ extern "C"
 		enum BLZ_SpriteEffects effects);
 
 	extern BLZAPIENTRY int BLZAPICALL BLZ_LowerDraw(
-		struct BLZ_SpriteBatch* batch,
+		struct BLZ_SpriteBatch *batch,
 		GLuint texture,
 		struct BLZ_SpriteQuad *quad);
 
-	extern BLZAPIENTRY int BLZAPICALL BLZ_Present(struct BLZ_SpriteBatch* batch);
+	extern BLZAPIENTRY int BLZAPICALL BLZ_Present(struct BLZ_SpriteBatch *batch);
 
-	/* TODO: Static drawing */
+	/* Static drawing */
+	extern BLZAPIENTRY struct BLZ_StaticBatch BLZAPICALL *BLZ_CreateStatic(
+		struct BLZ_Texture *texture, int max_sprite_count);
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_GetOptionsStatic(
+		struct BLZ_StaticBatch *batch,
+		int *max_sprite_count);
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_FreeBatchStatic(
+		struct BLZ_StaticBatch *batch);
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_DrawStatic(
+		struct BLZ_StaticBatch *batch,
+		struct BLZ_Texture *texture,
+		struct BLZ_Vector2 position,
+		struct BLZ_Rectangle *srcRectangle,
+		float rotation,
+		struct BLZ_Vector2 *origin,
+		struct BLZ_Vector2 *scale,
+		struct BLZ_Vector4 color,
+		enum BLZ_SpriteEffects effects);
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_LowerDrawStatic(
+		struct BLZ_StaticBatch *batch,
+		struct BLZ_SpriteQuad *quad);
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_PresentStatic(
+		struct BLZ_SpriteBatch *batch);
+
 	/* TODO: Texture binding and filtering settings */
 	/* TODO: Rendertargets */
 
 	/* Shaders */
-	extern BLZAPIENTRY BLZ_Shader *BLZAPICALL BLZ_CompileShader(char *vert, char *frag);
+	extern BLZAPIENTRY struct BLZ_Shader *BLZAPICALL BLZ_CompileShader(
+		char *vert, char *frag);
+
 	extern BLZAPIENTRY int BLZAPICALL BLZ_UseShader(BLZ_Shader *program);
 	extern BLZAPIENTRY int BLZAPICALL BLZ_FreeShader(BLZ_Shader *program);
-	extern BLZAPIENTRY BLZ_Shader *BLZ_GetDefaultShader();
+	extern BLZAPIENTRY struct BLZ_Shader BLZAPICALL *BLZ_GetDefaultShader();
 
-	extern BLZAPIENTRY GLint BLZ_GetUniformLocation(
+	extern BLZAPIENTRY GLint BLZAPICALL BLZ_GetUniformLocation(
 		struct BLZ_Shader *shader,
 		const char *name);
 
