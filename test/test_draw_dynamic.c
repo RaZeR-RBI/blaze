@@ -37,6 +37,7 @@ struct BLZ_Vector2 position;
 struct BLZ_Vector2 center = {8, 8}; /* texture center */
 struct BLZ_Rectangle texPart = {4, 4, 8, 8};
 struct BLZ_Vector2 scale = {1, 1};
+struct BLZ_SpriteBatch *batch;
 
 void draw(struct BLZ_Texture *texture)
 {
@@ -44,21 +45,21 @@ void draw(struct BLZ_Texture *texture)
 	/* Different rotation angles */
 	for (j = 0; j < 12; j++)
 	{
-		BLZ_Draw(texture, position, NULL, DEGREES(30.0f * j), NULL, NULL, white, NONE);
+		BLZ_Draw(batch, texture, position, NULL, DEGREES(30.0f * j), NULL, NULL, white, NONE);
 		MoveRight();
 	}
 	NextLine();
 	/* Different colors */
 	for (j = 0; j < 12; j++)
 	{
-		BLZ_Draw(texture, position, NULL, 0, NULL, NULL, colors[j], NONE);
+		BLZ_Draw(batch, texture, position, NULL, 0, NULL, NULL, colors[j], NONE);
 		MoveRight();
 	}
 	NextLine();
 	/* Rotate around specified origin */
 	for (j = 0; j < 12; j++)
 	{
-		BLZ_Draw(texture, position, NULL, DEGREES(30.0f * j), &center, NULL, white, NONE);
+		BLZ_Draw(batch, texture, position, NULL, DEGREES(30.0f * j), &center, NULL, white, NONE);
 		MoveRight();
 	}
 	NextLine();
@@ -67,14 +68,14 @@ void draw(struct BLZ_Texture *texture)
 	{
 		scale.x = j / 6.0f;
 		scale.y = j / 6.0f;
-		BLZ_Draw(texture, position, &texPart, 0.0f, NULL, &scale, white, NONE);
+		BLZ_Draw(batch, texture, position, &texPart, 0.0f, NULL, &scale, white, NONE);
 		MoveRight();
 	}
 	NextLine();
 	/* Do various flips */
 	for (j = 0; j < 4; j++)
 	{
-		BLZ_Draw(texture, position, NULL, 0.0f, NULL, NULL, white,
+		BLZ_Draw(batch, texture, position, NULL, 0.0f, NULL, NULL, white,
 				 (enum BLZ_SpriteEffects)(j % 4));
 		MoveRight();
 	}
@@ -99,7 +100,7 @@ int main(int argc, char *argv[])
 	}
 	/* setting low limits to hit more code branches */
 	/* in realistic use-cases numbers should be 10 or 100 times greater */
-	BLZ_Init(2, 100, DEFAULT);
+	batch = BLZ_CreateBatch(2, 100, DEFAULT);
 	BLZ_SetViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
 	textures[0] = BLZ_LoadTextureFromFile("test/test_texture.png", AUTO, 0, NONE);
 	textures[1] = BLZ_LoadTextureFromFile("test/test_texture2.png", AUTO, 0, NONE);
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
 		BLZ_Clear(COLOR_BUFFER);
 		draw(textures[0]);
 		draw(textures[1]);
-		BLZ_Present();
+		BLZ_Present(batch);
 		SDL_GL_SwapWindow(window);
 	}
 	/* create a screenshot and compare */
@@ -125,7 +126,7 @@ int main(int argc, char *argv[])
 
 	BLZ_FreeTexture(textures[0]);
 	BLZ_FreeTexture(textures[1]);
-	BLZ_Shutdown();
+	BLZ_FreeBatch(batch);
 	Test_Shutdown();
 	done_testing();
 }

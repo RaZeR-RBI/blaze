@@ -60,7 +60,7 @@ struct BLZ_Color
 	unsigned char r, g, b, a;
 };
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 struct BLZ_Vertex
 {
 	GLfloat x, y;
@@ -80,6 +80,18 @@ struct BLZ_Texture
 	int width, height;
 };
 
+struct BLZ_BlendFunc
+{
+	GLenum source, destination;
+};
+
+extern const struct BLZ_BlendFunc BLEND_NORMAL;
+extern const struct BLZ_BlendFunc BLEND_ADDITIVE;
+extern const struct BLZ_BlendFunc BLEND_MULTIPLY;
+
+struct BLZ_SpriteBatch;
+typedef struct BLZ_SpriteBatch BLZ_SpriteBatch;
+
 struct BLZ_StaticBatch;
 typedef struct BLZ_StaticBatch BLZ_StaticBatch;
 struct BLZ_Shader;
@@ -93,36 +105,39 @@ extern "C"
 #endif
 
 	/* -------------------------------- API --------------------------------- */
-	/* Init and shutdown */
+	/* Global state */
+	extern BLZAPIENTRY int BLZAPICALL BLZ_Load(glGetProcAddress loader);
+	extern BLZAPIENTRY int BLZAPICALL BLZ_SetViewport(int w, int h);
+	extern BLZAPIENTRY char *BLZAPICALL BLZ_GetLastError();
+
+	extern BLZAPIENTRY void BLZAPICALL BLZ_SetClearColor(struct BLZ_Vector4 color);
+	extern BLZAPIENTRY void BLZAPICALL BLZ_Clear(enum BLZ_ClearOptions options);
+	extern BLZAPIENTRY void BLZAPICALL BLZ_SetBlendMode(const struct BLZ_BlendFunc func);
+
+	/* Dynamic batching */
 	enum BLZ_InitFlags
 	{
 		DEFAULT = 0,
-		NO_TRIPLEBUFFER = 1,
-		ENABLE_FEEDBACK = 2
+		NO_BUFFERING = 1
 	};
 
-	extern BLZAPIENTRY int BLZAPICALL BLZ_Load(glGetProcAddress loader);
-	extern BLZAPIENTRY int BLZAPICALL BLZ_Init(
-		int max_textures,
-		int max_sprites_per_tex,
+	extern BLZAPIENTRY struct BLZ_SpriteBatch *BLZAPICALL BLZ_CreateBatch(
+		int max_batches,
+		int max_sprites_per_batch,
 		enum BLZ_InitFlags flags);
 
 	extern BLZAPIENTRY int BLZAPICALL BLZ_GetOptions(
-		int *max_textures,
-		int *max_sprites_per_tex,
+		struct BLZ_SpriteBatch *batch,
+		int *max_batches,
+		int *max_sprites_per_batch,
 		enum BLZ_InitFlags *flags);
 
-	extern BLZAPIENTRY int BLZAPICALL BLZ_SetViewport(int w, int h);
-	extern BLZAPIENTRY int BLZAPICALL BLZ_Shutdown();
-	extern BLZAPIENTRY char *BLZAPICALL BLZ_GetLastError();
-
-	/* Wrapper functions */
-	extern BLZAPIENTRY void BLZAPICALL BLZ_SetClearColor(struct BLZ_Vector4 color);
-	extern BLZAPIENTRY void BLZAPICALL BLZ_Clear(enum BLZ_ClearOptions options);
+	extern BLZAPIENTRY int BLZAPICALL BLZ_FreeBatch(struct BLZ_SpriteBatch *batch);
 
 	/* Dynamic drawing */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_Draw(
-		struct BLZ_Texture* texture,
+		struct BLZ_SpriteBatch* batch,
+		struct BLZ_Texture *texture,
 		struct BLZ_Vector2 position,
 		struct BLZ_Rectangle *srcRectangle,
 		float rotation,
@@ -132,19 +147,21 @@ extern "C"
 		enum BLZ_SpriteEffects effects);
 
 	extern BLZAPIENTRY int BLZAPICALL BLZ_LowerDraw(
+		struct BLZ_SpriteBatch* batch,
 		GLuint texture,
 		struct BLZ_SpriteQuad *quad);
 
-	extern BLZAPIENTRY int BLZAPICALL BLZ_Flush();
-	extern BLZAPIENTRY int BLZAPICALL BLZ_Present();
+	extern BLZAPIENTRY int BLZAPICALL BLZ_Flush(struct BLZ_SpriteBatch* batch);
+	extern BLZAPIENTRY int BLZAPICALL BLZ_Present(struct BLZ_SpriteBatch* batch);
 
 	/* TODO: Static drawing */
-	/* TODO: Blend modes */
+	/* TODO: Texture binding and filtering settings */
+	/* TODO: Rendertargets */
 
 	/* Shaders */
 	extern BLZAPIENTRY BLZ_Shader *BLZAPICALL BLZ_CompileShader(char *vert, char *frag);
 	extern BLZAPIENTRY int BLZAPICALL BLZ_UseShader(BLZ_Shader *program);
-	extern BLZAPIENTRY int BLZAPICALL BLZ_DeleteShader(BLZ_Shader *program);
+	extern BLZAPIENTRY int BLZAPICALL BLZ_FreeShader(BLZ_Shader *program);
 	extern BLZAPIENTRY BLZ_Shader *BLZ_GetDefaultShader();
 
 	extern BLZAPIENTRY GLint BLZ_GetUniformLocation(
@@ -152,103 +169,103 @@ extern "C"
 		const char *name);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform1f(GLint location,
-											   GLfloat v0);
+													 GLfloat v0);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform2f(GLint location,
-											   GLfloat v0,
-											   GLfloat v1);
+													 GLfloat v0,
+													 GLfloat v1);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform3f(GLint location,
-											   GLfloat v0,
-											   GLfloat v1,
-											   GLfloat v2);
+													 GLfloat v0,
+													 GLfloat v1,
+													 GLfloat v2);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform4f(GLint location,
-											   GLfloat v0,
-											   GLfloat v1,
-											   GLfloat v2,
-											   GLfloat v3);
+													 GLfloat v0,
+													 GLfloat v1,
+													 GLfloat v2,
+													 GLfloat v3);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform1i(GLint location,
-											   GLint v0);
+													 GLint v0);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform2i(GLint location,
-											   GLint v0,
-											   GLint v1);
+													 GLint v0,
+													 GLint v1);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform3i(GLint location,
-											   GLint v0,
-											   GLint v1,
-											   GLint v2);
+													 GLint v0,
+													 GLint v1,
+													 GLint v2);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform4i(GLint location,
-											   GLint v0,
-											   GLint v1,
-											   GLint v2,
-											   GLint v3);
+													 GLint v0,
+													 GLint v1,
+													 GLint v2,
+													 GLint v3);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform1ui(GLint location,
-												GLuint v0);
+													  GLuint v0);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform2ui(GLint location,
-												GLuint v0,
-												GLuint v1);
+													  GLuint v0,
+													  GLuint v1);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform3ui(GLint location,
-												GLuint v0,
-												GLuint v1,
-												GLuint v2);
+													  GLuint v0,
+													  GLuint v1,
+													  GLuint v2);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform4ui(GLint location,
-												GLuint v0,
-												GLuint v1,
-												GLuint v2,
-												GLuint v3);
+													  GLuint v0,
+													  GLuint v1,
+													  GLuint v2,
+													  GLuint v3);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_UniformMatrix2fv(GLint location,
-													  GLsizei count,
-													  GLboolean transpose,
-													  const GLfloat *value);
+															GLsizei count,
+															GLboolean transpose,
+															const GLfloat *value);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_UniformMatrix3fv(GLint location,
-													  GLsizei count,
-													  GLboolean transpose,
-													  const GLfloat *value);
+															GLsizei count,
+															GLboolean transpose,
+															const GLfloat *value);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_UniformMatrix4fv(GLint location,
-													  GLsizei count,
-													  GLboolean transpose,
-													  const GLfloat *value);
+															GLsizei count,
+															GLboolean transpose,
+															const GLfloat *value);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_UniformMatrix2x3fv(GLint location,
-														GLsizei count,
-														GLboolean transpose,
-														const GLfloat *value);
+															  GLsizei count,
+															  GLboolean transpose,
+															  const GLfloat *value);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_UniformMatrix3x2fv(GLint location,
-														GLsizei count,
-														GLboolean transpose,
-														const GLfloat *value);
+															  GLsizei count,
+															  GLboolean transpose,
+															  const GLfloat *value);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_UniformMatrix2x4fv(GLint location,
-														GLsizei count,
-														GLboolean transpose,
-														const GLfloat *value);
+															  GLsizei count,
+															  GLboolean transpose,
+															  const GLfloat *value);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_UniformMatrix4x2fv(GLint location,
-														GLsizei count,
-														GLboolean transpose,
-														const GLfloat *value);
+															  GLsizei count,
+															  GLboolean transpose,
+															  const GLfloat *value);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_UniformMatrix3x4fv(GLint location,
-														GLsizei count,
-														GLboolean transpose,
-														const GLfloat *value);
+															  GLsizei count,
+															  GLboolean transpose,
+															  const GLfloat *value);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_UniformMatrix4x3fv(GLint location,
-														GLsizei count,
-														GLboolean transpose,
-														const GLfloat *value);
+															  GLsizei count,
+															  GLboolean transpose,
+															  const GLfloat *value);
 
 	/* Image loading */
 	enum BLZ_ImageChannels

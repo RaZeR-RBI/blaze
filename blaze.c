@@ -8,8 +8,8 @@
 #include <string.h>
 
 #define calloc_one(s) calloc(1, s)
-#define BUFFER_COUNT 3
-#define HAS_FLAG(flag) ((FLAGS & flag) == flag)
+#define BUFFER_COUNT 2
+#define HAS_FLAG(batch, flag) ((batch->FLAGS & flag) == flag)
 
 #define return_success(result) \
 	do                         \
@@ -34,6 +34,15 @@
 	} while (0);
 #define fail_if_null(val, msg) fail_cmp(val, NULL, msg)
 #define fail_if_false(val, msg) fail_cmp(val, BLZ_FALSE, msg)
+#define null_if_false(val, msg) \
+	do                          \
+	{                           \
+		if (val == NULL)        \
+		{                       \
+			__lastError = msg;  \
+			return NULL;        \
+		}                       \
+	} while (0);
 #define check_alloc(p) fail_if_null(p, "Could not allocate memory")
 #define validate(expr)                                         \
 	do                                                         \
@@ -43,7 +52,22 @@
 			fail("Invalid parameter value, should be " #expr); \
 		}                                                      \
 	} while (0);
+#define null_if_invalid(expr)                                          \
+	do                                                                 \
+	{                                                                  \
+		if (!(expr))                                                   \
+		{                                                              \
+			__lastError = "Invalid parameter value, should be " #expr; \
+			return NULL;                                               \
+		}                                                              \
+	} while (0);
 
+/* Public constants */
+const struct BLZ_BlendFunc BLEND_NORMAL = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA};
+const struct BLZ_BlendFunc BLEND_ADDITIVE = {GL_ONE, GL_ONE};
+const struct BLZ_BlendFunc BLEND_MULTIPLY = {GL_DST_COLOR, GL_ZERO};
+
+/* Internal values */
 struct Buffer
 {
 	GLuint vao, vbo, ebo;
@@ -53,6 +77,15 @@ struct BLZ_StaticBatch
 {
 	struct BLZ_Texture texture;
 	struct Buffer buffer;
+};
+
+struct BLZ_SpriteBatch
+{
+	int MAX_BATCHES;
+	int MAX_SPRITES_PER_BATCH;
+	enum BLZ_InitFlags FLAGS;
+	unsigned char BUFFER_INDEX;
+	struct StreamBatch *stream_batches;
 };
 
 struct BLZ_Shader
@@ -68,12 +101,6 @@ struct StreamBatch
 	struct BLZ_Vertex *vertices;
 	struct Buffer buffer[BUFFER_COUNT];
 };
-
-static int MAX_TEXTURES;
-static int MAX_SPRITES_PER_TEXTURE;
-static enum BLZ_InitFlags FLAGS = 0;
-static unsigned char BUFFER_INDEX = 0;
-static struct StreamBatch *stream_batches = NULL;
 
 static char *__lastError = NULL;
 
@@ -110,7 +137,6 @@ static GLchar fragmentSource[] =
 	"void main() {"
 	"  outColor = texture(tex, ex_Texcoord) * ex_Color;"
 	"}";
-static const GLchar *varyings[] = {"gl_Position"};
 
 static BLZ_Shader *SHADER_DEFAULT;
 static BLZ_Shader *SHADER_CURRENT;
@@ -119,9 +145,9 @@ static unsigned char FRAMESKIP = 0;
 static const int VERT_SIZE = sizeof(struct BLZ_Vertex);
 
 /* TODO: Optimization: Reuse same VAO for all batches to minimize state changes */
-static struct Buffer create_buffer()
+static struct Buffer create_buffer(struct BLZ_SpriteBatch batch)
 {
-	int INDICES_SIZE = MAX_SPRITES_PER_TEXTURE * 6 * sizeof(GLushort);
+	int INDICES_SIZE = batch.MAX_SPRITES_PER_BATCH * 6 * sizeof(GLushort);
 	int i;
 	struct Buffer result;
 	GLushort *indices = malloc(INDICES_SIZE);
@@ -130,7 +156,8 @@ static struct Buffer create_buffer()
 	glBindVertexArray(vao);
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, VERT_SIZE * 4 * MAX_SPRITES_PER_TEXTURE, NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, VERT_SIZE * 4 * batch.MAX_SPRITES_PER_BATCH,
+				 NULL, GL_STREAM_DRAW);
 	/* x|y */
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)0);
@@ -143,7 +170,7 @@ static struct Buffer create_buffer()
 	/* indices */
 	glGenBuffers(1, &ebo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	for (i = 0; i < MAX_SPRITES_PER_TEXTURE; i++)
+	for (i = 0; i < batch.MAX_SPRITES_PER_BATCH; i++)
 	{
 		*(indices + (i * 6)) = (GLushort)(i * 4);
 		*(indices + (i * 6) + 1) = (GLushort)(i * 4 + 1);
@@ -167,16 +194,25 @@ static void free_buffer(struct Buffer buffer)
 }
 
 /* Public API */
-int BLZ_GetOptions(int *max_textures, int *max_sprites_per_tex,
+int BLZ_Load(glGetProcAddress loader)
+{
+	int result = gladLoadGLLoader((GLADloadproc)loader);
+	validate(loader != NULL);
+	fail_if_false(result, "Could not load the OpenGL library");
+	success();
+}
+
+int BLZ_GetOptions(struct BLZ_SpriteBatch *batch,
+				   int *max_batches, int *max_sprites_per_batch,
 				   enum BLZ_InitFlags *flags)
 {
-	if (MAX_TEXTURES <= 0 || MAX_SPRITES_PER_TEXTURE <= 0)
+	if (batch->MAX_BATCHES <= 0 || batch->MAX_SPRITES_PER_BATCH <= 0)
 	{
 		fail("Not initialized");
 	}
-	*max_textures = MAX_TEXTURES;
-	*max_sprites_per_tex = MAX_SPRITES_PER_TEXTURE;
-	*flags = FLAGS;
+	*max_batches = batch->MAX_BATCHES;
+	*max_sprites_per_batch = batch->MAX_SPRITES_PER_BATCH;
+	*flags = batch->FLAGS;
 	success();
 }
 
@@ -197,6 +233,11 @@ int BLZ_SetViewport(int w, int h)
 void BLZ_SetClearColor(struct BLZ_Vector4 color)
 {
 	glClearColor(color.x, color.y, color.z, color.w);
+}
+
+void BLZ_SetBlendMode(const struct BLZ_BlendFunc func)
+{
+	glBlendFunc(func.source, func.destination);
 }
 
 void BLZ_Clear(enum BLZ_ClearOptions options)
@@ -259,10 +300,6 @@ BLZ_Shader *BLZ_CompileShader(char *vert, char *frag)
 	glBindAttribLocation(program, 0, "in_Position");
 	glBindAttribLocation(program, 1, "in_Texcoord");
 	glBindAttribLocation(program, 2, "in_Color");
-	if (HAS_FLAG(ENABLE_FEEDBACK))
-	{
-		glTransformFeedbackVaryings(program, 1, varyings, GL_INTERLEAVED_ATTRIBS);
-	}
 	glLinkProgram(program);
 	glGetProgramiv(program, GL_LINK_STATUS, &is_linked);
 	if (!is_linked)
@@ -299,7 +336,7 @@ int BLZ_UseShader(BLZ_Shader *program)
 	fail("Could not use shader program");
 }
 
-int BLZ_DeleteShader(BLZ_Shader *program)
+int BLZ_FreeShader(BLZ_Shader *program)
 {
 	validate(program != NULL);
 	glDeleteShader(program->program);
@@ -312,104 +349,90 @@ BLZ_Shader *BLZ_GetDefaultShader()
 	return SHADER_DEFAULT;
 }
 
-int BLZ_Load(glGetProcAddress loader)
-{
-	int result = gladLoadGLLoader((GLADloadproc)loader);
-	validate(loader != NULL);
-	fail_if_false(result, "Could not load the OpenGL library");
-	success();
-}
-
-int BLZ_Shutdown()
+int BLZ_FreeBatch(struct BLZ_SpriteBatch *batch)
 {
 	int i;
 	struct StreamBatch cur;
-	if (stream_batches != NULL)
+	if (batch->stream_batches != NULL)
 	{
-		for (i = 0; i < MAX_TEXTURES; i++)
+		for (i = 0; i < batch->MAX_BATCHES; i++)
 		{
-			cur = *(stream_batches + i);
+			cur = *(batch->stream_batches + i);
 			free_buffer(cur.buffer[0]);
-			if (!HAS_FLAG(NO_TRIPLEBUFFER))
+			if (!HAS_FLAG(batch, NO_BUFFERING))
 			{
 				free_buffer(cur.buffer[1]);
 				free_buffer(cur.buffer[2]);
 			}
 		}
-		free(stream_batches);
+		free(batch->stream_batches);
 	}
-	if (SHADER_DEFAULT != NULL)
-	{
-		free(SHADER_DEFAULT);
-	}
-	MAX_TEXTURES = MAX_SPRITES_PER_TEXTURE = 0;
+	batch->MAX_BATCHES = batch->MAX_SPRITES_PER_BATCH = 0;
 	success();
 }
 
-int BLZ_Init(int max_textures, int max_sprites_per_tex, enum BLZ_InitFlags flags)
+struct BLZ_SpriteBatch *BLZ_CreateBatch(
+	int max_batches, int max_sprites_per_batch, enum BLZ_InitFlags flags)
 {
 	int i;
 	struct BLZ_Vertex *vertices;
 	struct StreamBatch *cur;
-	validate(max_textures > 0);
-	validate(max_sprites_per_tex > 0);
-	if (stream_batches != NULL)
-	{
-		BLZ_Shutdown();
-	}
-	MAX_SPRITES_PER_TEXTURE = max_sprites_per_tex;
-	MAX_TEXTURES = max_textures;
-	FLAGS = flags;
-	BUFFER_INDEX = 0;
-	if (!HAS_FLAG(NO_TRIPLEBUFFER))
+	struct BLZ_SpriteBatch *batch = malloc(sizeof(BLZ_SpriteBatch));
+	null_if_invalid(max_batches > 0);
+	null_if_invalid(max_sprites_per_batch > 0);
+	batch->MAX_SPRITES_PER_BATCH = max_sprites_per_batch;
+	batch->MAX_BATCHES = max_batches;
+	batch->FLAGS = flags;
+	batch->BUFFER_INDEX = 0;
+	if (!HAS_FLAG(batch, NO_BUFFERING))
 	{
 		FRAMESKIP = 1;
 	}
-	stream_batches = calloc(MAX_TEXTURES, sizeof(struct StreamBatch));
-	check_alloc(stream_batches);
-	for (i = 0; i < MAX_TEXTURES; i++)
+	batch->stream_batches = calloc(batch->MAX_BATCHES, sizeof(struct StreamBatch));
+	check_alloc(batch->stream_batches);
+	for (i = 0; i < batch->MAX_BATCHES; i++)
 	{
-		cur = (stream_batches + i);
-		vertices = calloc(MAX_SPRITES_PER_TEXTURE * 4, sizeof(struct BLZ_Vertex));
+		cur = (batch->stream_batches + i);
+		vertices = calloc(batch->MAX_SPRITES_PER_BATCH * 4, sizeof(struct BLZ_Vertex));
 		check_alloc(vertices);
 		cur->vertices = vertices;
-		cur->buffer[0] = create_buffer();
-		cur->buffer[1] = create_buffer();
-		cur->buffer[2] = create_buffer();
+		cur->buffer[0] = create_buffer(*batch);
+		cur->buffer[1] = create_buffer(*batch);
+		cur->buffer[2] = create_buffer(*batch);
 	}
 	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
 	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
 	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
-	success();
+	BLZ_SetBlendMode(BLEND_NORMAL);
+	return batch;
 }
 
 struct StreamBatch *__lastBatch;
 GLuint __lastTexture;
-int BLZ_Flush()
+int BLZ_Flush(struct BLZ_SpriteBatch *queue)
 {
 	unsigned char to_draw, to_fill;
 	struct StreamBatch batch;
 	struct StreamBatch *batch_ptr;
 	int i, buf_size;
-	if (HAS_FLAG(NO_TRIPLEBUFFER) || FRAMESKIP)
+	if (HAS_FLAG(queue, NO_BUFFERING) || FRAMESKIP)
 	{
 		to_draw = to_fill = 0;
 	}
 	else
 	{
-		to_draw = BUFFER_INDEX,
-		to_fill = BUFFER_INDEX + 1;
+		to_draw = queue->BUFFER_INDEX,
+		to_fill = queue->BUFFER_INDEX + 1;
 		if (to_fill >= BUFFER_COUNT)
 		{
 			to_fill -= BUFFER_COUNT;
 		}
 	}
-	for (i = 0; i < MAX_TEXTURES; i++)
+	for (i = 0; i < queue->MAX_BATCHES; i++)
 	{
-		batch_ptr = (stream_batches + i);
+		batch_ptr = (queue->stream_batches + i);
 		batch = *batch_ptr;
 		buf_size = batch.quad_count * 4 * sizeof(struct BLZ_Vertex);
 		if (buf_size == 0 || batch.texture == 0)
@@ -433,15 +456,15 @@ int BLZ_Flush()
 	success();
 }
 
-int BLZ_Present()
+int BLZ_Present(struct BLZ_SpriteBatch *batch)
 {
-	fail_if_false(BLZ_Flush(), "Could not flush the sprite queue");
-	if (!HAS_FLAG(NO_TRIPLEBUFFER) && FRAMESKIP == 0)
+	fail_if_false(BLZ_Flush(batch), "Could not flush the sprite queue");
+	if (!HAS_FLAG(batch, NO_BUFFERING) && FRAMESKIP == 0)
 	{
-		BUFFER_INDEX++;
-		if (BUFFER_INDEX >= BUFFER_COUNT)
+		batch->BUFFER_INDEX++;
+		if (batch->BUFFER_INDEX >= BUFFER_COUNT)
 		{
-			BUFFER_INDEX -= BUFFER_COUNT;
+			batch->BUFFER_INDEX -= BUFFER_COUNT;
 		}
 	}
 	if (FRAMESKIP > 0)
@@ -474,7 +497,9 @@ int BLZ_Present()
 		two = tmp;          \
 	} while (0);
 
+/* TODO: Optimization: implement fast path for simple positioned drawing */
 int BLZ_Draw(
+	struct BLZ_SpriteBatch *batch,
 	struct BLZ_Texture *texture,
 	struct BLZ_Vector2 position,
 	struct BLZ_Rectangle *srcRectangle,
@@ -573,28 +598,30 @@ int BLZ_Draw(
 	set_all_vertices(g, color.y);
 	set_all_vertices(b, color.z);
 	set_all_vertices(a, color.w);
-	return BLZ_LowerDraw(texture->id, &quad);
+	return BLZ_LowerDraw(batch, texture->id, &quad);
 }
 
-int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
+int BLZ_LowerDraw(
+	struct BLZ_SpriteBatch *queue,
+	GLuint texture, struct BLZ_SpriteQuad *quad)
 {
 	struct StreamBatch *batch = NULL;
 	int i = 0;
 	size_t offset;
 	if (__lastTexture > 0 && texture == __lastTexture)
 	{
-		if (__lastBatch != NULL && __lastBatch->quad_count < MAX_SPRITES_PER_TEXTURE)
+		if (__lastBatch != NULL && __lastBatch->quad_count < queue->MAX_SPRITES_PER_BATCH)
 		{
 			batch = __lastBatch;
 		}
 	}
 	if (batch == NULL)
 	{
-		for (i = 0; i < MAX_TEXTURES; i++)
+		for (i = 0; i < queue->MAX_BATCHES; i++)
 		{
-			batch = (stream_batches + i);
+			batch = (queue->stream_batches + i);
 			if (batch->texture == texture &&
-				batch->quad_count >= MAX_SPRITES_PER_TEXTURE)
+				batch->quad_count >= queue->MAX_SPRITES_PER_BATCH)
 			{
 				/* this batch is already filled, skip it */
 				continue;
@@ -606,11 +633,11 @@ int BLZ_LowerDraw(GLuint texture, struct BLZ_SpriteQuad *quad)
 			}
 		}
 	}
-	if (batch->quad_count >= MAX_SPRITES_PER_TEXTURE ||
+	if (batch->quad_count >= queue->MAX_SPRITES_PER_BATCH ||
 		(batch->texture != 0 && batch->texture != texture))
 	{
 		/* we ran out of limits */
-		fail("Sprite limit reached - increase limits in BLZ_Init(...)");
+		fail("Sprite limit reached - increase limits in BLZ_CreateBatch(...)");
 	}
 	offset = batch->quad_count * 4;
 	/* set the vertex data */
