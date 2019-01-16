@@ -83,8 +83,9 @@ struct BLZ_SpriteBatch
 {
 	int MAX_BATCHES;
 	int MAX_SPRITES_PER_BATCH;
-	enum BLZ_InitFlags FLAGS;
 	unsigned char BUFFER_INDEX;
+	unsigned char FRAMESKIP;
+	enum BLZ_InitFlags FLAGS;
 	struct StreamBatch *stream_batches;
 };
 
@@ -140,7 +141,6 @@ static GLchar fragmentSource[] =
 
 static BLZ_Shader *SHADER_DEFAULT;
 static BLZ_Shader *SHADER_CURRENT;
-static unsigned char FRAMESKIP = 0;
 
 static const int VERT_SIZE = sizeof(struct BLZ_Vertex);
 
@@ -386,7 +386,7 @@ struct BLZ_SpriteBatch *BLZ_CreateBatch(
 	batch->BUFFER_INDEX = 0;
 	if (!HAS_FLAG(batch, NO_BUFFERING))
 	{
-		FRAMESKIP = 1;
+		batch->FRAMESKIP = 1;
 	}
 	batch->stream_batches = calloc(batch->MAX_BATCHES, sizeof(struct StreamBatch));
 	check_alloc(batch->stream_batches);
@@ -417,7 +417,7 @@ int BLZ_Flush(struct BLZ_SpriteBatch *queue)
 	struct StreamBatch batch;
 	struct StreamBatch *batch_ptr;
 	int i, buf_size;
-	if (HAS_FLAG(queue, NO_BUFFERING) || FRAMESKIP)
+	if (HAS_FLAG(queue, NO_BUFFERING) || queue->FRAMESKIP)
 	{
 		to_draw = to_fill = 0;
 	}
@@ -459,7 +459,7 @@ int BLZ_Flush(struct BLZ_SpriteBatch *queue)
 int BLZ_Present(struct BLZ_SpriteBatch *batch)
 {
 	fail_if_false(BLZ_Flush(batch), "Could not flush the sprite queue");
-	if (!HAS_FLAG(batch, NO_BUFFERING) && FRAMESKIP == 0)
+	if (!HAS_FLAG(batch, NO_BUFFERING) && batch->FRAMESKIP == 0)
 	{
 		batch->BUFFER_INDEX++;
 		if (batch->BUFFER_INDEX >= BUFFER_COUNT)
@@ -467,9 +467,9 @@ int BLZ_Present(struct BLZ_SpriteBatch *batch)
 			batch->BUFFER_INDEX -= BUFFER_COUNT;
 		}
 	}
-	if (FRAMESKIP > 0)
+	if (batch->FRAMESKIP > 0)
 	{
-		FRAMESKIP--;
+		batch->FRAMESKIP--;
 	}
 	success();
 }
