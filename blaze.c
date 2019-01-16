@@ -410,7 +410,7 @@ struct BLZ_SpriteBatch *BLZ_CreateBatch(
 
 struct StreamBatch *__lastBatch;
 GLuint __lastTexture;
-int BLZ_Flush(struct BLZ_SpriteBatch *queue)
+static int flush(struct BLZ_SpriteBatch *queue)
 {
 	unsigned char to_draw, to_fill;
 	struct StreamBatch batch;
@@ -457,7 +457,7 @@ int BLZ_Flush(struct BLZ_SpriteBatch *queue)
 
 int BLZ_Present(struct BLZ_SpriteBatch *batch)
 {
-	fail_if_false(BLZ_Flush(batch), "Could not flush the sprite queue");
+	fail_if_false(flush(batch), "Could not flush the sprite queue");
 	if (!HAS_FLAG(batch, NO_BUFFERING) && batch->FRAMESKIP == 0)
 	{
 		batch->BUFFER_INDEX++;

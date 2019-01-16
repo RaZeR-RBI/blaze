@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2019-01-16 20:17:28</td>
+            <td class="headerValue">2019-01-16 20:26:02</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">23</td>
@@ -472,31 +472,31 @@
 <span class="lineNum">     410 </span>            : 
 <a name="411"><span class="lineNum">     411 </span>            : struct StreamBatch *__lastBatch;</a>
 <span class="lineNum">     412 </span>            : GLuint __lastTexture;
-<span class="lineNum">     413 </span><span class="lineCov">         35 : int BLZ_Flush(struct BLZ_SpriteBatch *queue)</span>
+<span class="lineNum">     413 </span><span class="lineCov">         20 : static int flush(struct BLZ_SpriteBatch *queue)</span>
 <span class="lineNum">     414 </span>            : {
 <span class="lineNum">     415 </span>            :         unsigned char to_draw, to_fill;
 <span class="lineNum">     416 </span>            :         struct StreamBatch batch;
 <span class="lineNum">     417 </span>            :         struct StreamBatch *batch_ptr;
 <span class="lineNum">     418 </span>            :         int i, buf_size;
-<span class="lineNum">     419 </span><span class="lineCov">         35 :         if (HAS_FLAG(queue, NO_BUFFERING) || queue-&gt;FRAMESKIP)</span>
+<span class="lineNum">     419 </span><span class="lineCov">         20 :         if (HAS_FLAG(queue, NO_BUFFERING) || queue-&gt;FRAMESKIP)</span>
 <span class="lineNum">     420 </span>            :         {
-<span class="lineNum">     421 </span><span class="lineCov">          7 :                 to_draw = to_fill = 0;</span>
+<span class="lineNum">     421 </span><span class="lineCov">          4 :                 to_draw = to_fill = 0;</span>
 <span class="lineNum">     422 </span>            :         }
 <span class="lineNum">     423 </span>            :         else
 <span class="lineNum">     424 </span>            :         {
-<span class="lineNum">     425 </span><span class="lineCov">         28 :                 to_draw = queue-&gt;BUFFER_INDEX,</span>
-<span class="lineNum">     426 </span><span class="lineCov">         28 :                 to_fill = queue-&gt;BUFFER_INDEX + 1;</span>
-<span class="lineNum">     427 </span><span class="lineCov">         28 :                 if (to_fill &gt;= BUFFER_COUNT)</span>
+<span class="lineNum">     425 </span><span class="lineCov">         16 :                 to_draw = queue-&gt;BUFFER_INDEX,</span>
+<span class="lineNum">     426 </span><span class="lineCov">         16 :                 to_fill = queue-&gt;BUFFER_INDEX + 1;</span>
+<span class="lineNum">     427 </span><span class="lineCov">         16 :                 if (to_fill &gt;= BUFFER_COUNT)</span>
 <span class="lineNum">     428 </span>            :                 {
-<span class="lineNum">     429 </span><span class="lineCov">         14 :                         to_fill -= BUFFER_COUNT;</span>
+<span class="lineNum">     429 </span><span class="lineCov">          8 :                         to_fill -= BUFFER_COUNT;</span>
 <span class="lineNum">     430 </span>            :                 }
 <span class="lineNum">     431 </span>            :         }
-<span class="lineNum">     432 </span><span class="lineCov">         60 :         for (i = 0; i &lt; queue-&gt;MAX_BATCHES; i++)</span>
+<span class="lineNum">     432 </span><span class="lineCov">         45 :         for (i = 0; i &lt; queue-&gt;MAX_BATCHES; i++)</span>
 <span class="lineNum">     433 </span>            :         {
-<span class="lineNum">     434 </span><span class="lineCov">         55 :                 batch_ptr = (queue-&gt;stream_batches + i);</span>
-<span class="lineNum">     435 </span><span class="lineCov">         55 :                 batch = *batch_ptr;</span>
-<span class="lineNum">     436 </span><span class="lineCov">         55 :                 buf_size = batch.quad_count * 4 * sizeof(struct BLZ_Vertex);</span>
-<span class="lineNum">     437 </span><span class="lineCov">         55 :                 if (buf_size == 0 || batch.texture == 0)</span>
+<span class="lineNum">     434 </span><span class="lineCov">         40 :                 batch_ptr = (queue-&gt;stream_batches + i);</span>
+<span class="lineNum">     435 </span><span class="lineCov">         40 :                 batch = *batch_ptr;</span>
+<span class="lineNum">     436 </span><span class="lineCov">         40 :                 buf_size = batch.quad_count * 4 * sizeof(struct BLZ_Vertex);</span>
+<span class="lineNum">     437 </span><span class="lineCov">         40 :                 if (buf_size == 0 || batch.texture == 0)</span>
 <span class="lineNum">     438 </span>            :                 {
 <span class="lineNum">     439 </span>            :                         /* we've reached the end of the queue */
 <span class="lineNum">     440 </span>            :                         break;
@@ -512,14 +512,14 @@
 <span class="lineNum">     450 </span><span class="lineCov">         25 :                 batch_ptr-&gt;quad_count = 0;</span>
 <span class="lineNum">     451 </span><span class="lineCov">         25 :                 batch_ptr-&gt;texture = 0;</span>
 <span class="lineNum">     452 </span>            :         }
-<span class="lineNum">     453 </span><span class="lineCov">         35 :         __lastBatch = NULL;</span>
-<span class="lineNum">     454 </span><span class="lineCov">         35 :         __lastTexture = 0;</span>
-<span class="lineNum">     455 </span><span class="lineCov">         35 :         success();</span>
+<span class="lineNum">     453 </span><span class="lineCov">         20 :         __lastBatch = NULL;</span>
+<span class="lineNum">     454 </span><span class="lineCov">         20 :         __lastTexture = 0;</span>
+<span class="lineNum">     455 </span><span class="lineCov">         20 :         success();</span>
 <a name="456"><span class="lineNum">     456 </span>            : }</a>
 <span class="lineNum">     457 </span>            : 
 <span class="lineNum">     458 </span><span class="lineCov">         20 : int BLZ_Present(struct BLZ_SpriteBatch *batch)</span>
 <span class="lineNum">     459 </span>            : {
-<span class="lineNum">     460 </span><span class="lineCov">         20 :         fail_if_false(BLZ_Flush(batch), &quot;Could not flush the sprite queue&quot;);</span>
+<span class="lineNum">     460 </span><span class="lineCov">         20 :         fail_if_false(flush(batch), &quot;Could not flush the sprite queue&quot;);</span>
 <span class="lineNum">     461 </span><span class="lineCov">         20 :         if (!HAS_FLAG(batch, NO_BUFFERING) &amp;&amp; batch-&gt;FRAMESKIP == 0)</span>
 <span class="lineNum">     462 </span>            :         {
 <span class="lineNum">     463 </span><span class="lineCov">         16 :                 batch-&gt;BUFFER_INDEX++;</span>

@@ -151,7 +151,6 @@ extern "C"
 		GLuint texture,
 		struct BLZ_SpriteQuad *quad);
 
-	extern BLZAPIENTRY int BLZAPICALL BLZ_Flush(struct BLZ_SpriteBatch* batch);
 	extern BLZAPIENTRY int BLZAPICALL BLZ_Present(struct BLZ_SpriteBatch* batch);
 
 	/* TODO: Static drawing */

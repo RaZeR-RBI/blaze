@@ -22,7 +22,7 @@ void draw(
 	position.x -= 25;
 	position.y += 25;
 	BLZ_Draw(batch, texture, position, NULL, 0.0f, NULL, NULL, colors[2], NONE);
-	BLZ_Flush(batch); /* remember to flush before next blend mode change */
+	BLZ_Present(batch); /* draw to screen before changing blend mode */
 }
 
 int main(int argc, char *argv[])
@@ -63,9 +63,6 @@ int main(int argc, char *argv[])
 		draw(batches[0], texture, 50, 50, BLEND_NORMAL);
 		draw(batches[1], texture, 300, 50, BLEND_ADDITIVE);
 		draw(batches[2], texture, 175, 250, BLEND_MULTIPLY);
-		BLZ_Present(batches[0]);
-		BLZ_Present(batches[1]);
-		BLZ_Present(batches[2]);
 		SDL_GL_SwapWindow(window);
 	}
 	/* create a screenshot and compare */
