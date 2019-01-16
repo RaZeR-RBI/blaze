@@ -1,0 +1,102 @@
+{
+   opengl addr4 (1)
+   Memcheck:Addr4
+   obj:*/libGL*
+}
+{
+   opengl param (2)
+   Memcheck:Param
+   ioctl(generic)
+   fun:ioctl
+   fun:_nv*gl
+   obj:*/libGL*
+}
+{
+   opengl cond (3)
+   Memcheck:Cond
+   obj:*/libGL*
+}
+{
+   opengl param (4)
+   Memcheck:Param
+   ioctl(generic)
+   fun:ioctl
+   obj:*/libGL*
+}
+{
+   opengl cond (5)
+   Memcheck:Cond
+   fun:_nv*gl
+   obj:*/libGL*
+}
+{
+   opengl cond (6)
+   Memcheck:Cond
+   fun:strcat
+   obj:*/libGL*
+}
+{
+   opengl value4 (7)
+   Memcheck:Value4
+   obj:*/libGL*
+}
+{
+   opengl memleak (8)
+   Memcheck:Leak
+   fun:calloc
+   obj:*/libGL*
+}
+{
+   opengl memleak (9)
+   Memcheck:Leak
+   fun:malloc
+   obj:*/libGL*
+}
+{
+   opengl drmGetDevice
+   Memcheck:Cond
+   ...
+   fun:drmGetDevice
+   obj:*/libGL.so.*
+   ...
+}
+{
+   ignore_dri_leak
+   Memcheck:Leak
+   ...
+   obj:*/dri/*.so
+   ...
+}
+{
+   ignore_dri_cond
+   Memcheck:Cond
+   ...
+   obj:*/dri/*.so
+   ...
+}
+{
+   ignore_dri_value4
+   Memcheck:Value4
+   ...
+   obj:*/dri/*.so
+   ...
+}
+{
+   ignore_dri_value8
+   Memcheck:Value8
+   ...
+   obj:*/dri/*.so
+   ...
+}
+{
+   ignore_unversioned_libs
+   Memcheck:Leak
+   ...
+   obj:*/lib*/lib*.so
+}
+{
+   ignore_versioned_libs
+   Memcheck:Leak
+   ...
+   obj:*/lib*/lib*.so.*
+}

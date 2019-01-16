@@ -398,7 +398,6 @@ struct BLZ_SpriteBatch *BLZ_CreateBatch(
 		cur->vertices = vertices;
 		cur->buffer[0] = create_buffer(*batch);
 		cur->buffer[1] = create_buffer(*batch);
-		cur->buffer[2] = create_buffer(*batch);
 	}
 	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
 	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");

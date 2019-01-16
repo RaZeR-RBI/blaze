@@ -13,7 +13,8 @@ ifeq ($(OS),Windows_NT)
 else
     DLLEXT := .so
 	LDFLAGS_LIB = -lGL
-    DEBUG += -fsanitize=address
+	# Uncomment to use ASan
+    # DEBUG += -fsanitize=address
 endif
 
 LIBNAME = libblaze$(DLLEXT)
@@ -49,7 +50,7 @@ test_%.o: test/test_%.c
 
 test_%.out: test_%.o $(LIBNAME_TEST) tap.o common.o
 	$(info >>> Linking $@)
-	$(CC) $< $(LDFLAGS_TEST) $(DEBUG) -L. -l:$(LIBNAME_TEST) -l:tap.o -l:common.o -o $@
+	$(CC) $< $(LDFLAGS_TEST) $(DEBUG) -L. -l:$(LIBNAME_TEST) -l:tap.o -l:common.o -Wl,-rpath=. -o $@
 
 deps/SOIL/%.o: deps/SOIL/%.c glad.o
 	$(info >>> Compiling $@)
