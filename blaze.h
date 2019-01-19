@@ -165,7 +165,6 @@ extern "C"
 
 	extern BLZAPIENTRY int BLZAPICALL BLZ_DrawStatic(
 		struct BLZ_StaticBatch *batch,
-		struct BLZ_Texture *texture,
 		struct BLZ_Vector2 position,
 		struct BLZ_Rectangle *srcRectangle,
 		float rotation,
@@ -179,7 +178,8 @@ extern "C"
 		struct BLZ_SpriteQuad *quad);
 
 	extern BLZAPIENTRY int BLZAPICALL BLZ_PresentStatic(
-		struct BLZ_SpriteBatch *batch);
+		struct BLZ_StaticBatch *batch,
+		GLfloat* transformMatrix4x4);
 
 	/* TODO: Texture binding and filtering settings */
 	/* TODO: Rendertargets */

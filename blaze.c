@@ -9,7 +9,7 @@
 
 #define calloc_one(s) calloc(1, s)
 #define BUFFER_COUNT 2
-#define HAS_FLAG(batch, flag) ((batch->FLAGS & flag) == flag)
+#define HAS_FLAG(batch, flag) ((batch->flags & flag) == flag)
 
 #define return_success(result) \
 	do                         \
@@ -75,17 +75,21 @@ struct Buffer
 
 struct BLZ_StaticBatch
 {
-	struct BLZ_Texture texture;
+	int sprite_count;
+	int max_sprite_count;
+	unsigned char is_uploaded;
+	struct BLZ_Vertex *vertices;
 	struct Buffer buffer;
+	struct BLZ_Texture* texture;
 };
 
 struct BLZ_SpriteBatch
 {
-	int MAX_BUCKETS;
-	int MAX_SPRITES_PER_BUCKET;
-	unsigned char BUFFER_INDEX;
-	unsigned char FRAMESKIP;
-	enum BLZ_InitFlags FLAGS;
+	int max_buckets;
+	int max_sprites_per_bucket;
+	unsigned char buffer_index;
+	unsigned char frameskip;
+	enum BLZ_InitFlags flags;
 	struct SpriteBucket *sprite_buckets;
 };
 
@@ -98,7 +102,7 @@ struct BLZ_Shader
 struct SpriteBucket
 {
 	GLuint texture;
-	int quad_count;
+	int sprite_count;
 	struct BLZ_Vertex *vertices;
 	struct Buffer buffer[BUFFER_COUNT];
 };
@@ -145,9 +149,9 @@ static BLZ_Shader *SHADER_CURRENT;
 static const int VERT_SIZE = sizeof(struct BLZ_Vertex);
 
 /* TODO: Optimization: Reuse same VAO for all batches to minimize state changes */
-static struct Buffer create_buffer(struct BLZ_SpriteBatch batch)
+static struct Buffer create_buffer(int max_sprites, GLenum usage)
 {
-	int INDICES_SIZE = batch.MAX_SPRITES_PER_BUCKET * 6 * sizeof(GLushort);
+	int INDICES_SIZE = max_sprites * 6 * sizeof(GLushort);
 	int i;
 	struct Buffer result;
 	GLushort *indices = malloc(INDICES_SIZE);
@@ -156,8 +160,8 @@ static struct Buffer create_buffer(struct BLZ_SpriteBatch batch)
 	glBindVertexArray(vao);
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, VERT_SIZE * 4 * batch.MAX_SPRITES_PER_BUCKET,
-				 NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, VERT_SIZE * 4 * max_sprites,
+				 NULL, usage);
 	/* x|y */
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, VERT_SIZE, (void *)0);
@@ -170,7 +174,7 @@ static struct Buffer create_buffer(struct BLZ_SpriteBatch batch)
 	/* indices */
 	glGenBuffers(1, &ebo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	for (i = 0; i < batch.MAX_SPRITES_PER_BUCKET; i++)
+	for (i = 0; i < max_sprites; i++)
 	{
 		*(indices + (i * 6)) = (GLushort)(i * 4);
 		*(indices + (i * 6) + 1) = (GLushort)(i * 4 + 1);
@@ -199,20 +203,23 @@ int BLZ_Load(glGetProcAddress loader)
 	int result = gladLoadGLLoader((GLADloadproc)loader);
 	validate(loader != NULL);
 	fail_if_false(result, "Could not load the OpenGL library");
+	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
+	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
+	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
 	success();
 }
 
 int BLZ_GetOptions(struct BLZ_SpriteBatch *batch,
-				   int *max_batches, int *max_sprites_per_batch,
+				   int *max_buckets, int *max_sprites_per_bucket,
 				   enum BLZ_InitFlags *flags)
 {
-	if (batch->MAX_BUCKETS <= 0 || batch->MAX_SPRITES_PER_BUCKET <= 0)
+	if (batch->max_buckets <= 0 || batch->max_sprites_per_bucket <= 0)
 	{
 		fail("Not initialized");
 	}
-	*max_batches = batch->MAX_BUCKETS;
-	*max_sprites_per_batch = batch->MAX_SPRITES_PER_BUCKET;
-	*flags = batch->FLAGS;
+	*max_buckets = batch->max_buckets;
+	*max_sprites_per_bucket = batch->max_sprites_per_bucket;
+	*flags = batch->flags;
 	success();
 }
 
@@ -222,11 +229,6 @@ int BLZ_SetViewport(int w, int h)
 	validate(h > 0);
 	orthoMatrix[0] = 2.0f / (GLfloat)w;
 	orthoMatrix[5] = -2.0f / (GLfloat)h;
-	if (SHADER_CURRENT->mvp_param != -1)
-	{
-		BLZ_UniformMatrix4fv(SHADER_CURRENT->mvp_param, 1, GL_FALSE,
-							 (const GLfloat *)&orthoMatrix);
-	}
 	success();
 }
 
@@ -324,11 +326,6 @@ int BLZ_UseShader(BLZ_Shader *program)
 	result = glGetError();
 	if (result == GL_NO_ERROR)
 	{
-		if (program->mvp_param != -1)
-		{
-			BLZ_UniformMatrix4fv(program->mvp_param, 1, GL_FALSE,
-								 (const GLfloat *)&orthoMatrix);
-		}
 		SHADER_CURRENT = program;
 		success();
 	}
@@ -355,7 +352,7 @@ int BLZ_FreeBatch(struct BLZ_SpriteBatch *batch)
 	struct SpriteBucket cur;
 	if (batch->sprite_buckets != NULL)
 	{
-		for (i = 0; i < batch->MAX_BUCKETS; i++)
+		for (i = 0; i < batch->max_buckets; i++)
 		{
 			cur = *(batch->sprite_buckets + i);
 			free_buffer(cur.buffer[0]);
@@ -367,108 +364,111 @@ int BLZ_FreeBatch(struct BLZ_SpriteBatch *batch)
 		}
 		free(batch->sprite_buckets);
 	}
-	batch->MAX_BUCKETS = batch->MAX_SPRITES_PER_BUCKET = 0;
+	batch->max_buckets = batch->max_sprites_per_bucket = 0;
 	success();
 }
 
 struct BLZ_SpriteBatch *BLZ_CreateBatch(
-	int max_batches, int max_sprites_per_batch, enum BLZ_InitFlags flags)
+	int max_buckets, int max_sprites_per_bucket, enum BLZ_InitFlags flags)
 {
 	int i;
 	struct BLZ_Vertex *vertices;
 	struct SpriteBucket *cur;
 	struct BLZ_SpriteBatch *batch = malloc(sizeof(BLZ_SpriteBatch));
-	null_if_invalid(max_batches > 0);
-	null_if_invalid(max_sprites_per_batch > 0);
-	batch->MAX_SPRITES_PER_BUCKET = max_sprites_per_batch;
-	batch->MAX_BUCKETS = max_batches;
-	batch->FLAGS = flags;
-	batch->BUFFER_INDEX = 0;
+	null_if_invalid(max_buckets > 0);
+	null_if_invalid(max_sprites_per_bucket > 0);
+	batch->max_sprites_per_bucket = max_sprites_per_bucket;
+	batch->max_buckets = max_buckets;
+	batch->flags = flags;
+	batch->buffer_index = 0;
 	if (!HAS_FLAG(batch, NO_BUFFERING))
 	{
-		batch->FRAMESKIP = 1;
+		batch->frameskip = 1;
 	}
-	batch->sprite_buckets = calloc(batch->MAX_BUCKETS, sizeof(struct SpriteBucket));
+	batch->sprite_buckets = calloc(batch->max_buckets, sizeof(struct SpriteBucket));
 	check_alloc(batch->sprite_buckets);
-	for (i = 0; i < batch->MAX_BUCKETS; i++)
+	for (i = 0; i < batch->max_buckets; i++)
 	{
 		cur = (batch->sprite_buckets + i);
-		vertices = calloc(batch->MAX_SPRITES_PER_BUCKET * 4, sizeof(struct BLZ_Vertex));
+		vertices = malloc(batch->max_sprites_per_bucket * 4 * sizeof(struct BLZ_Vertex));
 		check_alloc(vertices);
 		cur->vertices = vertices;
-		cur->buffer[0] = create_buffer(*batch);
-		cur->buffer[1] = create_buffer(*batch);
+		cur->buffer[0] = create_buffer(max_sprites_per_bucket, GL_STREAM_DRAW);
+		cur->buffer[1] = create_buffer(max_sprites_per_bucket, GL_STREAM_DRAW);
 	}
-	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
-	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
-	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	BLZ_SetBlendMode(BLEND_NORMAL);
 	return batch;
 }
 
-struct SpriteBucket *__lastBatch;
+struct BLZ_SpriteBatch *__lastBatch;
+struct SpriteBucket *__lastBucket;
 GLuint __lastTexture;
-static int flush(struct BLZ_SpriteBatch *queue)
+static int flush(struct BLZ_SpriteBatch *batch)
 {
 	unsigned char to_draw, to_fill;
-	struct SpriteBucket batch;
-	struct SpriteBucket *batch_ptr;
+	struct SpriteBucket bucket;
+	struct SpriteBucket *bucket_ptr;
 	int i, buf_size;
-	if (HAS_FLAG(queue, NO_BUFFERING) || queue->FRAMESKIP)
+	if (SHADER_CURRENT->mvp_param > -1)
+	{
+		BLZ_UniformMatrix4fv(SHADER_CURRENT->mvp_param, 1, GL_FALSE,
+							 (const GLfloat *)&orthoMatrix);
+	}
+	if (HAS_FLAG(batch, NO_BUFFERING) || batch->frameskip)
 	{
 		to_draw = to_fill = 0;
 	}
 	else
 	{
-		to_draw = queue->BUFFER_INDEX,
-		to_fill = queue->BUFFER_INDEX + 1;
+		to_draw = batch->buffer_index,
+		to_fill = batch->buffer_index + 1;
 		if (to_fill >= BUFFER_COUNT)
 		{
 			to_fill -= BUFFER_COUNT;
 		}
 	}
-	for (i = 0; i < queue->MAX_BUCKETS; i++)
+	for (i = 0; i < batch->max_buckets; i++)
 	{
-		batch_ptr = (queue->sprite_buckets + i);
-		batch = *batch_ptr;
-		buf_size = batch.quad_count * 4 * sizeof(struct BLZ_Vertex);
-		if (buf_size == 0 || batch.texture == 0)
+		bucket_ptr = (batch->sprite_buckets + i);
+		bucket = *bucket_ptr;
+		buf_size = bucket.sprite_count * 4 * sizeof(struct BLZ_Vertex);
+		if (buf_size == 0 || bucket.texture == 0)
 		{
-			/* we've reached the end of the queue */
+			/* we've reached the end of the batch */
 			break;
 		}
 		/* fill the buffer */
-		glBindBuffer(GL_ARRAY_BUFFER, batch.buffer[to_fill].vbo);
-		glBufferData(GL_ARRAY_BUFFER, buf_size, batch.vertices, GL_STREAM_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, bucket.buffer[to_fill].vbo);
+		glBufferData(GL_ARRAY_BUFFER, buf_size, bucket.vertices, GL_STREAM_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		/* bind our texture and the VAO and draw it */
-		glBindTexture(GL_TEXTURE_2D, batch.texture);
-		glBindVertexArray(batch.buffer[to_draw].vao);
-		glDrawElements(GL_TRIANGLES, batch.quad_count * 6, GL_UNSIGNED_SHORT, (void *)0);
-		batch_ptr->quad_count = 0;
-		batch_ptr->texture = 0;
+		glBindTexture(GL_TEXTURE_2D, bucket.texture);
+		glBindVertexArray(bucket.buffer[to_draw].vao);
+		glDrawElements(GL_TRIANGLES, bucket.sprite_count * 6, GL_UNSIGNED_SHORT, (void *)0);
+		bucket_ptr->sprite_count = 0;
+		bucket_ptr->texture = 0;
 	}
 	__lastBatch = NULL;
+	__lastBucket = NULL;
 	__lastTexture = 0;
 	success();
 }
 
 int BLZ_Present(struct BLZ_SpriteBatch *batch)
 {
-	fail_if_false(flush(batch), "Could not flush the sprite queue");
-	if (!HAS_FLAG(batch, NO_BUFFERING) && batch->FRAMESKIP == 0)
+	fail_if_false(flush(batch), "Could not flush the sprite batch");
+	if (!HAS_FLAG(batch, NO_BUFFERING) && batch->frameskip == 0)
 	{
-		batch->BUFFER_INDEX++;
-		if (batch->BUFFER_INDEX >= BUFFER_COUNT)
+		batch->buffer_index++;
+		if (batch->buffer_index >= BUFFER_COUNT)
 		{
-			batch->BUFFER_INDEX -= BUFFER_COUNT;
+			batch->buffer_index -= BUFFER_COUNT;
 		}
 	}
-	if (batch->FRAMESKIP > 0)
+	if (batch->frameskip > 0)
 	{
-		batch->FRAMESKIP--;
+		batch->frameskip--;
 	}
 	success();
 }
@@ -623,77 +623,108 @@ int BLZ_Draw(
 }
 
 int BLZ_LowerDraw(
-	struct BLZ_SpriteBatch *queue,
+	struct BLZ_SpriteBatch *batch,
 	GLuint texture, struct BLZ_SpriteQuad *quad)
 {
-	struct SpriteBucket *batch = NULL;
+	struct SpriteBucket *bucket = NULL;
 	int i = 0;
 	size_t offset;
+	if (__lastBatch != batch)
+	{
+		__lastBatch = NULL;
+		__lastBucket = NULL;
+		__lastTexture = 0;
+	}
 	if (__lastTexture > 0 && texture == __lastTexture)
 	{
-		if (__lastBatch != NULL && __lastBatch->quad_count < queue->MAX_SPRITES_PER_BUCKET)
+		if (__lastBucket != NULL && __lastBucket->sprite_count < batch->max_sprites_per_bucket)
 		{
-			batch = __lastBatch;
+			bucket = __lastBucket;
 		}
 	}
-	if (batch == NULL)
+	if (bucket == NULL)
 	{
-		for (i = 0; i < queue->MAX_BUCKETS; i++)
+		for (i = 0; i < batch->max_buckets; i++)
 		{
-			batch = (queue->sprite_buckets + i);
-			if (batch->texture == texture &&
-				batch->quad_count >= queue->MAX_SPRITES_PER_BUCKET)
+			bucket = (batch->sprite_buckets + i);
+			if (bucket->texture == texture &&
+				bucket->sprite_count >= batch->max_sprites_per_bucket)
 			{
-				/* this batch is already filled, skip it */
+				/* this bucket is already filled, skip it */
 				continue;
 			}
-			if (batch->texture == texture || batch->texture == 0)
+			if (bucket->texture == texture || bucket->texture == 0)
 			{
-				/* we found existing not-full batch or an empty one */
+				/* we found existing not-full bucket or an empty one */
 				break;
 			}
 		}
 	}
-	if (batch->quad_count >= queue->MAX_SPRITES_PER_BUCKET ||
-		(batch->texture != 0 && batch->texture != texture))
+	if (bucket->sprite_count >= batch->max_sprites_per_bucket ||
+		(bucket->texture != 0 && bucket->texture != texture))
 	{
 		/* we ran out of limits */
 		fail("Sprite limit reached - increase limits in BLZ_CreateBatch(...)");
 	}
-	offset = batch->quad_count * 4;
+	offset = bucket->sprite_count * 4;
 	/* set the vertex data */
-	memcpy((batch->vertices + offset), quad, sizeof(struct BLZ_SpriteQuad));
-	batch->quad_count++;
-	batch->texture = texture;
+	memcpy((bucket->vertices + offset), quad, sizeof(struct BLZ_SpriteQuad));
+	bucket->sprite_count++;
+	bucket->texture = texture;
 	__lastBatch = batch;
+	__lastBucket = bucket;
 	__lastTexture = texture;
 	success();
 }
 
 /* Static drawing */
+static void upload_static_vertices(struct BLZ_StaticBatch *batch)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, batch->buffer.vbo);
+	glBufferData(GL_ARRAY_BUFFER,
+				 batch->sprite_count * 4 * sizeof(struct BLZ_Vertex),
+				 batch->vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	batch->is_uploaded = BLZ_TRUE;
+}
 
 struct BLZ_StaticBatch *BLZ_CreateStatic(
 	struct BLZ_Texture *texture, int max_sprite_count)
 {
-	null_if_false(NULL, "Not implemented");
+	struct BLZ_StaticBatch *result = malloc(sizeof(struct BLZ_StaticBatch));
+	result->texture = texture;
+	result->buffer = create_buffer(max_sprite_count, GL_STATIC_DRAW);
+	result->is_uploaded = BLZ_FALSE;
+	result->sprite_count = 0;
+	result->max_sprite_count = max_sprite_count;
+	result->vertices = malloc(max_sprite_count * 4 * sizeof(struct BLZ_Vertex));
+	return result;
 }
 
 int BLZ_GetOptionsStatic(
 	struct BLZ_StaticBatch *batch,
 	int *max_sprite_count)
 {
-	fail("Not implemented");
+	validate(batch != NULL);
+	*max_sprite_count = batch->max_sprite_count;
+	success();
 }
 
 int BLZ_FreeBatchStatic(
 	struct BLZ_StaticBatch *batch)
 {
-	fail("Not implemented");
+	if (batch == NULL)
+	{
+		success();
+	}
+	free(batch->vertices);
+	free_buffer(batch->buffer);
+	free(batch);
+	success();
 }
 
 int BLZ_DrawStatic(
 	struct BLZ_StaticBatch *batch,
-	struct BLZ_Texture *texture,
 	struct BLZ_Vector2 position,
 	struct BLZ_Rectangle *srcRectangle,
 	float rotation,
@@ -702,20 +733,83 @@ int BLZ_DrawStatic(
 	struct BLZ_Vector4 color,
 	enum BLZ_SpriteEffects effects)
 {
-	fail("Not implemented");
+	struct BLZ_SpriteQuad quad = transform_full(
+		batch->texture,
+		position,
+		srcRectangle,
+		rotation,
+		origin,
+		scale,
+		color,
+		effects);
+	return BLZ_LowerDrawStatic(batch, &quad);
 }
 
 int BLZ_LowerDrawStatic(
 	struct BLZ_StaticBatch *batch,
 	struct BLZ_SpriteQuad *quad)
 {
-	fail("Not implemented");
+	if (batch->is_uploaded)
+	{
+		fail("Can't push more sprites to already uploaded static batch");
+	}
+	if (batch->sprite_count >= batch->max_sprite_count)
+	{
+		fail("Sprite limit reached - increase limits in BLZ_CreateStatic(...)");
+	}
+	/* set the vertex data */
+	memcpy((batch->vertices + batch->sprite_count * 4), quad, sizeof(struct BLZ_SpriteQuad));
+	batch->sprite_count++;
+	success();
+}
+
+static GLfloat identityMatrix[16] = {
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1};
+
+#define O(y, x) (y + (x << 2))
+static inline void mult_4x4_matrix(GLfloat *src1, GLfloat *src2, GLfloat *dest)
+{
+	*(dest + O(0, 0)) = (*(src1 + O(0, 0)) * *(src2 + O(0, 0))) + (*(src1 + O(0, 1)) * *(src2 + O(1, 0))) + (*(src1 + O(0, 2)) * *(src2 + O(2, 0))) + (*(src1 + O(0, 3)) * *(src2 + O(3, 0)));
+	*(dest + O(0, 1)) = (*(src1 + O(0, 0)) * *(src2 + O(0, 1))) + (*(src1 + O(0, 1)) * *(src2 + O(1, 1))) + (*(src1 + O(0, 2)) * *(src2 + O(2, 1))) + (*(src1 + O(0, 3)) * *(src2 + O(3, 1)));
+	*(dest + O(0, 2)) = (*(src1 + O(0, 0)) * *(src2 + O(0, 2))) + (*(src1 + O(0, 1)) * *(src2 + O(1, 2))) + (*(src1 + O(0, 2)) * *(src2 + O(2, 2))) + (*(src1 + O(0, 3)) * *(src2 + O(3, 2)));
+	*(dest + O(0, 3)) = (*(src1 + O(0, 0)) * *(src2 + O(0, 3))) + (*(src1 + O(0, 1)) * *(src2 + O(1, 3))) + (*(src1 + O(0, 2)) * *(src2 + O(2, 3))) + (*(src1 + O(0, 3)) * *(src2 + O(3, 3)));
+	*(dest + O(1, 0)) = (*(src1 + O(1, 0)) * *(src2 + O(0, 0))) + (*(src1 + O(1, 1)) * *(src2 + O(1, 0))) + (*(src1 + O(1, 2)) * *(src2 + O(2, 0))) + (*(src1 + O(1, 3)) * *(src2 + O(3, 0)));
+	*(dest + O(1, 1)) = (*(src1 + O(1, 0)) * *(src2 + O(0, 1))) + (*(src1 + O(1, 1)) * *(src2 + O(1, 1))) + (*(src1 + O(1, 2)) * *(src2 + O(2, 1))) + (*(src1 + O(1, 3)) * *(src2 + O(3, 1)));
+	*(dest + O(1, 2)) = (*(src1 + O(1, 0)) * *(src2 + O(0, 2))) + (*(src1 + O(1, 1)) * *(src2 + O(1, 2))) + (*(src1 + O(1, 2)) * *(src2 + O(2, 2))) + (*(src1 + O(1, 3)) * *(src2 + O(3, 2)));
+	*(dest + O(1, 3)) = (*(src1 + O(1, 0)) * *(src2 + O(0, 3))) + (*(src1 + O(1, 1)) * *(src2 + O(1, 3))) + (*(src1 + O(1, 2)) * *(src2 + O(2, 3))) + (*(src1 + O(1, 3)) * *(src2 + O(3, 3)));
+	*(dest + O(2, 0)) = (*(src1 + O(2, 0)) * *(src2 + O(0, 0))) + (*(src1 + O(2, 1)) * *(src2 + O(1, 0))) + (*(src1 + O(2, 2)) * *(src2 + O(2, 0))) + (*(src1 + O(2, 3)) * *(src2 + O(3, 0)));
+	*(dest + O(2, 1)) = (*(src1 + O(2, 0)) * *(src2 + O(0, 1))) + (*(src1 + O(2, 1)) * *(src2 + O(1, 1))) + (*(src1 + O(2, 2)) * *(src2 + O(2, 1))) + (*(src1 + O(2, 3)) * *(src2 + O(3, 1)));
+	*(dest + O(2, 2)) = (*(src1 + O(2, 0)) * *(src2 + O(0, 2))) + (*(src1 + O(2, 1)) * *(src2 + O(1, 2))) + (*(src1 + O(2, 2)) * *(src2 + O(2, 2))) + (*(src1 + O(2, 3)) * *(src2 + O(3, 2)));
+	*(dest + O(2, 3)) = (*(src1 + O(2, 0)) * *(src2 + O(0, 3))) + (*(src1 + O(2, 1)) * *(src2 + O(1, 3))) + (*(src1 + O(2, 2)) * *(src2 + O(2, 3))) + (*(src1 + O(2, 3)) * *(src2 + O(3, 3)));
+	*(dest + O(3, 0)) = (*(src1 + O(3, 0)) * *(src2 + O(0, 0))) + (*(src1 + O(3, 1)) * *(src2 + O(1, 0))) + (*(src1 + O(3, 2)) * *(src2 + O(2, 0))) + (*(src1 + O(3, 3)) * *(src2 + O(3, 0)));
+	*(dest + O(3, 1)) = (*(src1 + O(3, 0)) * *(src2 + O(0, 1))) + (*(src1 + O(3, 1)) * *(src2 + O(1, 1))) + (*(src1 + O(3, 2)) * *(src2 + O(2, 1))) + (*(src1 + O(3, 3)) * *(src2 + O(3, 1)));
+	*(dest + O(3, 2)) = (*(src1 + O(3, 0)) * *(src2 + O(0, 2))) + (*(src1 + O(3, 1)) * *(src2 + O(1, 2))) + (*(src1 + O(3, 2)) * *(src2 + O(2, 2))) + (*(src1 + O(3, 3)) * *(src2 + O(3, 2)));
+	*(dest + O(3, 3)) = (*(src1 + O(3, 0)) * *(src2 + O(0, 3))) + (*(src1 + O(3, 1)) * *(src2 + O(1, 3))) + (*(src1 + O(3, 2)) * *(src2 + O(2, 3))) + (*(src1 + O(3, 3)) * *(src2 + O(3, 3)));
 }
 
 int BLZ_PresentStatic(
-	struct BLZ_SpriteBatch *batch)
+	struct BLZ_StaticBatch *batch,
+	GLfloat *transformMatrix4x4)
 {
-	fail("Not implemented");
+	GLfloat *transform = transformMatrix4x4 != NULL ? transformMatrix4x4 : (GLfloat *)&identityMatrix;
+
+	GLfloat mvpMatrix[16];
+	if (!batch->is_uploaded)
+	{
+		upload_static_vertices(batch);
+	}
+	if (SHADER_CURRENT->mvp_param > -1)
+	{
+		mult_4x4_matrix(transform, (GLfloat *)&orthoMatrix, (GLfloat *)&mvpMatrix);
+		BLZ_UniformMatrix4fv(SHADER_CURRENT->mvp_param, 1, GL_FALSE, (GLfloat *)&mvpMatrix);
+	}
+	glBindTexture(GL_TEXTURE_2D, batch->texture->id);
+	glBindVertexArray(batch->buffer.vao);
+	glDrawElements(GL_TRIANGLES, batch->sprite_count * 6, GL_UNSIGNED_SHORT, (void *)0);
+	success();
 }
 
 /* Textures */
