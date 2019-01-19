@@ -40,6 +40,7 @@ int Test_Init()
 
 	context = SDL_GL_CreateContext(window);
 	SDL_GL_MakeCurrent(window, context);
+	SDL_GL_SetSwapInterval(0);
 
 	if (!BLZ_Load((glGetProcAddress)SDL_GL_GetProcAddress))
 	{

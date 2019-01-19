@@ -80,7 +80,7 @@ struct BLZ_StaticBatch
 	unsigned char is_uploaded;
 	struct BLZ_Vertex *vertices;
 	struct Buffer buffer;
-	struct BLZ_Texture* texture;
+	struct BLZ_Texture *texture;
 };
 
 struct BLZ_SpriteBatch
@@ -496,7 +496,42 @@ int BLZ_Present(struct BLZ_SpriteBatch *batch)
 		two = tmp;          \
 	} while (0);
 
-/* TODO: Optimization: implement fast path for simple positioned drawing */
+static struct BLZ_SpriteQuad transform_position_fastpath(
+	struct BLZ_Texture *texture,
+	struct BLZ_Vector2 position,
+	struct BLZ_Vector4 color)
+{
+	GLfloat x = position.x;
+	GLfloat y = position.y;
+	GLfloat w = (GLfloat)texture->width;
+	GLfloat h = (GLfloat)texture->height;
+	struct BLZ_SpriteQuad quad;
+
+	/* set the vertex values */
+	set_vertex(0, x, x);
+	set_vertex(0, y, y);
+	set_vertex(0, u, 0);
+	set_vertex(0, v, 0);
+	set_vertex(2, x, x + w);
+	set_vertex(2, y, y);
+	set_vertex(2, u, 1);
+	set_vertex(2, v, 0);
+	set_vertex(3, x, x + w);
+	set_vertex(3, y, y + h);
+	set_vertex(3, u, 1);
+	set_vertex(3, v, 1);
+	set_vertex(1, x, x);
+	set_vertex(1, y, y + h);
+	set_vertex(1, u, 0);
+	set_vertex(1, v, 1);
+
+	set_all_vertices(r, color.x);
+	set_all_vertices(g, color.y);
+	set_all_vertices(b, color.z);
+	set_all_vertices(a, color.w);
+	return quad;
+}
+
 static struct BLZ_SpriteQuad transform_full(
 	struct BLZ_Texture *texture,
 	struct BLZ_Vector2 position,
@@ -599,6 +634,28 @@ static struct BLZ_SpriteQuad transform_full(
 	return quad;
 }
 
+inline static struct BLZ_SpriteQuad transform(
+	struct BLZ_Texture *texture,
+	struct BLZ_Vector2 position,
+	struct BLZ_Rectangle *srcRectangle,
+	float rotation,
+	struct BLZ_Vector2 *origin,
+	struct BLZ_Vector2 *scale,
+	struct BLZ_Vector4 color,
+	enum BLZ_SpriteEffects effects)
+{
+	if (srcRectangle == NULL && rotation == 0.0f && origin == NULL &&
+		scale == NULL && effects == NONE)
+	{
+		return transform_position_fastpath(texture, position, color);
+	}
+	else
+	{
+		return transform_full(texture, position, srcRectangle, rotation,
+							  origin, scale, color, effects);
+	}
+}
+
 int BLZ_Draw(
 	struct BLZ_SpriteBatch *batch,
 	struct BLZ_Texture *texture,
@@ -610,7 +667,7 @@ int BLZ_Draw(
 	struct BLZ_Vector4 color,
 	enum BLZ_SpriteEffects effects)
 {
-	struct BLZ_SpriteQuad quad = transform_full(
+	struct BLZ_SpriteQuad quad = transform(
 		texture,
 		position,
 		srcRectangle,
@@ -733,7 +790,7 @@ int BLZ_DrawStatic(
 	struct BLZ_Vector4 color,
 	enum BLZ_SpriteEffects effects)
 {
-	struct BLZ_SpriteQuad quad = transform_full(
+	struct BLZ_SpriteQuad quad = transform(
 		batch->texture,
 		position,
 		srcRectangle,
@@ -770,7 +827,7 @@ static GLfloat identityMatrix[16] = {
 	0, 0, 0, 1};
 
 #define O(y, x) (y + (x << 2))
-static inline void mult_4x4_matrix(GLfloat *src1, GLfloat *src2, GLfloat *dest)
+static void mult_4x4_matrix(GLfloat *restrict src1, GLfloat *restrict src2, GLfloat *restrict dest)
 {
 	*(dest + O(0, 0)) = (*(src1 + O(0, 0)) * *(src2 + O(0, 0))) + (*(src1 + O(0, 1)) * *(src2 + O(1, 0))) + (*(src1 + O(0, 2)) * *(src2 + O(2, 0))) + (*(src1 + O(0, 3)) * *(src2 + O(3, 0)));
 	*(dest + O(0, 1)) = (*(src1 + O(0, 0)) * *(src2 + O(0, 1))) + (*(src1 + O(0, 1)) * *(src2 + O(1, 1))) + (*(src1 + O(0, 2)) * *(src2 + O(2, 1))) + (*(src1 + O(0, 3)) * *(src2 + O(3, 1)));
