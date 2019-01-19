@@ -206,6 +206,8 @@ int BLZ_Load(glGetProcAddress loader)
 	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
 	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
 	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 	success();
 }
 
@@ -396,8 +398,6 @@ struct BLZ_SpriteBatch *BLZ_CreateBatch(
 		cur->buffer[0] = create_buffer(max_sprites_per_bucket, GL_STREAM_DRAW);
 		cur->buffer[1] = create_buffer(max_sprites_per_bucket, GL_STREAM_DRAW);
 	}
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
 	return batch;
 }
 
