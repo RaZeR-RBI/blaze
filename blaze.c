@@ -145,6 +145,7 @@ static GLchar fragmentSource[] =
 
 static BLZ_Shader *SHADER_DEFAULT;
 static BLZ_Shader *SHADER_CURRENT;
+static struct Buffer immediateBuf;
 
 static const int VERT_SIZE = sizeof(struct BLZ_Vertex);
 
@@ -201,11 +202,11 @@ static void free_buffer(struct Buffer buffer)
 int BLZ_Load(glGetProcAddress loader)
 {
 	int result = gladLoadGLLoader((GLADloadproc)loader);
-	validate(loader != NULL);
 	fail_if_false(result, "Could not load the OpenGL library");
 	SHADER_DEFAULT = BLZ_CompileShader(vertexSource, fragmentSource);
 	fail_if_false(SHADER_DEFAULT, "Could not compile default shader");
 	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
+	immediateBuf = create_buffer(1, GL_STREAM_DRAW);
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	success();
@@ -405,6 +406,14 @@ struct BLZ_SpriteBatch *BLZ_CreateBatch(
 	return batch;
 }
 
+static inline void set_mvp_matrix(const GLfloat *matrix)
+{
+	if (SHADER_CURRENT->mvp_param > -1)
+	{
+		BLZ_UniformMatrix4fv(SHADER_CURRENT->mvp_param, 1, GL_FALSE, matrix);
+	}
+}
+
 struct BLZ_SpriteBatch *__lastBatch;
 struct SpriteBucket *__lastBucket;
 GLuint __lastTexture;
@@ -414,11 +423,7 @@ static int flush(struct BLZ_SpriteBatch *batch)
 	struct SpriteBucket bucket;
 	struct SpriteBucket *bucket_ptr;
 	int i, buf_size;
-	if (SHADER_CURRENT->mvp_param > -1)
-	{
-		BLZ_UniformMatrix4fv(SHADER_CURRENT->mvp_param, 1, GL_FALSE,
-							 (const GLfloat *)&orthoMatrix);
-	}
+	set_mvp_matrix((const GLfloat *)&orthoMatrix);
 	if (HAS_FLAG(batch, NO_BUFFERING) || batch->frameskip)
 	{
 		to_draw = to_fill = 0;
@@ -865,11 +870,49 @@ int BLZ_PresentStatic(
 	if (SHADER_CURRENT->mvp_param > -1)
 	{
 		mult_4x4_matrix(transform, (GLfloat *)&orthoMatrix, (GLfloat *)&mvpMatrix);
-		BLZ_UniformMatrix4fv(SHADER_CURRENT->mvp_param, 1, GL_FALSE, (GLfloat *)&mvpMatrix);
+		set_mvp_matrix((const GLfloat *)&mvpMatrix);
 	}
 	glBindTexture(GL_TEXTURE_2D, batch->texture->id);
 	glBindVertexArray(batch->buffer.vao);
 	glDrawElements(GL_TRIANGLES, batch->sprite_count * 6, GL_UNSIGNED_SHORT, (void *)0);
+	success();
+}
+
+/* Immediate drawing */
+int BLZ_DrawImmediate(
+	struct BLZ_Texture *texture,
+	struct BLZ_Vector2 position,
+	struct BLZ_Rectangle *srcRectangle,
+	float rotation,
+	struct BLZ_Vector2 *origin,
+	struct BLZ_Vector2 *scale,
+	struct BLZ_Vector4 color,
+	enum BLZ_SpriteEffects effects)
+{
+	struct BLZ_SpriteQuad quad = transform(
+		texture,
+		position,
+		srcRectangle,
+		rotation,
+		origin,
+		scale,
+		color,
+		effects);
+	return BLZ_LowerDrawImmediate(texture->id, &quad);
+}
+
+const int SIZE_OF_ONE_QUAD = sizeof(struct BLZ_SpriteQuad);
+int BLZ_LowerDrawImmediate(
+	GLuint texture,
+	struct BLZ_SpriteQuad *quad)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, immediateBuf.vbo);
+	glBufferData(GL_ARRAY_BUFFER, SIZE_OF_ONE_QUAD, quad, GL_STREAM_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(immediateBuf.vao);
+	set_mvp_matrix((const GLfloat *)&orthoMatrix);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void *)0);
 	success();
 }
 

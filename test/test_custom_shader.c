@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 {
 	int i;
 	char cwd[255];
-	struct BLZ_SpriteBatch *batch;
 	struct BLZ_Shader *shader;
 	struct BLZ_Texture *texture;
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
@@ -55,7 +54,6 @@ int main(int argc, char *argv[])
 		printf("Could not initialize test suite\n");
 		return -1;
 	}
-	batch = BLZ_CreateBatch(1, 1, DEFAULT);
 	BLZ_SetViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
 	texture = BLZ_LoadTextureFromFile("test/jellybeans.png", AUTO, 0, NONE);
 	if (texture == NULL)
@@ -80,8 +78,7 @@ int main(int argc, char *argv[])
 	for (i = 0; i < 5; i++)
 	{
 		BLZ_Clear(COLOR_BUFFER);
-		BLZ_Draw(batch, texture, position, NULL, 0.0f, NULL, NULL, white, NONE);
-		BLZ_Present(batch);
+		BLZ_DrawImmediate(texture, position, NULL, 0.0f, NULL, NULL, white, NONE);
 		SDL_GL_SwapWindow(window);
 	}
 	/* create a screenshot and compare */
@@ -89,7 +86,6 @@ int main(int argc, char *argv[])
 
 	BLZ_FreeShader(shader);
 	BLZ_FreeTexture(texture);
-	BLZ_FreeBatch(batch);
 	Test_Shutdown();
 	done_testing();
 }

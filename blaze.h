@@ -181,6 +181,21 @@ extern "C"
 		struct BLZ_StaticBatch *batch,
 		GLfloat* transformMatrix4x4);
 
+	/* Immediate drawing */
+	extern BLZAPIENTRY int BLZAPICALL BLZ_DrawImmediate(
+		struct BLZ_Texture *texture,
+		struct BLZ_Vector2 position,
+		struct BLZ_Rectangle *srcRectangle,
+		float rotation,
+		struct BLZ_Vector2 *origin,
+		struct BLZ_Vector2 *scale,
+		struct BLZ_Vector4 color,
+		enum BLZ_SpriteEffects effects);
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_LowerDrawImmediate(
+		GLuint texture,
+		struct BLZ_SpriteQuad *quad);
+
 	/* TODO: Texture binding and filtering settings */
 	/* TODO: Rendertargets */
 
