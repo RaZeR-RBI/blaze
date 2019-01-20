@@ -100,7 +100,7 @@ void draw(struct BLZ_StaticBatch *batch)
 
 int main(int argc, char *argv[])
 {
-	int i, tex;
+	int i, max_sprites;
 	char cwd[255];
 	struct BLZ_StaticBatch* batches[2];
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
@@ -124,7 +124,11 @@ int main(int argc, char *argv[])
 	batches[0] = BLZ_CreateStatic(textures[0], 52);
 	batches[1] = BLZ_CreateStatic(textures[1], 52);
 
-	plan(1);
+	plan(3);
+	BLZ_GetOptionsStatic(batches[0], &max_sprites);
+	ok(max_sprites == 52);
+	BLZ_GetOptionsStatic(batches[1], &max_sprites);
+	ok(max_sprites == 52);
 	/* draw the scene once into static buffer */
 	/* it will be 'baked' into memory on first PresentStatic call */
 	draw(batches[0]);

@@ -37,11 +37,6 @@ SDL_GLContext context;
 int Test_Init();
 void Test_Shutdown();
 
-void Feedback_Enable(int count);
-void Feedback_Read(GLfloat *buffer, int count);
-void Feedback_Begin();
-void Feedback_End();
-
 /*
 *	Compares render output with the reference file located in test/refs.
 *	"Likeness" ranges from 0.0 to 1.0, which means how many pixels should be

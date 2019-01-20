@@ -324,6 +324,10 @@ int BLZ_UseShader(BLZ_Shader *program)
 {
 	GLenum result;
 	validate(program != NULL);
+	/* clear previous errors to make sure we're reading the actual one */
+	while (glGetError() != GL_NO_ERROR)
+	{
+	};
 	glUseProgram(program->program);
 	result = glGetError();
 	if (result == GL_NO_ERROR)
@@ -890,8 +894,10 @@ struct BLZ_Texture *BLZ_LoadTextureFromFile(
 		channels,
 		texture_id,
 		flags);
+	const char *last_result = SOIL_last_result();
 	if (!id)
 	{
+		printf("Error: %s\n", last_result);
 		return NULL;
 	}
 	texture = malloc(sizeof(struct BLZ_Texture));

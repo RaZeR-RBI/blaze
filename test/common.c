@@ -54,37 +54,6 @@ void Test_Shutdown()
 	SDL_Quit();
 }
 
-GLuint create_buffer(GLenum type, int size, GLenum usage)
-{
-	GLuint bo;
-	glGenBuffers(1, &bo);
-	glBindBuffer(type, bo);
-	glBufferData(type, (GLsizeiptr)size, NULL, usage);
-	return bo;
-}
-
-void Feedback_Enable(int count)
-{
-	GLuint tbo = create_buffer(GL_ARRAY_BUFFER, sizeof(GLfloat) * count, GL_STATIC_READ);
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, tbo);
-}
-
-void Feedback_Read(GLfloat *buffer, int count)
-{
-	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(GLfloat) * count, buffer);
-}
-
-void Feedback_Begin()
-{
-	glBeginTransformFeedback(GL_TRIANGLES);
-}
-
-void Feedback_End()
-{
-	glEndTransformFeedback();
-	glFlush();
-}
-
 /* Renderer output comparation */
 #pragma pack(push, 1)
 struct BMP_Header
@@ -143,7 +112,7 @@ static unsigned char *read_bmp(const char *name, int *len)
 			return NULL;
 		}
 		total_bytes_read += bytes_read;
-	} while(total_bytes_read < data_size);
+	} while (total_bytes_read < data_size);
 	return data;
 }
 
@@ -162,20 +131,28 @@ int Validate_Output(const char *test_name, float likeness)
 	actual = read_bmp((const char *)actual_path, &len2);
 	if (ref == NULL || actual == NULL)
 	{
+		free(ref);
+		free(actual);
 		return 0;
 	}
 	if (len1 != len2)
 	{
 		printf("Could not compare %s: file size differs\n", test_name);
+		free(ref);
+		free(actual);
 		return 0;
 	}
-	for (i = 0; i < len1; i++) {
-		if (*(ref + i) != *(actual + i)) {
+	for (i = 0; i < len1; i++)
+	{
+		if (*(ref + i) != *(actual + i))
+		{
 			wrong_bytes++;
 		}
 	}
 	actual_likeness = 1.0f - ((float)wrong_bytes / (float)len1);
 	printf("'%s': pixel similarity to reference is %.2f%%, min: %.2f%%\n",
-		test_name, actual_likeness * 100.0f, likeness * 100.0f);
+		   test_name, actual_likeness * 100.0f, likeness * 100.0f);
+	free(ref);
+	free(actual);
 	return actual_likeness >= likeness;
 }
