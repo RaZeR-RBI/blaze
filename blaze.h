@@ -179,7 +179,7 @@ extern "C"
 
 	extern BLZAPIENTRY int BLZAPICALL BLZ_PresentStatic(
 		struct BLZ_StaticBatch *batch,
-		GLfloat* transformMatrix4x4);
+		GLfloat *transformMatrix4x4);
 
 	/* Immediate drawing */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_DrawImmediate(
@@ -196,7 +196,37 @@ extern "C"
 		GLuint texture,
 		struct BLZ_SpriteQuad *quad);
 
-	/* TODO: Texture binding and filtering settings */
+	/* Texture binding and options */
+	enum BLZ_TextureFilter
+	{
+		NEAREST = GL_NEAREST,
+		LINEAR = GL_LINEAR,
+	};
+
+	enum BLZ_TextureWrap
+	{
+		CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+		REPEAT = GL_REPEAT,
+		MIRRORED_REPEAT = GL_MIRRORED_REPEAT
+	};
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_GetMaxTextureSlots();
+	extern BLZAPIENTRY int BLZAPICALL BLZ_BindTexture(
+		struct BLZ_Texture *texture,
+		int slot);
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_UnbindTexture(int slot);
+	extern BLZAPIENTRY int BLZAPICALL BLZ_SetTextureFiltering(
+		struct BLZ_Texture *texture,
+		enum BLZ_TextureFilter minification,
+		enum BLZ_TextureFilter magnification);
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_SetTextureWrap(
+		struct BLZ_Texture *texture,
+		enum BLZ_TextureWrap x,
+		enum BLZ_TextureWrap y,
+		enum BLZ_TextureWrap z
+	);
 	/* TODO: Rendertargets */
 
 	/* Shaders */

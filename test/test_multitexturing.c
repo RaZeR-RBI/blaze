@@ -5,7 +5,7 @@ struct BLZ_Vector4 clearColor = {0, 0, 0, 0};
 struct BLZ_Vector4 white = {1, 1, 1, 1};
 struct BLZ_Vector2 position = { 156, 156 };
 
-/* simple color negate shader */
+/* multitexturing effect shader */
 /* u_mvpMatrix is a model-view-projection matrix which transforms
  * supplied pixel coordinates into NDC, calculated by BLZ_SetViewport(...)
  */
@@ -23,28 +23,27 @@ static GLchar vertexSource[] =
 	"  gl_Position = u_mvpMatrix * vec4(in_Position, 1, 1);"
 	"}";
 
-/* sample the texture at passed coordinates, multiply by color specified
- * in BLZ_Draw(...) and then negate the RGB components
- */
+/* "color burn" effect similar to Photoshop */
 static GLchar fragmentSource[] =
 	"#version 130\n"
 	"in vec4 ex_Color;"
 	"in vec2 ex_Texcoord;"
 	"out vec4 outColor;"
 	"uniform sampler2D tex;"
+	"uniform sampler2D tex2;"
 	"void main() {"
 	"  vec4 color = texture(tex, ex_Texcoord) * ex_Color;"
-	"  outColor = vec4(1 - color.x, 1 - color.y, 1 - color.z, color.w);"
+	"  vec4 color2 = texture(tex2, ex_Texcoord);"
+	"  outColor = (color + color2) - vec4(1, 1, 1, 1);"
 	"}";
 
-static GLchar invalidSource[] = "this does not compile";
 
 int main(int argc, char *argv[])
 {
 	int i;
 	char cwd[255];
 	struct BLZ_Shader *shader;
-	struct BLZ_Texture *texture;
+	struct BLZ_Texture *texture, *texture2, *tex_ignored;
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		printf("Could not get current directory - getcwd fail\n");
@@ -58,6 +57,8 @@ int main(int argc, char *argv[])
 	}
 	BLZ_SetViewport(WINDOW_WIDTH, WINDOW_HEIGHT);
 	texture = BLZ_LoadTextureFromFile("test/jellybeans.png", AUTO, 0, NONE);
+	texture2 = BLZ_LoadTextureFromFile("test/pnggrad8rgb.png", AUTO, 0, NONE);
+	tex_ignored = BLZ_LoadTextureFromFile("test/stripes_200px.png", AUTO, 0, NONE);
 	if (texture == NULL)
 	{
 		BAIL_OUT("Could not load texture file!");
@@ -72,21 +73,31 @@ int main(int argc, char *argv[])
 		BAIL_OUT("Could not use the specified shader!");
 	}
 
-	plan(3);
-	ok(BLZ_CompileShader(invalidSource, invalidSource) == NULL);
-	ok(shader != BLZ_GetDefaultShader());
+	plan(2);
+	ok(BLZ_GetMaxTextureSlots());
 	/* draw the scene */
 	BLZ_SetClearColor(clearColor);
 	BLZ_SetBlendMode(BLEND_NORMAL);
+
+	/* first slot (zero) is bound here to test texture overriding */
+	/* when DrawImmediate is called, the texture passed to it will be replaced
+	* with the one bound to slot 0, if it's unbound, the passed one is used
+	*/
+	BLZ_Uniform1i(BLZ_GetUniformLocation(shader, "tex"), 0);
+	BLZ_Uniform1i(BLZ_GetUniformLocation(shader, "tex2"), 1);
+	BLZ_BindTexture(texture, 0);
+	BLZ_BindTexture(texture2, 1);
 	for (i = 0; i < 5; i++)
 	{
 		BLZ_Clear(COLOR_BUFFER);
-		BLZ_DrawImmediate(texture, position, NULL, 0.0f, NULL, NULL, white, NONE);
+		BLZ_DrawImmediate(tex_ignored, position, NULL, 0.0f, NULL, NULL, white, NONE);
 		SDL_GL_SwapWindow(window);
 	}
 	/* create a screenshot and compare */
-	ok(Validate_Output("test_custom_shader", 0.999f));
+	ok(Validate_Output("test_multitexturing", 0.999f));
 
+	BLZ_UnbindTexture(0);
+	BLZ_UnbindTexture(1);
 	BLZ_FreeShader(shader);
 	BLZ_FreeTexture(texture);
 	Test_Shutdown();

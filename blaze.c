@@ -146,6 +146,7 @@ static GLchar fragmentSource[] =
 static BLZ_Shader *SHADER_DEFAULT;
 static BLZ_Shader *SHADER_CURRENT;
 static struct Buffer immediateBuf;
+static GLuint tex0_override = 0;
 
 static const int VERT_SIZE = sizeof(struct BLZ_Vertex);
 
@@ -210,6 +211,64 @@ int BLZ_Load(glGetProcAddress loader)
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	success();
+}
+
+int BLZ_GetMaxTextureSlots()
+{
+	GLint result;
+	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &result);
+	return result;
+}
+
+int BLZ_BindTexture(struct BLZ_Texture *texture, int slot)
+{
+	validate(texture != NULL);
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glBindTexture(GL_TEXTURE_2D, texture->id);
+	if (slot == 0) {
+		tex0_override = texture->id;
+	}
+	success();
+}
+
+int BLZ_UnbindTexture(int slot)
+{
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	if (slot == 0) {
+		tex0_override = 0;
+	}
+	success();
+}
+
+int BLZ_SetTextureFiltering(
+	struct BLZ_Texture *texture,
+	enum BLZ_TextureFilter minification,
+	enum BLZ_TextureFilter magnification)
+{
+	glTexParameteri(texture->id, GL_TEXTURE_MIN_FILTER, minification);
+	glTexParameteri(texture->id, GL_TEXTURE_MAG_FILTER, magnification);
+	success();
+}
+
+int BLZ_SetTextureWrap(
+	struct BLZ_Texture *texture,
+	enum BLZ_TextureWrap x,
+	enum BLZ_TextureWrap y,
+	enum BLZ_TextureWrap z)
+{
+	glTexParameteri(texture->id, GL_TEXTURE_WRAP_S, x);
+	glTexParameteri(texture->id, GL_TEXTURE_WRAP_T, y);
+	glTexParameteri(texture->id, GL_TEXTURE_WRAP_R, z);
+	success();
+}
+
+static void bind_tex0(GLuint tex)
+{
+	if (tex0_override == 0) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex);
+	}
 }
 
 int BLZ_GetOptions(struct BLZ_SpriteBatch *batch,
@@ -452,7 +511,7 @@ static int flush(struct BLZ_SpriteBatch *batch)
 		glBufferData(GL_ARRAY_BUFFER, buf_size, bucket.vertices, GL_STREAM_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		/* bind our texture and the VAO and draw it */
-		glBindTexture(GL_TEXTURE_2D, bucket.texture);
+		bind_tex0(bucket.texture);
 		glBindVertexArray(bucket.buffer[to_draw].vao);
 		glDrawElements(GL_TRIANGLES, bucket.sprite_count * 6, GL_UNSIGNED_SHORT, (void *)0);
 		bucket_ptr->sprite_count = 0;
@@ -872,7 +931,7 @@ int BLZ_PresentStatic(
 		mult_4x4_matrix(transform, (GLfloat *)&orthoMatrix, (GLfloat *)&mvpMatrix);
 		set_mvp_matrix((const GLfloat *)&mvpMatrix);
 	}
-	glBindTexture(GL_TEXTURE_2D, batch->texture->id);
+	bind_tex0(batch->texture->id);
 	glBindVertexArray(batch->buffer.vao);
 	glDrawElements(GL_TRIANGLES, batch->sprite_count * 6, GL_UNSIGNED_SHORT, (void *)0);
 	success();
@@ -911,7 +970,7 @@ int BLZ_LowerDrawImmediate(
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(immediateBuf.vao);
 	set_mvp_matrix((const GLfloat *)&orthoMatrix);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	bind_tex0(texture);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void *)0);
 	success();
 }
