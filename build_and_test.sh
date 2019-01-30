@@ -7,6 +7,7 @@ export LD_LIBRARY_PATH=.
 ./test_draw_static.out
 ./test_custom_shader.out
 ./test_multitexturing.out
+./test_render_target.out
 gcov blaze.c
 geninfo .
 rm -rf docs/coverage/*

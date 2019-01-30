@@ -37,7 +37,7 @@
 #define null_if_false(val, msg) \
 	do                          \
 	{                           \
-		if (val == NULL)        \
+		if (val == BLZ_FALSE)   \
 		{                       \
 			__lastError = msg;  \
 			return NULL;        \
@@ -209,6 +209,7 @@ int BLZ_Load(glGetProcAddress loader)
 	fail_if_false(BLZ_UseShader(SHADER_DEFAULT), "Could not use default shader");
 	immediateBuf = create_buffer(1, GL_STREAM_DRAW);
 	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	success();
 }
@@ -222,21 +223,12 @@ int BLZ_GetMaxTextureSlots()
 
 int BLZ_BindTexture(struct BLZ_Texture *texture, int slot)
 {
-	validate(texture != NULL);
+	GLuint id = texture == NULL ? 0 : texture->id;
 	glActiveTexture(GL_TEXTURE0 + slot);
-	glBindTexture(GL_TEXTURE_2D, texture->id);
-	if (slot == 0) {
-		tex0_override = texture->id;
-	}
-	success();
-}
-
-int BLZ_UnbindTexture(int slot)
-{
-	glActiveTexture(GL_TEXTURE0 + slot);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	if (slot == 0) {
-		tex0_override = 0;
+	glBindTexture(GL_TEXTURE_2D, id);
+	if (slot == 0)
+	{
+		tex0_override = id;
 	}
 	success();
 }
@@ -267,7 +259,8 @@ int BLZ_SetTextureWrap(
 
 static void bind_tex0(GLuint tex)
 {
-	if (tex0_override == 0) {
+	if (tex0_override == 0)
+	{
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, tex);
 	}
@@ -1056,6 +1049,55 @@ int BLZ_SaveScreenshot(
 	return SOIL_save_screenshot(
 		filename,
 		format, x, y, width, height);
+}
+
+/* Render targets */
+static const GLenum DRAW_BUFFERS[1] = {GL_COLOR_ATTACHMENT0};
+struct BLZ_RenderTarget *BLZ_CreateRenderTarget(int width, int height)
+{
+	GLuint framebuffer, texture;
+	struct BLZ_RenderTarget *result;
+	glGenFramebuffers(1, &framebuffer);
+	glGenTextures(1, &texture);
+	null_if_false(framebuffer, "Could not create framebuffer");
+	null_if_false(texture, "Could not create texture for framebuffer");
+	result = malloc(sizeof(struct BLZ_RenderTarget));
+	result->id = framebuffer;
+	result->texture.id = texture;
+	result->texture.width = width;
+	result->texture.height = height;
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+				 GL_UNSIGNED_BYTE, NULL);
+	BLZ_SetTextureFiltering(&result->texture, NEAREST, NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+						   texture, 0);
+	glDrawBuffers(1, DRAW_BUFFERS);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		free(result);
+		fail("The specified framebuffer is not complete");
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return result;
+}
+
+int BLZ_BindRenderTarget(struct BLZ_RenderTarget *target)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, target == NULL ? 0 : target->id);
+	success();
+}
+
+int BLZ_FreeRenderTarget(struct BLZ_RenderTarget *target)
+{
+	if (target == NULL) {
+		success();
+	}
+	glDeleteTextures(1, &target->texture.id);
+	glDeleteFramebuffers(1, &target->id);
+	free(target);
+	success();
 }
 
 /* glUniform shims */

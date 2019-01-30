@@ -215,7 +215,6 @@ extern "C"
 		struct BLZ_Texture *texture,
 		int slot);
 
-	extern BLZAPIENTRY int BLZAPICALL BLZ_UnbindTexture(int slot);
 	extern BLZAPIENTRY int BLZAPICALL BLZ_SetTextureFiltering(
 		struct BLZ_Texture *texture,
 		enum BLZ_TextureFilter minification,
@@ -224,9 +223,20 @@ extern "C"
 	extern BLZAPIENTRY int BLZAPICALL BLZ_SetTextureWrap(
 		struct BLZ_Texture *texture,
 		enum BLZ_TextureWrap x,
-		enum BLZ_TextureWrap y
-	);
-	/* TODO: Rendertargets */
+		enum BLZ_TextureWrap y);
+
+	/* Rendertargets */
+	struct BLZ_RenderTarget
+	{
+		GLuint id;
+		struct BLZ_Texture texture;
+	};
+
+	extern BLZAPIENTRY struct BLZ_RenderTarget *BLZAPICALL BLZ_CreateRenderTarget(
+		int width, int height);
+
+	extern BLZAPIENTRY int BLZAPICALL BLZ_BindRenderTarget(struct BLZ_RenderTarget* target);
+	extern BLZAPIENTRY int BLZAPICALL BLZ_FreeRenderTarget(struct BLZ_RenderTarget* target);
 
 	/* Shaders */
 	extern BLZAPIENTRY struct BLZ_Shader *BLZAPICALL BLZ_CompileShader(

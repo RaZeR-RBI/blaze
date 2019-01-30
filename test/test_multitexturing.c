@@ -100,9 +100,8 @@ int main(int argc, char *argv[])
 	}
 	/* create a screenshot and compare */
 	ok(Validate_Output("test_multitexturing", 0.999f));
-
-	BLZ_UnbindTexture(0);
-	BLZ_UnbindTexture(1);
+	BLZ_BindTexture(NULL, 0);
+	BLZ_BindTexture(NULL, 1);
 	BLZ_FreeShader(shader);
 	BLZ_FreeTexture(texture);
 	Test_Shutdown();
