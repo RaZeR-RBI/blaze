@@ -224,8 +224,7 @@ extern "C"
 	extern BLZAPIENTRY int BLZAPICALL BLZ_SetTextureWrap(
 		struct BLZ_Texture *texture,
 		enum BLZ_TextureWrap x,
-		enum BLZ_TextureWrap y,
-		enum BLZ_TextureWrap z
+		enum BLZ_TextureWrap y
 	);
 	/* TODO: Rendertargets */
 

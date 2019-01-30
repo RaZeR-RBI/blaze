@@ -246,20 +246,22 @@ int BLZ_SetTextureFiltering(
 	enum BLZ_TextureFilter minification,
 	enum BLZ_TextureFilter magnification)
 {
-	glTexParameteri(texture->id, GL_TEXTURE_MIN_FILTER, minification);
-	glTexParameteri(texture->id, GL_TEXTURE_MAG_FILTER, magnification);
+	glBindTexture(GL_TEXTURE_2D, texture->id);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minification);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magnification);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	success();
 }
 
 int BLZ_SetTextureWrap(
 	struct BLZ_Texture *texture,
 	enum BLZ_TextureWrap x,
-	enum BLZ_TextureWrap y,
-	enum BLZ_TextureWrap z)
+	enum BLZ_TextureWrap y)
 {
-	glTexParameteri(texture->id, GL_TEXTURE_WRAP_S, x);
-	glTexParameteri(texture->id, GL_TEXTURE_WRAP_T, y);
-	glTexParameteri(texture->id, GL_TEXTURE_WRAP_R, z);
+	glBindTexture(GL_TEXTURE_2D, texture->id);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, x);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, y);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	success();
 }
 

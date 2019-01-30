@@ -3,7 +3,10 @@
 
 struct BLZ_Vector4 clearColor = {0, 0, 0, 0};
 struct BLZ_Vector4 white = {1, 1, 1, 1};
-struct BLZ_Vector2 position = { 156, 156 };
+struct BLZ_SpriteQuad quad = {{{20, 20, 0, 0, 1, 1, 1, 1},
+							   {20, 480, 0, 1.5f, 1, 1, 1, 1},
+							   {480, 20, 1.5f, 0, 1, 1, 1, 1},
+							   {480, 480, 1.5f, 1.5f, 1, 1, 1, 1}}};
 
 /* multitexturing effect shader */
 /* u_mvpMatrix is a model-view-projection matrix which transforms
@@ -37,7 +40,6 @@ static GLchar fragmentSource[] =
 	"  outColor = (color + color2) - vec4(1, 1, 1, 1);"
 	"}";
 
-
 int main(int argc, char *argv[])
 {
 	int i;
@@ -69,12 +71,15 @@ int main(int argc, char *argv[])
 	{
 		BAIL_OUT("Could not compile shader!");
 	}
-	if (!BLZ_UseShader(shader)) {
+	if (!BLZ_UseShader(shader))
+	{
 		BAIL_OUT("Could not use the specified shader!");
 	}
 
 	plan(2);
 	ok(BLZ_GetMaxTextureSlots());
+	BLZ_SetTextureFiltering(texture, NEAREST, NEAREST);
+	BLZ_SetTextureWrap(texture, CLAMP_TO_EDGE, CLAMP_TO_EDGE);
 	/* draw the scene */
 	BLZ_SetClearColor(clearColor);
 	BLZ_SetBlendMode(BLEND_NORMAL);
@@ -90,7 +95,7 @@ int main(int argc, char *argv[])
 	for (i = 0; i < 5; i++)
 	{
 		BLZ_Clear(COLOR_BUFFER);
-		BLZ_DrawImmediate(tex_ignored, position, NULL, 0.0f, NULL, NULL, white, NONE);
+		BLZ_LowerDrawImmediate(tex_ignored->id, &quad);
 		SDL_GL_SwapWindow(window);
 	}
 	/* create a screenshot and compare */
