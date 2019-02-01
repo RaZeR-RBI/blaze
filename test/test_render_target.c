@@ -38,13 +38,13 @@ int main(int argc, char *argv[])
 	BLZ_BindRenderTarget(target);
 	BLZ_SetClearColor(clearColor);
 	BLZ_SetBlendMode(BLEND_NORMAL);
-	BLZ_Clear(COLOR_BUFFER);
+	BLZ_Clear();
 	BLZ_DrawImmediate(texture, position, NULL, 0.0f, NULL, NULL, white, NONE);
 
 	BLZ_BindRenderTarget(NULL);
 	for (i = 0; i < 5; i++)
 	{
-		BLZ_Clear(COLOR_BUFFER);
+		BLZ_Clear();
 		BLZ_DrawImmediate(&target->texture, topLeft, NULL, 0.0f, NULL, NULL,
 						  red, NONE);
 		SDL_GL_SwapWindow(window);

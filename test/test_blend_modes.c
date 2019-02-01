@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 	BLZ_SetClearColor(clearColor);
 	for (i = 0; i < 5; i++)
 	{
-		BLZ_Clear(COLOR_BUFFER);
+		BLZ_Clear();
 		draw(batches[0], texture, 50, 50, BLEND_NORMAL);
 		draw(batches[1], texture, 300, 50, BLEND_ADDITIVE);
 		draw(batches[2], texture, 175, 250, BLEND_MULTIPLY);

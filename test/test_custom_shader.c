@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 	BLZ_SetBlendMode(BLEND_NORMAL);
 	for (i = 0; i < 5; i++)
 	{
-		BLZ_Clear(COLOR_BUFFER);
+		BLZ_Clear();
 		BLZ_DrawImmediate(texture, position, NULL, 0.0f, NULL, NULL, white, NONE);
 		SDL_GL_SwapWindow(window);
 	}

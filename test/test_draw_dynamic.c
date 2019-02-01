@@ -76,7 +76,7 @@ void draw(struct BLZ_Texture *texture)
 	for (j = 0; j < 4; j++)
 	{
 		BLZ_Draw(batch, texture, position, NULL, 0.0f, NULL, NULL, white,
-				 (enum BLZ_SpriteEffects)(j % 4));
+				 (enum BLZ_SpriteFlip)(j % 4));
 		MoveRight();
 	}
 	NextLine();
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 	for (i = 0; i < 5; i++)
 	{
 		position = startPosition;
-		BLZ_Clear(COLOR_BUFFER);
+		BLZ_Clear();
 		draw(textures[0]);
 		draw(textures[1]);
 		BLZ_Present(batch);

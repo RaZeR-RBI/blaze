@@ -93,7 +93,7 @@ void draw(struct BLZ_StaticBatch *batch)
 	for (j = 0; j < 4; j++)
 	{
 		BLZ_DrawStatic(batch, position, NULL, 0.0f, NULL, NULL, white,
-				 (enum BLZ_SpriteEffects)(j % 4));
+				 (enum BLZ_SpriteFlip)(j % 4));
 		MoveRight();
 	}
 }
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 	BLZ_SetBlendMode(BLEND_NORMAL);
 	for (i = 0; i < 5; i++)
 	{
-		BLZ_Clear(COLOR_BUFFER);
+		BLZ_Clear();
 		BLZ_PresentStatic(batches[0], NULL);
 		BLZ_PresentStatic(batches[1], (GLfloat*)&moveDownTransform);
 		SDL_GL_SwapWindow(window);

@@ -299,9 +299,9 @@ void BLZ_SetBlendMode(const struct BLZ_BlendFunc func)
 	glBlendFunc(func.source, func.destination);
 }
 
-void BLZ_Clear(enum BLZ_ClearOptions options)
+void BLZ_Clear()
 {
-	glClear(options);
+	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 static GLuint compile_shader(GLenum type, char *src)
@@ -603,7 +603,7 @@ static struct BLZ_SpriteQuad transform_full(
 	struct BLZ_Vector2 *origin,
 	struct BLZ_Vector2 *scale,
 	struct BLZ_Vector4 color,
-	enum BLZ_SpriteEffects effects)
+	enum BLZ_SpriteFlip effects)
 {
 	/* position: top-left, top-right, bottom-left, bottom-right */
 	struct BLZ_Vector2 p_tl, p_tr, p_bl, p_br;
@@ -705,7 +705,7 @@ inline static struct BLZ_SpriteQuad transform(
 	struct BLZ_Vector2 *origin,
 	struct BLZ_Vector2 *scale,
 	struct BLZ_Vector4 color,
-	enum BLZ_SpriteEffects effects)
+	enum BLZ_SpriteFlip effects)
 {
 	if (srcRectangle == NULL && rotation == 0.0f && origin == NULL &&
 		scale == NULL && effects == NONE)
@@ -728,7 +728,7 @@ int BLZ_Draw(
 	struct BLZ_Vector2 *origin,
 	struct BLZ_Vector2 *scale,
 	struct BLZ_Vector4 color,
-	enum BLZ_SpriteEffects effects)
+	enum BLZ_SpriteFlip effects)
 {
 	struct BLZ_SpriteQuad quad = transform(
 		texture,
@@ -851,7 +851,7 @@ int BLZ_DrawStatic(
 	struct BLZ_Vector2 *origin,
 	struct BLZ_Vector2 *scale,
 	struct BLZ_Vector4 color,
-	enum BLZ_SpriteEffects effects)
+	enum BLZ_SpriteFlip effects)
 {
 	struct BLZ_SpriteQuad quad = transform(
 		batch->texture,
@@ -941,7 +941,7 @@ int BLZ_DrawImmediate(
 	struct BLZ_Vector2 *origin,
 	struct BLZ_Vector2 *scale,
 	struct BLZ_Vector4 color,
-	enum BLZ_SpriteEffects effects)
+	enum BLZ_SpriteFlip effects)
 {
 	struct BLZ_SpriteQuad quad = transform(
 		texture,

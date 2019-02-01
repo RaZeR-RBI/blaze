@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 	BLZ_BindTexture(texture2, 1);
 	for (i = 0; i < 5; i++)
 	{
-		BLZ_Clear(COLOR_BUFFER);
+		BLZ_Clear();
 		BLZ_LowerDrawImmediate(tex_ignored->id, &quad);
 		SDL_GL_SwapWindow(window);
 	}
