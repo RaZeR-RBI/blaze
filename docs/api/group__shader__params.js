@@ -1,0 +1,25 @@
+var group__shader__params =
+[
+    [ "BLZ_GetUniformLocation", "group__shader__params.html#ga8e930c5eb2dba60eed97c0b49517ceaa", null ],
+    [ "BLZ_Uniform1f", "group__shader__params.html#ga3d6539517b49ca5f7d517cf689ea97df", null ],
+    [ "BLZ_Uniform1i", "group__shader__params.html#ga5a6401d08edd2fd9d706815b76f601ad", null ],
+    [ "BLZ_Uniform1ui", "group__shader__params.html#gacd93a4b984f0a4ec4464657148207fe3", null ],
+    [ "BLZ_Uniform2f", "group__shader__params.html#gada20dd90c5b55f2f51e1cf4a6c56194c", null ],
+    [ "BLZ_Uniform2i", "group__shader__params.html#gacbc5efc5e6faadb7d383fcfe127e6cd1", null ],
+    [ "BLZ_Uniform2ui", "group__shader__params.html#ga1a4605ba0bf2b3949bbf671407a18614", null ],
+    [ "BLZ_Uniform3f", "group__shader__params.html#gae1c58554a42dd06aba32a7a86467a93a", null ],
+    [ "BLZ_Uniform3i", "group__shader__params.html#gabefbf09dc4e8601835c4a4297eeaa90f", null ],
+    [ "BLZ_Uniform3ui", "group__shader__params.html#gaec5a86d8affb145c11c2f9b93594d7e0", null ],
+    [ "BLZ_Uniform4f", "group__shader__params.html#ga23203f1f5d0d6c83bea9263e30a6c87b", null ],
+    [ "BLZ_Uniform4i", "group__shader__params.html#gaceb6e38349dfa8d381ba63a6b24f7dff", null ],
+    [ "BLZ_Uniform4ui", "group__shader__params.html#gaf6cf93de37c068368bae6e04a01578e6", null ],
+    [ "BLZ_UniformMatrix2fv", "group__shader__params.html#ga540c2e40c532882351fff3c2afe021fa", null ],
+    [ "BLZ_UniformMatrix2x3fv", "group__shader__params.html#gaad017cadd1b236ff21ab7b59043de5db", null ],
+    [ "BLZ_UniformMatrix2x4fv", "group__shader__params.html#ga23e06d7127fcfa739baa457f0112aca5", null ],
+    [ "BLZ_UniformMatrix3fv", "group__shader__params.html#ga2e33195d63f5ed380037d2c53c202b62", null ],
+    [ "BLZ_UniformMatrix3x2fv", "group__shader__params.html#ga69ad31591fa9352e43f832dfc262ad48", null ],
+    [ "BLZ_UniformMatrix3x4fv", "group__shader__params.html#ga6383746c95f2b0ae656ac681bac43611", null ],
+    [ "BLZ_UniformMatrix4fv", "group__shader__params.html#ga66ca684c30f7848eae09132716c56937", null ],
+    [ "BLZ_UniformMatrix4x2fv", "group__shader__params.html#ga476bf1cf17b5c4b04e27d4b36c76a6e7", null ],
+    [ "BLZ_UniformMatrix4x3fv", "group__shader__params.html#ga77a46f702b856a74dc79f5b940f1d827", null ]
+];

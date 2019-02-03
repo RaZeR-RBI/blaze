@@ -8,6 +8,13 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+  $(window).load(resizeHeight);
+</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/search.js"></script>
 <script type="text/javascript">
@@ -37,6 +44,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -70,36 +78,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
     </ul>
   </div>
-  <div id="navrow4" class="tabs3">
-    <ul class="tablist">
-      <li><a href="#index_a"><span>a</span></a></li>
-      <li><a href="#index_b"><span>b</span></a></li>
-      <li><a href="#index_d"><span>d</span></a></li>
-      <li><a href="#index_e"><span>e</span></a></li>
-      <li><a href="#index_f"><span>f</span></a></li>
-      <li><a href="#index_g"><span>g</span></a></li>
-      <li><a href="#index_h"><span>h</span></a></li>
-      <li><a href="#index_i"><span>i</span></a></li>
-      <li><a href="#index_m"><span>m</span></a></li>
-      <li><a href="#index_p"><span>p</span></a></li>
-      <li><a href="#index_r"><span>r</span></a></li>
-      <li><a href="#index_s"><span>s</span></a></li>
-      <li><a href="#index_t"><span>t</span></a></li>
-      <li><a href="#index_u"><span>u</span></a></li>
-      <li><a href="#index_v"><span>v</span></a></li>
-      <li><a href="#index_w"><span>w</span></a></li>
-      <li><a href="#index_x"><span>x</span></a></li>
-      <li><a href="#index_y"><span>y</span></a></li>
-      <li class="current"><a href="#index_z"><span>z</span></a></li>
-    </ul>
-  </div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('functions.html','');});
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -109,160 +108,47 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 
 <div class="contents">
-<div class="textblock">Here is a list of all struct and union fields with links to the structures/unions they belong to:</div>
-
-<h3><a class="anchor" id="index_a"></a>- a -</h3><ul>
+<div class="textblock">Here is a list of all struct and union fields with links to the structures/unions they belong to:</div><ul>
 <li>a
 : <a class="el" href="structBLZ__Vertex.html#a30377022b3ccb5d3a9d1cfe889821689">BLZ_Vertex</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_b"></a>- b -</h3><ul>
 <li>b
 : <a class="el" href="structBLZ__Vertex.html#a614951e5ed4698465b543298c2e4fd46">BLZ_Vertex</a>
 </li>
-<li>buffer
-: <a class="el" href="structBLZ__StaticBatch.html#a1cda3822df852bbef1bb95a1f2943856">BLZ_StaticBatch</a>
-, <a class="el" href="structSpriteBucket.html#a74979e873c977514002875bcfd735732">SpriteBucket</a>
-</li>
-<li>buffer_index
-: <a class="el" href="structBLZ__SpriteBatch.html#ab1ca50731b2018e0d74b0d5261fdb482">BLZ_SpriteBatch</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
 <li>destination
 : <a class="el" href="structBLZ__BlendFunc.html#ad9c139afc077aafec4051b75e6bb2d24">BLZ_BlendFunc</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_e"></a>- e -</h3><ul>
-<li>ebo
-: <a class="el" href="structBuffer.html#a1b569e32867b1854816b9c7aebef3fcc">Buffer</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_f"></a>- f -</h3><ul>
-<li>flags
-: <a class="el" href="structBLZ__SpriteBatch.html#a6d4c7af4947ddf9ee561eefbc0fcb065">BLZ_SpriteBatch</a>
-</li>
-<li>frameskip
-: <a class="el" href="structBLZ__SpriteBatch.html#ae56a3dc9fe8ffe427eda4e01b2457153">BLZ_SpriteBatch</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
 <li>g
 : <a class="el" href="structBLZ__Vertex.html#a7ea67b6301aa02381e4c6f6e5f5adbf7">BLZ_Vertex</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
 <li>h
 : <a class="el" href="structBLZ__Rectangle.html#a6b2393ab580c0c8fe767df3f10e68427">BLZ_Rectangle</a>
 </li>
 <li>height
 : <a class="el" href="structBLZ__Texture.html#a9a21d74d7ff76ccd76292bf0b702d76b">BLZ_Texture</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
 <li>id
 : <a class="el" href="structBLZ__RenderTarget.html#a7e2318d03dc9f871777ff78b6b8397ea">BLZ_RenderTarget</a>
 , <a class="el" href="structBLZ__Texture.html#aacb28e616a0c34cea14955b664fde243">BLZ_Texture</a>
 </li>
-<li>is_uploaded
-: <a class="el" href="structBLZ__StaticBatch.html#afe134b1b64128e49d0a63c967770613f">BLZ_StaticBatch</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_m"></a>- m -</h3><ul>
-<li>max_buckets
-: <a class="el" href="structBLZ__SpriteBatch.html#a3327668cdf998b50b693ad3d33c4b810">BLZ_SpriteBatch</a>
-</li>
-<li>max_sprite_count
-: <a class="el" href="structBLZ__StaticBatch.html#ac571ff23e02eeafaa095faa07255493c">BLZ_StaticBatch</a>
-</li>
-<li>max_sprites_per_bucket
-: <a class="el" href="structBLZ__SpriteBatch.html#a1331a0dc5fa4f7b0d3a84411662d26a3">BLZ_SpriteBatch</a>
-</li>
-<li>mvp_param
-: <a class="el" href="structBLZ__Shader.html#acc052d67e8b858778bf3bd7e152ca778">BLZ_Shader</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
-<li>program
-: <a class="el" href="structBLZ__Shader.html#af3c722b89997d2614547f18e3abd08d1">BLZ_Shader</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
 <li>r
 : <a class="el" href="structBLZ__Vertex.html#a7ae393b042b49b787af31048f37d0c47">BLZ_Vertex</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
 <li>source
 : <a class="el" href="structBLZ__BlendFunc.html#a17c17793ec05d5482e3168d8d7d6ee3b">BLZ_BlendFunc</a>
 </li>
-<li>sprite_buckets
-: <a class="el" href="structBLZ__SpriteBatch.html#a97012d181128baba77cfa68b0ec3d928">BLZ_SpriteBatch</a>
-</li>
-<li>sprite_count
-: <a class="el" href="structBLZ__StaticBatch.html#a05df97541df6e6bd0bc5825a74ffe153">BLZ_StaticBatch</a>
-, <a class="el" href="structSpriteBucket.html#a620319ed0f364a1056d0555f59546e4e">SpriteBucket</a>
-</li>
-</ul>
-
-
-<h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
 <li>texture
 : <a class="el" href="structBLZ__RenderTarget.html#a35c1eae1310b8d694e48b8bb680c1e63">BLZ_RenderTarget</a>
-, <a class="el" href="structBLZ__StaticBatch.html#a9ae620a16b7b00bc7650349b2b7cb2ea">BLZ_StaticBatch</a>
-, <a class="el" href="structSpriteBucket.html#a93a1f77440affd1d4d660e0c0da593f7">SpriteBucket</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
 <li>u
 : <a class="el" href="structBLZ__Vertex.html#a36440fb5057baaa25f0394a7a455760b">BLZ_Vertex</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
 <li>v
 : <a class="el" href="structBLZ__Vertex.html#ac6e0c3ee31390c9eb10dea4f03f0caa2">BLZ_Vertex</a>
 </li>
-<li>vao
-: <a class="el" href="structBuffer.html#ac6520dcb07e268c6cd40fe951ba926db">Buffer</a>
-</li>
-<li>vbo
-: <a class="el" href="structBuffer.html#a85f300c5f170e9aeaf6781310a2bc52e">Buffer</a>
-</li>
 <li>vertices
 : <a class="el" href="structBLZ__SpriteQuad.html#a709c503b6514ee076ae446052f81c957">BLZ_SpriteQuad</a>
-, <a class="el" href="structBLZ__StaticBatch.html#a0c2168d6fb836be541aa4adfeb96e10f">BLZ_StaticBatch</a>
-, <a class="el" href="structSpriteBucket.html#af57e326755e094d18f811b680fe01ee5">SpriteBucket</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_w"></a>- w -</h3><ul>
 <li>w
 : <a class="el" href="structBLZ__Rectangle.html#afef0929eced000444778a2e5032638c2">BLZ_Rectangle</a>
 , <a class="el" href="structBLZ__Vector4.html#a09a94d5cf475bc309dd5bf30b3f2c660">BLZ_Vector4</a>
@@ -270,40 +156,31 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>width
 : <a class="el" href="structBLZ__Texture.html#a97f7dec8fd075fc9ff23b8b232bbb21f">BLZ_Texture</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_x"></a>- x -</h3><ul>
 <li>x
 : <a class="el" href="structBLZ__Rectangle.html#aa717394b28f128feafee7c7027c39412">BLZ_Rectangle</a>
 , <a class="el" href="structBLZ__Vector2.html#af20b7fc4e5ee1342e3303052c13c6865">BLZ_Vector2</a>
 , <a class="el" href="structBLZ__Vector4.html#aaca66d2658d207c00fef727273e3b902">BLZ_Vector4</a>
 , <a class="el" href="structBLZ__Vertex.html#affb56eeb05dba25c56e6bb174be1a7d5">BLZ_Vertex</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_y"></a>- y -</h3><ul>
 <li>y
 : <a class="el" href="structBLZ__Rectangle.html#a40d41daddb408c96417b5f83b61b1164">BLZ_Rectangle</a>
 , <a class="el" href="structBLZ__Vector2.html#aa7375d28ce3d45da8d5947c626f93168">BLZ_Vector2</a>
 , <a class="el" href="structBLZ__Vector4.html#a7df71614f1da4bbf0ae53083931f9355">BLZ_Vector4</a>
 , <a class="el" href="structBLZ__Vertex.html#ae0eb421de52df759a53e309abb4d9a46">BLZ_Vertex</a>
 </li>
-</ul>
-
-
-<h3><a class="anchor" id="index_z"></a>- z -</h3><ul>
 <li>z
 : <a class="el" href="structBLZ__Vector4.html#a2ade4e4f11ac74646d77b96a64f2acf2">BLZ_Vector4</a>
 </li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 1 2019 21:48:50 for blaze by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.8
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated on Sun Feb 3 2019 20:17:25 for blaze by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
+  </ul>
+</div>
 </body>
 </html>

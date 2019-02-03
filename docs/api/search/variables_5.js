@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['flags',['flags',['../structBLZ__SpriteBatch.html#a6d4c7af4947ddf9ee561eefbc0fcb065',1,'BLZ_SpriteBatch']]],
-  ['frameskip',['frameskip',['../structBLZ__SpriteBatch.html#ae56a3dc9fe8ffe427eda4e01b2457153',1,'BLZ_SpriteBatch']]]
+  ['id',['id',['../structBLZ__Texture.html#aacb28e616a0c34cea14955b664fde243',1,'BLZ_Texture::id()'],['../structBLZ__RenderTarget.html#a7e2318d03dc9f871777ff78b6b8397ea',1,'BLZ_RenderTarget::id()']]]
 ];

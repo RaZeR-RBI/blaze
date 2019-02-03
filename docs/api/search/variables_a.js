@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['program',['program',['../structBLZ__Shader.html#af3c722b89997d2614547f18e3abd08d1',1,'BLZ_Shader']]]
+  ['v',['v',['../structBLZ__Vertex.html#ac6e0c3ee31390c9eb10dea4f03f0caa2',1,'BLZ_Vertex']]],
+  ['vertices',['vertices',['../structBLZ__SpriteQuad.html#a709c503b6514ee076ae446052f81c957',1,'BLZ_SpriteQuad']]]
 ];

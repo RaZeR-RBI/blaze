@@ -468,9 +468,9 @@ static inline void set_mvp_matrix(const GLfloat *matrix)
 	}
 }
 
-struct BLZ_SpriteBatch *__lastBatch;
-struct SpriteBucket *__lastBucket;
-GLuint __lastTexture;
+static struct BLZ_SpriteBatch *__lastBatch;
+static struct SpriteBucket *__lastBucket;
+static GLuint __lastTexture;
 static int flush(struct BLZ_SpriteBatch *batch)
 {
 	unsigned char to_draw, to_fill;

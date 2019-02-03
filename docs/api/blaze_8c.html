@@ -8,6 +8,13 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+  $(window).load(resizeHeight);
+</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/search.js"></script>
 <script type="text/javascript">
@@ -37,6 +44,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -63,12 +71,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('blaze_8c.html','');});
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -77,10 +100,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-</div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -96,59 +117,30 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBuffer.html">Buffer</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLZ__Shader.html">BLZ_Shader</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSpriteBucket.html">SpriteBucket</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:af7cd4d4989e380d131e71a5f5b77fa0b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#af7cd4d4989e380d131e71a5f5b77fa0b">calloc_one</a>(s)</td></tr>
-<tr class="separator:af7cd4d4989e380d131e71a5f5b77fa0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56c7105b7a827ead9f36384370c90f00"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a56c7105b7a827ead9f36384370c90f00">BUFFER_COUNT</a></td></tr>
 <tr class="separator:a56c7105b7a827ead9f36384370c90f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a631846123ba9b661138cb1f273f6edb5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a631846123ba9b661138cb1f273f6edb5">HAS_FLAG</a>(batch, flag)</td></tr>
-<tr class="separator:a631846123ba9b661138cb1f273f6edb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb399ad364dabe8e3a786047c3bfc3c4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#afb399ad364dabe8e3a786047c3bfc3c4">return_success</a>(result)</td></tr>
-<tr class="separator:afb399ad364dabe8e3a786047c3bfc3c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9753903bd1cb938590e92b49bc01b7d3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a9753903bd1cb938590e92b49bc01b7d3">success</a>()</td></tr>
-<tr class="separator:a9753903bd1cb938590e92b49bc01b7d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7cd4d4989e380d131e71a5f5b77fa0b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#af7cd4d4989e380d131e71a5f5b77fa0b">calloc_one</a>(s)</td></tr>
+<tr class="separator:af7cd4d4989e380d131e71a5f5b77fa0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7348e1f022d614b7afa0df05e71e0e76"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a7348e1f022d614b7afa0df05e71e0e76">check_alloc</a>(p)</td></tr>
+<tr class="separator:a7348e1f022d614b7afa0df05e71e0e76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05ec25e11ffdcaea9c4627c906388dd1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a05ec25e11ffdcaea9c4627c906388dd1">fail</a>(msg)</td></tr>
 <tr class="separator:a05ec25e11ffdcaea9c4627c906388dd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae42fa39a8821f47ac81605145be8aa08"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ae42fa39a8821f47ac81605145be8aa08">fail_cmp</a>(val, cmp, msg)</td></tr>
 <tr class="separator:ae42fa39a8821f47ac81605145be8aa08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37d697034d0b3be682701afedbd90441"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a37d697034d0b3be682701afedbd90441">fail_if_null</a>(val, msg)</td></tr>
-<tr class="separator:a37d697034d0b3be682701afedbd90441"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40556734972fde4fbb5fd4287958549b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a40556734972fde4fbb5fd4287958549b">fail_if_false</a>(val, msg)</td></tr>
 <tr class="separator:a40556734972fde4fbb5fd4287958549b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7369a8c5c34758cd941cdeb62d4f49de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a7369a8c5c34758cd941cdeb62d4f49de">null_if_false</a>(val, msg)</td></tr>
-<tr class="separator:a7369a8c5c34758cd941cdeb62d4f49de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7348e1f022d614b7afa0df05e71e0e76"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a7348e1f022d614b7afa0df05e71e0e76">check_alloc</a>(p)</td></tr>
-<tr class="separator:a7348e1f022d614b7afa0df05e71e0e76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a185699c7190f3b8f76a85433368d1402"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a185699c7190f3b8f76a85433368d1402">validate</a>(expr)</td></tr>
-<tr class="separator:a185699c7190f3b8f76a85433368d1402"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcd36d70f20583239b0e9df9be23712b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#abcd36d70f20583239b0e9df9be23712b">null_if_invalid</a>(expr)</td></tr>
-<tr class="separator:abcd36d70f20583239b0e9df9be23712b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6624c90c3e3fb68280b3676dd10aec9b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a6624c90c3e3fb68280b3676dd10aec9b">Z_NEAR</a></td></tr>
-<tr class="separator:a6624c90c3e3fb68280b3676dd10aec9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d8c46bddedf35f73bd7260ac55e4d68"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a9d8c46bddedf35f73bd7260ac55e4d68">Z_FAR</a></td></tr>
-<tr class="separator:a9d8c46bddedf35f73bd7260ac55e4d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37d697034d0b3be682701afedbd90441"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a37d697034d0b3be682701afedbd90441">fail_if_null</a>(val, msg)</td></tr>
+<tr class="separator:a37d697034d0b3be682701afedbd90441"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a631846123ba9b661138cb1f273f6edb5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a631846123ba9b661138cb1f273f6edb5">HAS_FLAG</a>(batch, flag)</td></tr>
+<tr class="separator:a631846123ba9b661138cb1f273f6edb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0dab7568d9aeddbbaf38a8eeaa023cd0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a0dab7568d9aeddbbaf38a8eeaa023cd0">LAYER_DEPTH</a>(depth)</td></tr>
 <tr class="separator:a0dab7568d9aeddbbaf38a8eeaa023cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a262a82fbfd37cc7c22809a1e964c6ee2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a262a82fbfd37cc7c22809a1e964c6ee2">set_vertex</a>(index, field, val)</td></tr>
-<tr class="separator:a262a82fbfd37cc7c22809a1e964c6ee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae82620a32079c136a50ee8e477e8736"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#aae82620a32079c136a50ee8e477e8736">set_all_vertices</a>(field, val)</td></tr>
-<tr class="separator:aae82620a32079c136a50ee8e477e8736"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72409add7e4d67d84a009c5e35da9a8a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a72409add7e4d67d84a009c5e35da9a8a">swap</a>(tmp, one, two)</td></tr>
-<tr class="separator:a72409add7e4d67d84a009c5e35da9a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7369a8c5c34758cd941cdeb62d4f49de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a7369a8c5c34758cd941cdeb62d4f49de">null_if_false</a>(val, msg)</td></tr>
+<tr class="separator:a7369a8c5c34758cd941cdeb62d4f49de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcd36d70f20583239b0e9df9be23712b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#abcd36d70f20583239b0e9df9be23712b">null_if_invalid</a>(expr)</td></tr>
+<tr class="separator:abcd36d70f20583239b0e9df9be23712b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a0a9fe3dd93bb37c1037e282b9b200b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a0a0a9fe3dd93bb37c1037e282b9b200b">O</a>(y, x)</td></tr>
 <tr class="separator:a0a0a9fe3dd93bb37c1037e282b9b200b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac9bc982baa751cd68e21ab797583b69"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#aac9bc982baa751cd68e21ab797583b69">PARAM1</a>(type)</td></tr>
@@ -167,151 +159,146 @@ Macros</h2></td></tr>
 <tr class="separator:af2ce4158f348aaf5310acd5c11296566"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d46c3f0cb7f8f05dcd3a69827b3d6e2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a8d46c3f0cb7f8f05dcd3a69827b3d6e2">PASS_PARAM4</a></td></tr>
 <tr class="separator:a8d46c3f0cb7f8f05dcd3a69827b3d6e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90cf9b25ee3e8c55bb9f172183d41403"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a90cf9b25ee3e8c55bb9f172183d41403">UNIFORM_VEC</a>(postfix, type, n)</td></tr>
-<tr class="separator:a90cf9b25ee3e8c55bb9f172183d41403"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb399ad364dabe8e3a786047c3bfc3c4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#afb399ad364dabe8e3a786047c3bfc3c4">return_success</a>(result)</td></tr>
+<tr class="separator:afb399ad364dabe8e3a786047c3bfc3c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae82620a32079c136a50ee8e477e8736"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#aae82620a32079c136a50ee8e477e8736">set_all_vertices</a>(field, val)</td></tr>
+<tr class="separator:aae82620a32079c136a50ee8e477e8736"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a262a82fbfd37cc7c22809a1e964c6ee2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a262a82fbfd37cc7c22809a1e964c6ee2">set_vertex</a>(index, field, val)</td></tr>
+<tr class="separator:a262a82fbfd37cc7c22809a1e964c6ee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9753903bd1cb938590e92b49bc01b7d3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a9753903bd1cb938590e92b49bc01b7d3">success</a>()</td></tr>
+<tr class="separator:a9753903bd1cb938590e92b49bc01b7d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72409add7e4d67d84a009c5e35da9a8a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a72409add7e4d67d84a009c5e35da9a8a">swap</a>(tmp, one, two)</td></tr>
+<tr class="separator:a72409add7e4d67d84a009c5e35da9a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8d9086718af383bc32528c70740cd9e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#aa8d9086718af383bc32528c70740cd9e">UNIFORM_MAT</a>(size)</td></tr>
 <tr class="separator:aa8d9086718af383bc32528c70740cd9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90cf9b25ee3e8c55bb9f172183d41403"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a90cf9b25ee3e8c55bb9f172183d41403">UNIFORM_VEC</a>(postfix, type, n)</td></tr>
+<tr class="separator:a90cf9b25ee3e8c55bb9f172183d41403"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a185699c7190f3b8f76a85433368d1402"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a185699c7190f3b8f76a85433368d1402">validate</a>(expr)</td></tr>
+<tr class="separator:a185699c7190f3b8f76a85433368d1402"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d8c46bddedf35f73bd7260ac55e4d68"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a9d8c46bddedf35f73bd7260ac55e4d68">Z_FAR</a></td></tr>
+<tr class="separator:a9d8c46bddedf35f73bd7260ac55e4d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6624c90c3e3fb68280b3676dd10aec9b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a6624c90c3e3fb68280b3676dd10aec9b">Z_NEAR</a></td></tr>
+<tr class="separator:a6624c90c3e3fb68280b3676dd10aec9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aff332da0e837065ae78fce386c5a4d83"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#aff332da0e837065ae78fce386c5a4d83">BLZ_Load</a> (<a class="el" href="blaze_8h.html#a15ba0aa96477fde89b4ca410f4d2a09d">glGetProcAddress</a> loader)</td></tr>
-<tr class="memdesc:aff332da0e837065ae78fce386c5a4d83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the OpenGL functions using the specified loader and initializes the library.  <a href="#aff332da0e837065ae78fce386c5a4d83">More...</a><br /></td></tr>
-<tr class="separator:aff332da0e837065ae78fce386c5a4d83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79eda0b91df6550a8ddb367cda13bf5a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a79eda0b91df6550a8ddb367cda13bf5a">BLZ_GetMaxTextureSlots</a> ()</td></tr>
-<tr class="separator:a79eda0b91df6550a8ddb367cda13bf5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9b3b7c2631c88724e461f7f5314db75"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#aa9b3b7c2631c88724e461f7f5314db75">BLZ_BindTexture</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, int slot)</td></tr>
-<tr class="separator:aa9b3b7c2631c88724e461f7f5314db75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fcd571d5a65b0949efde12dd3df4079"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a0fcd571d5a65b0949efde12dd3df4079">BLZ_SetTextureFiltering</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, enum <a class="el" href="blaze_8h.html#ae25c781408f209a57349e72a706e1a01">BLZ_TextureFilter</a> minification, enum <a class="el" href="blaze_8h.html#ae25c781408f209a57349e72a706e1a01">BLZ_TextureFilter</a> magnification)</td></tr>
-<tr class="separator:a0fcd571d5a65b0949efde12dd3df4079"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0cc5aa2f115d4688506a6f448e494ce4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a0cc5aa2f115d4688506a6f448e494ce4">BLZ_SetTextureWrap</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, enum <a class="el" href="blaze_8h.html#a15936d0311c6341fe123909df0ed494d">BLZ_TextureWrap</a> x, enum <a class="el" href="blaze_8h.html#a15936d0311c6341fe123909df0ed494d">BLZ_TextureWrap</a> y)</td></tr>
-<tr class="separator:a0cc5aa2f115d4688506a6f448e494ce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58bd2e537327488e4335fd5e5d7adaab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a58bd2e537327488e4335fd5e5d7adaab">BLZ_GetOptions</a> (struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *batch, int *max_buckets, int *max_sprites_per_bucket, enum <a class="el" href="blaze_8h.html#a21456941cc614455a88dbebc3fbdb697">BLZ_InitFlags</a> *flags)</td></tr>
-<tr class="memdesc:a58bd2e537327488e4335fd5e5d7adaab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads options specified in BLZ_CreateBatch for the specified batch object.  <a href="#a58bd2e537327488e4335fd5e5d7adaab">More...</a><br /></td></tr>
-<tr class="separator:a58bd2e537327488e4335fd5e5d7adaab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3aba8ca3bb2bba0c5236b86a4d53aaf3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a3aba8ca3bb2bba0c5236b86a4d53aaf3">BLZ_SetViewport</a> (int w, int h)</td></tr>
-<tr class="memdesc:a3aba8ca3bb2bba0c5236b86a4d53aaf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the viewport size in pixels.  <a href="#a3aba8ca3bb2bba0c5236b86a4d53aaf3">More...</a><br /></td></tr>
-<tr class="separator:a3aba8ca3bb2bba0c5236b86a4d53aaf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01e9dbe0346c6c70b95220ec06d726e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a01e9dbe0346c6c70b95220ec06d726e5">BLZ_SetClearColor</a> (struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a> color)</td></tr>
-<tr class="memdesc:a01e9dbe0346c6c70b95220ec06d726e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the background clear color.  <a href="#a01e9dbe0346c6c70b95220ec06d726e5">More...</a><br /></td></tr>
-<tr class="separator:a01e9dbe0346c6c70b95220ec06d726e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d71cd6b392e1ee8766ca8327c08de5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a9d71cd6b392e1ee8766ca8327c08de5d">BLZ_SetBlendMode</a> (const struct <a class="el" href="structBLZ__BlendFunc.html">BLZ_BlendFunc</a> func)</td></tr>
-<tr class="memdesc:a9d71cd6b392e1ee8766ca8327c08de5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the currently used blend function.  <a href="#a9d71cd6b392e1ee8766ca8327c08de5d">More...</a><br /></td></tr>
-<tr class="separator:a9d71cd6b392e1ee8766ca8327c08de5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1535541b15bf295be9774112497e20f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a1535541b15bf295be9774112497e20f8">BLZ_Clear</a> ()</td></tr>
-<tr class="memdesc:a1535541b15bf295be9774112497e20f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the screen with the specified color.  <a href="#a1535541b15bf295be9774112497e20f8">More...</a><br /></td></tr>
-<tr class="separator:a1535541b15bf295be9774112497e20f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bf1fca1b6f395cdfc1690548f15b45a"><td class="memItemLeft" align="right" valign="top">GLint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a7bf1fca1b6f395cdfc1690548f15b45a">BLZ_GetUniformLocation</a> (struct <a class="el" href="structBLZ__Shader.html">BLZ_Shader</a> *shader, const char *name)</td></tr>
-<tr class="separator:a7bf1fca1b6f395cdfc1690548f15b45a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f1e16f123d189d46b2dd398ffaac278"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBLZ__Shader.html">BLZ_Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a5f1e16f123d189d46b2dd398ffaac278">BLZ_CompileShader</a> (char *vert, char *frag)</td></tr>
-<tr class="separator:a5f1e16f123d189d46b2dd398ffaac278"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca4768fcbbe62556b00989680b06c0a5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#aca4768fcbbe62556b00989680b06c0a5">BLZ_UseShader</a> (<a class="el" href="structBLZ__Shader.html">BLZ_Shader</a> *program)</td></tr>
-<tr class="separator:aca4768fcbbe62556b00989680b06c0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a327ba8b721f12702e2f282bf177facb0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a327ba8b721f12702e2f282bf177facb0">BLZ_FreeShader</a> (<a class="el" href="structBLZ__Shader.html">BLZ_Shader</a> *program)</td></tr>
-<tr class="separator:a327ba8b721f12702e2f282bf177facb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a053128b4460530a839301994c3986da6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBLZ__Shader.html">BLZ_Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a053128b4460530a839301994c3986da6">BLZ_GetDefaultShader</a> ()</td></tr>
-<tr class="separator:a053128b4460530a839301994c3986da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa720ce2624b1b0a40fe1d40aa192ce2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#afa720ce2624b1b0a40fe1d40aa192ce2">BLZ_FreeBatch</a> (struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *batch)</td></tr>
-<tr class="memdesc:afa720ce2624b1b0a40fe1d40aa192ce2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the specified dynamic batch object.  <a href="#afa720ce2624b1b0a40fe1d40aa192ce2">More...</a><br /></td></tr>
-<tr class="separator:afa720ce2624b1b0a40fe1d40aa192ce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a6e3746d86346b2977f9a2d6b2419a9"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a7a6e3746d86346b2977f9a2d6b2419a9">BLZ_CreateBatch</a> (int max_buckets, int max_sprites_per_bucket, enum <a class="el" href="blaze_8h.html#a21456941cc614455a88dbebc3fbdb697">BLZ_InitFlags</a> flags)</td></tr>
-<tr class="memdesc:a7a6e3746d86346b2977f9a2d6b2419a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new dynamic batch using the specified parameters.  <a href="#a7a6e3746d86346b2977f9a2d6b2419a9">More...</a><br /></td></tr>
-<tr class="separator:a7a6e3746d86346b2977f9a2d6b2419a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4400c395faae99727bc1507a0ef89aed"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a4400c395faae99727bc1507a0ef89aed">BLZ_Present</a> (struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *batch)</td></tr>
-<tr class="separator:a4400c395faae99727bc1507a0ef89aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4a710b1f01ffc2148f23183ba1389fe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ae4a710b1f01ffc2148f23183ba1389fe">BLZ_Draw</a> (struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *batch, struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> position, struct <a class="el" href="structBLZ__Rectangle.html">BLZ_Rectangle</a> *srcRectangle, float rotation, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *origin, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *scale, struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a> color, enum <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">BLZ_SpriteFlip</a> effects)</td></tr>
-<tr class="separator:ae4a710b1f01ffc2148f23183ba1389fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a054ec57196a037d6f2a93a692b6b323b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a054ec57196a037d6f2a93a692b6b323b">BLZ_LowerDraw</a> (struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *batch, GLuint texture, struct <a class="el" href="structBLZ__SpriteQuad.html">BLZ_SpriteQuad</a> *quad)</td></tr>
-<tr class="separator:a054ec57196a037d6f2a93a692b6b323b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc5eac1c30bf61ace732452eb64df8a7"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#acc5eac1c30bf61ace732452eb64df8a7">BLZ_CreateStatic</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, int max_sprite_count)</td></tr>
-<tr class="separator:acc5eac1c30bf61ace732452eb64df8a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dc2c5b7801d635a308f0732acf5fb20"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a7dc2c5b7801d635a308f0732acf5fb20">BLZ_GetOptionsStatic</a> (struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *batch, int *max_sprite_count)</td></tr>
-<tr class="separator:a7dc2c5b7801d635a308f0732acf5fb20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0defff71db643d8a134f30e045932691"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a0defff71db643d8a134f30e045932691">BLZ_FreeBatchStatic</a> (struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *batch)</td></tr>
-<tr class="separator:a0defff71db643d8a134f30e045932691"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abaf1620f40a2e53841a9d99b566b5a95"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#abaf1620f40a2e53841a9d99b566b5a95">BLZ_DrawStatic</a> (struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *batch, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> position, struct <a class="el" href="structBLZ__Rectangle.html">BLZ_Rectangle</a> *srcRectangle, float rotation, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *origin, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *scale, struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a> color, enum <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">BLZ_SpriteFlip</a> effects)</td></tr>
-<tr class="separator:abaf1620f40a2e53841a9d99b566b5a95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2dfdfba62d504682139b82bed2cd752"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ab2dfdfba62d504682139b82bed2cd752">BLZ_LowerDrawStatic</a> (struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *batch, struct <a class="el" href="structBLZ__SpriteQuad.html">BLZ_SpriteQuad</a> *quad)</td></tr>
-<tr class="separator:ab2dfdfba62d504682139b82bed2cd752"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b5023342e3c3addcf690fd23fbc140e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a3b5023342e3c3addcf690fd23fbc140e">BLZ_PresentStatic</a> (struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *batch, GLfloat *transformMatrix4x4)</td></tr>
-<tr class="separator:a3b5023342e3c3addcf690fd23fbc140e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3769abc601fd99d291b8db56f1d6db44"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a3769abc601fd99d291b8db56f1d6db44">BLZ_DrawImmediate</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> position, struct <a class="el" href="structBLZ__Rectangle.html">BLZ_Rectangle</a> *srcRectangle, float rotation, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *origin, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *scale, struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a> color, enum <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">BLZ_SpriteFlip</a> effects)</td></tr>
-<tr class="separator:a3769abc601fd99d291b8db56f1d6db44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae82e1149971dd16aca7f973f63745691"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ae82e1149971dd16aca7f973f63745691">BLZ_LowerDrawImmediate</a> (GLuint texture, struct <a class="el" href="structBLZ__SpriteQuad.html">BLZ_SpriteQuad</a> *quad)</td></tr>
-<tr class="separator:ae82e1149971dd16aca7f973f63745691"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39a356a55b6ee4fc48889a50be70b7aa"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a39a356a55b6ee4fc48889a50be70b7aa">BLZ_LoadTextureFromFile</a> (const char *filename, enum <a class="el" href="blaze_8h.html#a5d9d2492b864ccb8d35f502453b2f1bc">BLZ_ImageChannels</a> channels, unsigned int texture_id, enum <a class="el" href="blaze_8h.html#a5c77d85b54fdaa239bbbf94c5914f87b">BLZ_ImageFlags</a> flags)</td></tr>
-<tr class="separator:a39a356a55b6ee4fc48889a50be70b7aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac10829f37a4fd1f0eb1c4d0581693811"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ac10829f37a4fd1f0eb1c4d0581693811">BLZ_LoadTextureFromMemory</a> (const unsigned char *const buffer, int buffer_length, enum <a class="el" href="blaze_8h.html#a5d9d2492b864ccb8d35f502453b2f1bc">BLZ_ImageChannels</a> force_channels, unsigned int texture_id, enum <a class="el" href="blaze_8h.html#a5c77d85b54fdaa239bbbf94c5914f87b">BLZ_ImageFlags</a> flags)</td></tr>
-<tr class="separator:ac10829f37a4fd1f0eb1c4d0581693811"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0718a7ac05f149368f96a226ab3f1add"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a0718a7ac05f149368f96a226ab3f1add">BLZ_FreeTexture</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture)</td></tr>
-<tr class="separator:a0718a7ac05f149368f96a226ab3f1add"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a598b2f453929739a35e7fbc218ad5282"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a598b2f453929739a35e7fbc218ad5282">BLZ_SaveScreenshot</a> (const char *filename, enum <a class="el" href="blaze_8h.html#a9acac5be984ca4d554112c3aac231aab">BLZ_SaveImageFormat</a> format, int x, int y, int width, int height)</td></tr>
-<tr class="separator:a598b2f453929739a35e7fbc218ad5282"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5ffc9020646c9a78c3ca888b175fd87"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBLZ__RenderTarget.html">BLZ_RenderTarget</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ad5ffc9020646c9a78c3ca888b175fd87">BLZ_CreateRenderTarget</a> (int width, int height)</td></tr>
-<tr class="separator:ad5ffc9020646c9a78c3ca888b175fd87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f957966a54d6a1bca3c5921e0a6c44d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a8f957966a54d6a1bca3c5921e0a6c44d">BLZ_BindRenderTarget</a> (struct <a class="el" href="structBLZ__RenderTarget.html">BLZ_RenderTarget</a> *target)</td></tr>
-<tr class="separator:a8f957966a54d6a1bca3c5921e0a6c44d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7214058960fdfcf8680a199227af298b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a7214058960fdfcf8680a199227af298b">BLZ_FreeRenderTarget</a> (struct <a class="el" href="structBLZ__RenderTarget.html">BLZ_RenderTarget</a> *target)</td></tr>
-<tr class="separator:a7214058960fdfcf8680a199227af298b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1da02c2d68d182ce0e2ff4b24456d6f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a1da02c2d68d182ce0e2ff4b24456d6f3">BLZ_Uniform1f</a> (GLint location, GLfloat v0)</td></tr>
-<tr class="separator:a1da02c2d68d182ce0e2ff4b24456d6f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7bc5419af6e377fb0fc4c771006b5f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ae7bc5419af6e377fb0fc4c771006b5f0">BLZ_Uniform2f</a> (GLint location, GLfloat v0, GLfloat v1)</td></tr>
-<tr class="separator:ae7bc5419af6e377fb0fc4c771006b5f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97b5546c80654c8eec183184ba3d0f0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a97b5546c80654c8eec183184ba3d0f0e">BLZ_Uniform3f</a> (GLint location, GLfloat v0, GLfloat v1, GLfloat v2)</td></tr>
-<tr class="separator:a97b5546c80654c8eec183184ba3d0f0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a201bec77eacf148626b110b7aebd172e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a201bec77eacf148626b110b7aebd172e">BLZ_Uniform4f</a> (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)</td></tr>
-<tr class="separator:a201bec77eacf148626b110b7aebd172e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9c070fea027455653ce50ddeea87650"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#af9c070fea027455653ce50ddeea87650">BLZ_Uniform1i</a> (GLint location, GLint v0)</td></tr>
-<tr class="separator:af9c070fea027455653ce50ddeea87650"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e36618244cb2cebb3ec19272ee85215"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a5e36618244cb2cebb3ec19272ee85215">BLZ_Uniform2i</a> (GLint location, GLint v0, GLint v1)</td></tr>
-<tr class="separator:a5e36618244cb2cebb3ec19272ee85215"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ceb7e790b21f47202c85478fc0a2539"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a8ceb7e790b21f47202c85478fc0a2539">BLZ_Uniform3i</a> (GLint location, GLint v0, GLint v1, GLint v2)</td></tr>
-<tr class="separator:a8ceb7e790b21f47202c85478fc0a2539"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e989822e5e182b45024e787a3b3cbc6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a2e989822e5e182b45024e787a3b3cbc6">BLZ_Uniform4i</a> (GLint location, GLint v0, GLint v1, GLint v2, GLint v3)</td></tr>
-<tr class="separator:a2e989822e5e182b45024e787a3b3cbc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a897503f48f57e1e34e8b8fbeb8dc0450"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a897503f48f57e1e34e8b8fbeb8dc0450">BLZ_Uniform1ui</a> (GLint location, GLuint v0)</td></tr>
-<tr class="separator:a897503f48f57e1e34e8b8fbeb8dc0450"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0dfd04319f781f6293547bc810f6b1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ac0dfd04319f781f6293547bc810f6b1f">BLZ_Uniform2ui</a> (GLint location, GLuint v0, GLuint v1)</td></tr>
-<tr class="separator:ac0dfd04319f781f6293547bc810f6b1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1fe7db193c819dc3a5e97fa1d69a541"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ae1fe7db193c819dc3a5e97fa1d69a541">BLZ_Uniform3ui</a> (GLint location, GLuint v0, GLuint v1, GLuint v2)</td></tr>
-<tr class="separator:ae1fe7db193c819dc3a5e97fa1d69a541"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab568310977351a5024632c1bd6752b28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ab568310977351a5024632c1bd6752b28">BLZ_Uniform4ui</a> (GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3)</td></tr>
-<tr class="separator:ab568310977351a5024632c1bd6752b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec77744507ce9428799b0b60fd2ea07c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#aec77744507ce9428799b0b60fd2ea07c">BLZ_UniformMatrix2fv</a> (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)</td></tr>
-<tr class="separator:aec77744507ce9428799b0b60fd2ea07c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af755efe808b7a80df128e24a68cb4ea4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#af755efe808b7a80df128e24a68cb4ea4">BLZ_UniformMatrix3fv</a> (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)</td></tr>
-<tr class="separator:af755efe808b7a80df128e24a68cb4ea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e976ce09189f238fd8e093584d0a3b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a6e976ce09189f238fd8e093584d0a3b4">BLZ_UniformMatrix4fv</a> (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)</td></tr>
-<tr class="separator:a6e976ce09189f238fd8e093584d0a3b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8963794d3e6a24c22b1217068bd6a9d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a8963794d3e6a24c22b1217068bd6a9d4">BLZ_UniformMatrix2x3fv</a> (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)</td></tr>
-<tr class="separator:a8963794d3e6a24c22b1217068bd6a9d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5de14f1c0e0f654952ae182497c65dda"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a5de14f1c0e0f654952ae182497c65dda">BLZ_UniformMatrix3x2fv</a> (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)</td></tr>
-<tr class="separator:a5de14f1c0e0f654952ae182497c65dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b026424820d7aff6c6cee087fdfe4c6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a4b026424820d7aff6c6cee087fdfe4c6">BLZ_UniformMatrix2x4fv</a> (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)</td></tr>
-<tr class="separator:a4b026424820d7aff6c6cee087fdfe4c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4fdf4ea188f642380e6074a2c4b0711"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ad4fdf4ea188f642380e6074a2c4b0711">BLZ_UniformMatrix4x2fv</a> (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)</td></tr>
-<tr class="separator:ad4fdf4ea188f642380e6074a2c4b0711"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac74e79b473f0ab886302372fdadd5f29"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ac74e79b473f0ab886302372fdadd5f29">BLZ_UniformMatrix3x4fv</a> (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)</td></tr>
-<tr class="separator:ac74e79b473f0ab886302372fdadd5f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af81602daa4a5a618ba8a1f8955f9f2ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#af81602daa4a5a618ba8a1f8955f9f2ed">BLZ_UniformMatrix4x3fv</a> (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)</td></tr>
-<tr class="separator:af81602daa4a5a618ba8a1f8955f9f2ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf0baf3b7626acd0f72f346f599238954"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__rendertarget.html#gaf0baf3b7626acd0f72f346f599238954">BLZ_BindRenderTarget</a> (struct <a class="el" href="structBLZ__RenderTarget.html">BLZ_RenderTarget</a> *target)</td></tr>
+<tr class="memdesc:gaf0baf3b7626acd0f72f346f599238954"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds the specified render target for output.  <a href="group__rendertarget.html#gaf0baf3b7626acd0f72f346f599238954">More...</a><br /></td></tr>
+<tr class="separator:gaf0baf3b7626acd0f72f346f599238954"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadfb56b50e71fae43371e4c841a012f47"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__texture.html#gadfb56b50e71fae43371e4c841a012f47">BLZ_BindTexture</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, int slot)</td></tr>
+<tr class="memdesc:gadfb56b50e71fae43371e4c841a012f47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds the specified texture to the specified slot number.  <a href="group__texture.html#gadfb56b50e71fae43371e4c841a012f47">More...</a><br /></td></tr>
+<tr class="separator:gadfb56b50e71fae43371e4c841a012f47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9ce4ffec9330218526b3aed2edad0201"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__global.html#ga9ce4ffec9330218526b3aed2edad0201">BLZ_Clear</a> ()</td></tr>
+<tr class="memdesc:ga9ce4ffec9330218526b3aed2edad0201"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the screen with the specified color.  <a href="group__global.html#ga9ce4ffec9330218526b3aed2edad0201">More...</a><br /></td></tr>
+<tr class="separator:ga9ce4ffec9330218526b3aed2edad0201"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga05c18a97a7bb510b52857bab51b7df69"><td class="memItemLeft" align="right" valign="top"><a class="el" href="blaze_8h.html#a617d2b10538570009f2a7edf4ffd153c">BLZ_Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shaders.html#ga05c18a97a7bb510b52857bab51b7df69">BLZ_CompileShader</a> (char *vert, char *frag)</td></tr>
+<tr class="memdesc:ga05c18a97a7bb510b52857bab51b7df69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a shader program from the specified sources.  <a href="group__shaders.html#ga05c18a97a7bb510b52857bab51b7df69">More...</a><br /></td></tr>
+<tr class="separator:ga05c18a97a7bb510b52857bab51b7df69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad980481c53a60d9603bdad63e2037857"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="blaze_8h.html#a63ca95119e2a347739cfee0900a37494">BLZ_SpriteBatch</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dynamic.html#gad980481c53a60d9603bdad63e2037857">BLZ_CreateBatch</a> (int max_buckets, int max_sprites_per_bucket, enum <a class="el" href="group__dynamic.html#ga21456941cc614455a88dbebc3fbdb697">BLZ_InitFlags</a> flags)</td></tr>
+<tr class="memdesc:gad980481c53a60d9603bdad63e2037857"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new dynamic batch using the specified parameters.  <a href="group__dynamic.html#gad980481c53a60d9603bdad63e2037857">More...</a><br /></td></tr>
+<tr class="separator:gad980481c53a60d9603bdad63e2037857"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadcb3d6f9c43d7d46f9e7fe37be998779"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBLZ__RenderTarget.html">BLZ_RenderTarget</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__rendertarget.html#gadcb3d6f9c43d7d46f9e7fe37be998779">BLZ_CreateRenderTarget</a> (int width, int height)</td></tr>
+<tr class="memdesc:gadcb3d6f9c43d7d46f9e7fe37be998779"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a RGBA render target using specified parameters.  <a href="group__rendertarget.html#gadcb3d6f9c43d7d46f9e7fe37be998779">More...</a><br /></td></tr>
+<tr class="separator:gadcb3d6f9c43d7d46f9e7fe37be998779"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2776c1d72fc57bdba3a16d1843db3e29"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="blaze_8h.html#a7da0981acd1de6111feff2909a1735ae">BLZ_StaticBatch</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__static.html#ga2776c1d72fc57bdba3a16d1843db3e29">BLZ_CreateStatic</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, int max_sprite_count)</td></tr>
+<tr class="memdesc:ga2776c1d72fc57bdba3a16d1843db3e29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a 'static' batch object.  <a href="group__static.html#ga2776c1d72fc57bdba3a16d1843db3e29">More...</a><br /></td></tr>
+<tr class="separator:ga2776c1d72fc57bdba3a16d1843db3e29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf0a5714435b5ffab9602fffe53f24fc2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dynamic.html#gaf0a5714435b5ffab9602fffe53f24fc2">BLZ_Draw</a> (struct <a class="el" href="blaze_8h.html#a63ca95119e2a347739cfee0900a37494">BLZ_SpriteBatch</a> *batch, struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> position, struct <a class="el" href="structBLZ__Rectangle.html">BLZ_Rectangle</a> *srcRectangle, float rotation, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *origin, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *scale, struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a> color, enum <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">BLZ_SpriteFlip</a> effects)</td></tr>
+<tr class="memdesc:gaf0a5714435b5ffab9602fffe53f24fc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a sprite to specified batch using specified parameters.  <a href="group__dynamic.html#gaf0a5714435b5ffab9602fffe53f24fc2">More...</a><br /></td></tr>
+<tr class="separator:gaf0a5714435b5ffab9602fffe53f24fc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga02c735a30cd338a342431760ff5270d0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__immediate.html#ga02c735a30cd338a342431760ff5270d0">BLZ_DrawImmediate</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> position, struct <a class="el" href="structBLZ__Rectangle.html">BLZ_Rectangle</a> *srcRectangle, float rotation, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *origin, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *scale, struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a> color, enum <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">BLZ_SpriteFlip</a> effects)</td></tr>
+<tr class="memdesc:ga02c735a30cd338a342431760ff5270d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Immediately draws a sprite using the specified parameters to screen.  <a href="group__immediate.html#ga02c735a30cd338a342431760ff5270d0">More...</a><br /></td></tr>
+<tr class="separator:ga02c735a30cd338a342431760ff5270d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3b43eda34bfe6fcd90e36c796aa43ccd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__static.html#ga3b43eda34bfe6fcd90e36c796aa43ccd">BLZ_DrawStatic</a> (struct <a class="el" href="blaze_8h.html#a7da0981acd1de6111feff2909a1735ae">BLZ_StaticBatch</a> *batch, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> position, struct <a class="el" href="structBLZ__Rectangle.html">BLZ_Rectangle</a> *srcRectangle, float rotation, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *origin, struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *scale, struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a> color, enum <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">BLZ_SpriteFlip</a> effects)</td></tr>
+<tr class="memdesc:ga3b43eda34bfe6fcd90e36c796aa43ccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a sprite to specified batch using specified parameters.  <a href="group__static.html#ga3b43eda34bfe6fcd90e36c796aa43ccd">More...</a><br /></td></tr>
+<tr class="separator:ga3b43eda34bfe6fcd90e36c796aa43ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaccf79336362646bb371b7e6d2e751517"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dynamic.html#gaccf79336362646bb371b7e6d2e751517">BLZ_FreeBatch</a> (struct <a class="el" href="blaze_8h.html#a63ca95119e2a347739cfee0900a37494">BLZ_SpriteBatch</a> *batch)</td></tr>
+<tr class="memdesc:gaccf79336362646bb371b7e6d2e751517"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the specified dynamic batch object.  <a href="group__dynamic.html#gaccf79336362646bb371b7e6d2e751517">More...</a><br /></td></tr>
+<tr class="separator:gaccf79336362646bb371b7e6d2e751517"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0adf1019f4a559804a4874947923eca3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__static.html#ga0adf1019f4a559804a4874947923eca3">BLZ_FreeBatchStatic</a> (struct <a class="el" href="blaze_8h.html#a7da0981acd1de6111feff2909a1735ae">BLZ_StaticBatch</a> *batch)</td></tr>
+<tr class="memdesc:ga0adf1019f4a559804a4874947923eca3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the specified static batch object.  <a href="group__static.html#ga0adf1019f4a559804a4874947923eca3">More...</a><br /></td></tr>
+<tr class="separator:ga0adf1019f4a559804a4874947923eca3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga32d5b2274d33fab205d623ec75237493"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__rendertarget.html#ga32d5b2274d33fab205d623ec75237493">BLZ_FreeRenderTarget</a> (struct <a class="el" href="structBLZ__RenderTarget.html">BLZ_RenderTarget</a> *target)</td></tr>
+<tr class="memdesc:ga32d5b2274d33fab205d623ec75237493"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the specified render target.  <a href="group__rendertarget.html#ga32d5b2274d33fab205d623ec75237493">More...</a><br /></td></tr>
+<tr class="separator:ga32d5b2274d33fab205d623ec75237493"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4b289afdc26c2b13d2447931be240316"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shaders.html#ga4b289afdc26c2b13d2447931be240316">BLZ_FreeShader</a> (<a class="el" href="blaze_8h.html#a617d2b10538570009f2a7edf4ffd153c">BLZ_Shader</a> *program)</td></tr>
+<tr class="memdesc:ga4b289afdc26c2b13d2447931be240316"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees memory used by specified shader program.  <a href="group__shaders.html#ga4b289afdc26c2b13d2447931be240316">More...</a><br /></td></tr>
+<tr class="separator:ga4b289afdc26c2b13d2447931be240316"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaee582b0442a8a4ac88bd9a1fa6f24d41"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__image.html#gaee582b0442a8a4ac88bd9a1fa6f24d41">BLZ_FreeTexture</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture)</td></tr>
+<tr class="memdesc:gaee582b0442a8a4ac88bd9a1fa6f24d41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the specified texture.  <a href="group__image.html#gaee582b0442a8a4ac88bd9a1fa6f24d41">More...</a><br /></td></tr>
+<tr class="separator:gaee582b0442a8a4ac88bd9a1fa6f24d41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga36a730c084345f4020a84cae3f9ea9c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="blaze_8h.html#a617d2b10538570009f2a7edf4ffd153c">BLZ_Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shaders.html#ga36a730c084345f4020a84cae3f9ea9c8">BLZ_GetDefaultShader</a> ()</td></tr>
+<tr class="memdesc:ga36a730c084345f4020a84cae3f9ea9c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to the default shader program.  <a href="group__shaders.html#ga36a730c084345f4020a84cae3f9ea9c8">More...</a><br /></td></tr>
+<tr class="separator:ga36a730c084345f4020a84cae3f9ea9c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae75eea4a162b89eb3d85202c794d5900"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__texture.html#gae75eea4a162b89eb3d85202c794d5900">BLZ_GetMaxTextureSlots</a> ()</td></tr>
+<tr class="memdesc:gae75eea4a162b89eb3d85202c794d5900"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum count of available texture slots which can be used simultaneously for <a class="el" href="group__texture.html#gadfb56b50e71fae43371e4c841a012f47">BLZ_BindTexture</a> texture binding.  <a href="group__texture.html#gae75eea4a162b89eb3d85202c794d5900">More...</a><br /></td></tr>
+<tr class="separator:gae75eea4a162b89eb3d85202c794d5900"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4f7139beacad5319a6b431fda16888a2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dynamic.html#ga4f7139beacad5319a6b431fda16888a2">BLZ_GetOptions</a> (struct <a class="el" href="blaze_8h.html#a63ca95119e2a347739cfee0900a37494">BLZ_SpriteBatch</a> *batch, int *max_buckets, int *max_sprites_per_bucket, enum <a class="el" href="group__dynamic.html#ga21456941cc614455a88dbebc3fbdb697">BLZ_InitFlags</a> *flags)</td></tr>
+<tr class="memdesc:ga4f7139beacad5319a6b431fda16888a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads options specified in <a class="el" href="group__dynamic.html#gad980481c53a60d9603bdad63e2037857">BLZ_CreateBatch</a> for the specified batch object.  <a href="group__dynamic.html#ga4f7139beacad5319a6b431fda16888a2">More...</a><br /></td></tr>
+<tr class="separator:ga4f7139beacad5319a6b431fda16888a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0187861434d1a745c83d7e347768b50d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__static.html#ga0187861434d1a745c83d7e347768b50d">BLZ_GetOptionsStatic</a> (struct <a class="el" href="blaze_8h.html#a7da0981acd1de6111feff2909a1735ae">BLZ_StaticBatch</a> *batch, int *max_sprite_count)</td></tr>
+<tr class="memdesc:ga0187861434d1a745c83d7e347768b50d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads options specified in <a class="el" href="group__static.html#ga2776c1d72fc57bdba3a16d1843db3e29">BLZ_CreateStatic</a> for the specified static batch object.  <a href="group__static.html#ga0187861434d1a745c83d7e347768b50d">More...</a><br /></td></tr>
+<tr class="separator:ga0187861434d1a745c83d7e347768b50d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8e930c5eb2dba60eed97c0b49517ceaa"><td class="memItemLeft" align="right" valign="top">GLint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shader__params.html#ga8e930c5eb2dba60eed97c0b49517ceaa">BLZ_GetUniformLocation</a> (struct <a class="el" href="blaze_8h.html#a617d2b10538570009f2a7edf4ffd153c">BLZ_Shader</a> *shader, const char *name)</td></tr>
+<tr class="memdesc:ga8e930c5eb2dba60eed97c0b49517ceaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the uniform location for the specified shader program.  <a href="group__shader__params.html#ga8e930c5eb2dba60eed97c0b49517ceaa">More...</a><br /></td></tr>
+<tr class="separator:ga8e930c5eb2dba60eed97c0b49517ceaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8c48b250f10371e5e7bf326d34d43c9b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__global.html#ga8c48b250f10371e5e7bf326d34d43c9b">BLZ_Load</a> (<a class="el" href="blaze_8h.html#a15ba0aa96477fde89b4ca410f4d2a09d">glGetProcAddress</a> loader)</td></tr>
+<tr class="memdesc:ga8c48b250f10371e5e7bf326d34d43c9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the OpenGL functions using the specified loader and initializes the library.  <a href="group__global.html#ga8c48b250f10371e5e7bf326d34d43c9b">More...</a><br /></td></tr>
+<tr class="separator:ga8c48b250f10371e5e7bf326d34d43c9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5e0e707f50226840ba93604ece1d0094"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__image.html#ga5e0e707f50226840ba93604ece1d0094">BLZ_LoadTextureFromFile</a> (const char *filename, enum <a class="el" href="group__image.html#ga5d9d2492b864ccb8d35f502453b2f1bc">BLZ_ImageChannels</a> channels, unsigned int texture_id, enum <a class="el" href="group__image.html#ga5c77d85b54fdaa239bbbf94c5914f87b">BLZ_ImageFlags</a> flags)</td></tr>
+<tr class="memdesc:ga5e0e707f50226840ba93604ece1d0094"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a texture from file.  <a href="group__image.html#ga5e0e707f50226840ba93604ece1d0094">More...</a><br /></td></tr>
+<tr class="separator:ga5e0e707f50226840ba93604ece1d0094"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9889c095269b72a2f01c50ab1c38ef9d"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__image.html#ga9889c095269b72a2f01c50ab1c38ef9d">BLZ_LoadTextureFromMemory</a> (const unsigned char *const buffer, int buffer_length, enum <a class="el" href="group__image.html#ga5d9d2492b864ccb8d35f502453b2f1bc">BLZ_ImageChannels</a> force_channels, unsigned int texture_id, enum <a class="el" href="group__image.html#ga5c77d85b54fdaa239bbbf94c5914f87b">BLZ_ImageFlags</a> flags)</td></tr>
+<tr class="memdesc:ga9889c095269b72a2f01c50ab1c38ef9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a texture from memory.  <a href="group__image.html#ga9889c095269b72a2f01c50ab1c38ef9d">More...</a><br /></td></tr>
+<tr class="separator:ga9889c095269b72a2f01c50ab1c38ef9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9b8692e8006a30f927f45fcedf4b4a75"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dynamic.html#ga9b8692e8006a30f927f45fcedf4b4a75">BLZ_LowerDraw</a> (struct <a class="el" href="blaze_8h.html#a63ca95119e2a347739cfee0900a37494">BLZ_SpriteBatch</a> *batch, GLuint texture, struct <a class="el" href="structBLZ__SpriteQuad.html">BLZ_SpriteQuad</a> *quad)</td></tr>
+<tr class="memdesc:ga9b8692e8006a30f927f45fcedf4b4a75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower level dynamic batching function, called by <a class="el" href="group__dynamic.html#gaf0a5714435b5ffab9602fffe53f24fc2">BLZ_Draw</a>.  <a href="group__dynamic.html#ga9b8692e8006a30f927f45fcedf4b4a75">More...</a><br /></td></tr>
+<tr class="separator:ga9b8692e8006a30f927f45fcedf4b4a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga58e9b29ccb070ca0a3df5f81db781478"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__immediate.html#ga58e9b29ccb070ca0a3df5f81db781478">BLZ_LowerDrawImmediate</a> (GLuint texture, struct <a class="el" href="structBLZ__SpriteQuad.html">BLZ_SpriteQuad</a> *quad)</td></tr>
+<tr class="memdesc:ga58e9b29ccb070ca0a3df5f81db781478"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower level immediate drawing function, called by <a class="el" href="group__immediate.html#ga02c735a30cd338a342431760ff5270d0">BLZ_DrawImmediate</a>.  <a href="group__immediate.html#ga58e9b29ccb070ca0a3df5f81db781478">More...</a><br /></td></tr>
+<tr class="separator:ga58e9b29ccb070ca0a3df5f81db781478"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf6311a3da374ba8bb1730cf3d9ee1b2e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__static.html#gaf6311a3da374ba8bb1730cf3d9ee1b2e">BLZ_LowerDrawStatic</a> (struct <a class="el" href="blaze_8h.html#a7da0981acd1de6111feff2909a1735ae">BLZ_StaticBatch</a> *batch, struct <a class="el" href="structBLZ__SpriteQuad.html">BLZ_SpriteQuad</a> *quad)</td></tr>
+<tr class="memdesc:gaf6311a3da374ba8bb1730cf3d9ee1b2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lower level static batching function, called by <a class="el" href="group__static.html#ga3b43eda34bfe6fcd90e36c796aa43ccd">BLZ_DrawStatic</a>.  <a href="group__static.html#gaf6311a3da374ba8bb1730cf3d9ee1b2e">More...</a><br /></td></tr>
+<tr class="separator:gaf6311a3da374ba8bb1730cf3d9ee1b2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga305d25c5175ca83f46053052a5cba14f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dynamic.html#ga305d25c5175ca83f46053052a5cba14f">BLZ_Present</a> (struct <a class="el" href="blaze_8h.html#a63ca95119e2a347739cfee0900a37494">BLZ_SpriteBatch</a> *batch)</td></tr>
+<tr class="memdesc:ga305d25c5175ca83f46053052a5cba14f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws everything from the specified dynamic batch to screen.  <a href="group__dynamic.html#ga305d25c5175ca83f46053052a5cba14f">More...</a><br /></td></tr>
+<tr class="separator:ga305d25c5175ca83f46053052a5cba14f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab91993d645d3b79b545072688c77d27a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__static.html#gab91993d645d3b79b545072688c77d27a">BLZ_PresentStatic</a> (struct <a class="el" href="blaze_8h.html#a7da0981acd1de6111feff2909a1735ae">BLZ_StaticBatch</a> *batch, GLfloat *transformMatrix4x4)</td></tr>
+<tr class="memdesc:gab91993d645d3b79b545072688c77d27a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws everything from the specified static batch to screen.  <a href="group__static.html#gab91993d645d3b79b545072688c77d27a">More...</a><br /></td></tr>
+<tr class="separator:gab91993d645d3b79b545072688c77d27a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4a8393bec716305d37960c9a7963bbd8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__image.html#ga4a8393bec716305d37960c9a7963bbd8">BLZ_SaveScreenshot</a> (const char *filename, enum <a class="el" href="group__image.html#ga9acac5be984ca4d554112c3aac231aab">BLZ_SaveImageFormat</a> format, int x, int y, int width, int height)</td></tr>
+<tr class="memdesc:ga4a8393bec716305d37960c9a7963bbd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a screenshot to file.  <a href="group__image.html#ga4a8393bec716305d37960c9a7963bbd8">More...</a><br /></td></tr>
+<tr class="separator:ga4a8393bec716305d37960c9a7963bbd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0d6bd83fa591ee721ee91cb5cd0f064f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__global.html#ga0d6bd83fa591ee721ee91cb5cd0f064f">BLZ_SetBlendMode</a> (const struct <a class="el" href="structBLZ__BlendFunc.html">BLZ_BlendFunc</a> func)</td></tr>
+<tr class="memdesc:ga0d6bd83fa591ee721ee91cb5cd0f064f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the currently used blend function.  <a href="group__global.html#ga0d6bd83fa591ee721ee91cb5cd0f064f">More...</a><br /></td></tr>
+<tr class="separator:ga0d6bd83fa591ee721ee91cb5cd0f064f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaac25f05f0933abd3d9d41a7439f609cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__global.html#gaac25f05f0933abd3d9d41a7439f609cf">BLZ_SetClearColor</a> (struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a> color)</td></tr>
+<tr class="memdesc:gaac25f05f0933abd3d9d41a7439f609cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the background clear color.  <a href="group__global.html#gaac25f05f0933abd3d9d41a7439f609cf">More...</a><br /></td></tr>
+<tr class="separator:gaac25f05f0933abd3d9d41a7439f609cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9872f084b140ebc2fa87bf83a74b25c3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__texture.html#ga9872f084b140ebc2fa87bf83a74b25c3">BLZ_SetTextureFiltering</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, enum <a class="el" href="group__texture.html#gae25c781408f209a57349e72a706e1a01">BLZ_TextureFilter</a> minification, enum <a class="el" href="group__texture.html#gae25c781408f209a57349e72a706e1a01">BLZ_TextureFilter</a> magnification)</td></tr>
+<tr class="memdesc:ga9872f084b140ebc2fa87bf83a74b25c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the texture filtering mode.  <a href="group__texture.html#ga9872f084b140ebc2fa87bf83a74b25c3">More...</a><br /></td></tr>
+<tr class="separator:ga9872f084b140ebc2fa87bf83a74b25c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga00e597fb159fbfbe565d54365f9b2bc8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__texture.html#ga00e597fb159fbfbe565d54365f9b2bc8">BLZ_SetTextureWrap</a> (struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *texture, enum <a class="el" href="group__texture.html#ga15936d0311c6341fe123909df0ed494d">BLZ_TextureWrap</a> x, enum <a class="el" href="group__texture.html#ga15936d0311c6341fe123909df0ed494d">BLZ_TextureWrap</a> y)</td></tr>
+<tr class="memdesc:ga00e597fb159fbfbe565d54365f9b2bc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the texture wrapping mode.  <a href="group__texture.html#ga00e597fb159fbfbe565d54365f9b2bc8">More...</a><br /></td></tr>
+<tr class="separator:ga00e597fb159fbfbe565d54365f9b2bc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga26f9d2cd44b911e612b5bc24e620dad9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__global.html#ga26f9d2cd44b911e612b5bc24e620dad9">BLZ_SetViewport</a> (int w, int h)</td></tr>
+<tr class="memdesc:ga26f9d2cd44b911e612b5bc24e620dad9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the viewport size in pixels.  <a href="group__global.html#ga26f9d2cd44b911e612b5bc24e620dad9">More...</a><br /></td></tr>
+<tr class="separator:ga26f9d2cd44b911e612b5bc24e620dad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab0721773206b716b18f10177aab320b8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shaders.html#gab0721773206b716b18f10177aab320b8">BLZ_UseShader</a> (<a class="el" href="blaze_8h.html#a617d2b10538570009f2a7edf4ffd153c">BLZ_Shader</a> *program)</td></tr>
+<tr class="memdesc:gab0721773206b716b18f10177aab320b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the specified shader as the current.  <a href="group__shaders.html#gab0721773206b716b18f10177aab320b8">More...</a><br /></td></tr>
+<tr class="separator:gab0721773206b716b18f10177aab320b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ac8c17ce344154915c905d14c6475c009"><td class="memItemLeft" align="right" valign="top">const struct <a class="el" href="structBLZ__BlendFunc.html">BLZ_BlendFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ac8c17ce344154915c905d14c6475c009">BLEND_NORMAL</a></td></tr>
-<tr class="memdesc:ac8c17ce344154915c905d14c6475c009"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normal alpha blending (src = SRC_ALPHA, dst = ONE_MINUS_SRC_ALPHA)  <a href="#ac8c17ce344154915c905d14c6475c009">More...</a><br /></td></tr>
-<tr class="separator:ac8c17ce344154915c905d14c6475c009"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b1ebc60cf206ae1f7d133aef76e4d29"><td class="memItemLeft" align="right" valign="top">const struct <a class="el" href="structBLZ__BlendFunc.html">BLZ_BlendFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a0b1ebc60cf206ae1f7d133aef76e4d29">BLEND_ADDITIVE</a></td></tr>
 <tr class="memdesc:a0b1ebc60cf206ae1f7d133aef76e4d29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Additive blending (src = ONE, dst = ONE)  <a href="#a0b1ebc60cf206ae1f7d133aef76e4d29">More...</a><br /></td></tr>
 <tr class="separator:a0b1ebc60cf206ae1f7d133aef76e4d29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0272e9c2785ec7a2f610562edc34eb6"><td class="memItemLeft" align="right" valign="top">const struct <a class="el" href="structBLZ__BlendFunc.html">BLZ_BlendFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#af0272e9c2785ec7a2f610562edc34eb6">BLEND_MULTIPLY</a></td></tr>
 <tr class="memdesc:af0272e9c2785ec7a2f610562edc34eb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiplicative blending (src = DST_COLOR, dst = ZERO)  <a href="#af0272e9c2785ec7a2f610562edc34eb6">More...</a><br /></td></tr>
 <tr class="separator:af0272e9c2785ec7a2f610562edc34eb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5f4ddb3d6d4d2e17aef24113d18b5de"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ad5f4ddb3d6d4d2e17aef24113d18b5de">__lastBatch</a></td></tr>
-<tr class="separator:ad5f4ddb3d6d4d2e17aef24113d18b5de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88501546d2091eb8d4b7f07051b006f5"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="structSpriteBucket.html">SpriteBucket</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a88501546d2091eb8d4b7f07051b006f5">__lastBucket</a></td></tr>
-<tr class="separator:a88501546d2091eb8d4b7f07051b006f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a092b94fb86f6f3ad1d52de9bd8ef982e"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#a092b94fb86f6f3ad1d52de9bd8ef982e">__lastTexture</a></td></tr>
-<tr class="separator:a092b94fb86f6f3ad1d52de9bd8ef982e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8c17ce344154915c905d14c6475c009"><td class="memItemLeft" align="right" valign="top">const struct <a class="el" href="structBLZ__BlendFunc.html">BLZ_BlendFunc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ac8c17ce344154915c905d14c6475c009">BLEND_NORMAL</a></td></tr>
+<tr class="memdesc:ac8c17ce344154915c905d14c6475c009"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normal alpha blending (src = SRC_ALPHA, dst = ONE_MINUS_SRC_ALPHA)  <a href="#ac8c17ce344154915c905d14c6475c009">More...</a><br /></td></tr>
+<tr class="separator:ac8c17ce344154915c905d14c6475c009"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae68a4e9cf0316227c01143a9be5bec15"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="blaze_8c.html#ae68a4e9cf0316227c01143a9be5bec15">SIZE_OF_ONE_QUAD</a></td></tr>
 <tr class="separator:ae68a4e9cf0316227c01143a9be5bec15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -891,1826 +878,7 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a8f957966a54d6a1bca3c5921e0a6c44d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_BindRenderTarget </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__RenderTarget.html">BLZ_RenderTarget</a> *&#160;</td>
-          <td class="paramname"><em>target</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="aa9b3b7c2631c88724e461f7f5314db75"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_BindTexture </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>slot</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a1535541b15bf295be9774112497e20f8"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Clear </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Clears the screen with the specified color. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="blaze_8h.html#aac25f05f0933abd3d9d41a7439f609cf" title="Sets the background clear color. ">BLZ_SetClearColor</a> </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a5f1e16f123d189d46b2dd398ffaac278"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structBLZ__Shader.html">BLZ_Shader</a>* BLZ_CompileShader </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>vert</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>frag</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a7a6e3746d86346b2977f9a2d6b2419a9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a>* BLZ_CreateBatch </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>max_buckets</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>max_sprites_per_bucket</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a21456941cc614455a88dbebc3fbdb697">BLZ_InitFlags</a>&#160;</td>
-          <td class="paramname"><em>flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Creates a new dynamic batch using the specified parameters. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">max_batches</td><td>Defines maximum sprite buckets. A bucket uses same texture for all sprites and is limited by max_sprites_per_batch. </td></tr>
-    <tr><td class="paramname">max_sprites_per_batch</td><td>Defines maximum sprite count in one bucket. </td></tr>
-    <tr><td class="paramname">flags</td><td>Initialization flags. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to a newly created dynamic batch object. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="blaze_8h.html#af0a5714435b5ffab9602fffe53f24fc2">BLZ_Draw</a> </dd>
-<dd>
-<a class="el" href="blaze_8h.html#aac5a8c0491dddb78485a1c2605122566" title="Reads options specified in BLZ_CreateBatch for the specified batch object. ">BLZ_GetOptions</a> </dd>
-<dd>
-<a class="el" href="blaze_8h.html#accf79336362646bb371b7e6d2e751517" title="Destroys the specified dynamic batch object. ">BLZ_FreeBatch</a> </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ad5ffc9020646c9a78c3ca888b175fd87"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structBLZ__RenderTarget.html">BLZ_RenderTarget</a>* BLZ_CreateRenderTarget </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="acc5eac1c30bf61ace732452eb64df8a7"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a>* BLZ_CreateStatic </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>max_sprite_count</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ae4a710b1f01ffc2148f23183ba1389fe"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_Draw </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a>&#160;</td>
-          <td class="paramname"><em>position</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Rectangle.html">BLZ_Rectangle</a> *&#160;</td>
-          <td class="paramname"><em>srcRectangle</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>rotation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *&#160;</td>
-          <td class="paramname"><em>origin</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *&#160;</td>
-          <td class="paramname"><em>scale</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a>&#160;</td>
-          <td class="paramname"><em>color</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">BLZ_SpriteFlip</a>&#160;</td>
-          <td class="paramname"><em>effects</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a3769abc601fd99d291b8db56f1d6db44"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_DrawImmediate </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a>&#160;</td>
-          <td class="paramname"><em>position</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Rectangle.html">BLZ_Rectangle</a> *&#160;</td>
-          <td class="paramname"><em>srcRectangle</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>rotation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *&#160;</td>
-          <td class="paramname"><em>origin</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *&#160;</td>
-          <td class="paramname"><em>scale</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a>&#160;</td>
-          <td class="paramname"><em>color</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">BLZ_SpriteFlip</a>&#160;</td>
-          <td class="paramname"><em>effects</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="abaf1620f40a2e53841a9d99b566b5a95"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_DrawStatic </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a>&#160;</td>
-          <td class="paramname"><em>position</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Rectangle.html">BLZ_Rectangle</a> *&#160;</td>
-          <td class="paramname"><em>srcRectangle</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>rotation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *&#160;</td>
-          <td class="paramname"><em>origin</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector2.html">BLZ_Vector2</a> *&#160;</td>
-          <td class="paramname"><em>scale</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a>&#160;</td>
-          <td class="paramname"><em>color</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">BLZ_SpriteFlip</a>&#160;</td>
-          <td class="paramname"><em>effects</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="afa720ce2624b1b0a40fe1d40aa192ce2"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_FreeBatch </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Destroys the specified dynamic batch object. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="blaze_8h.html#ad980481c53a60d9603bdad63e2037857" title="Creates a new dynamic batch using the specified parameters. ">BLZ_CreateBatch</a> </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a0defff71db643d8a134f30e045932691"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_FreeBatchStatic </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a7214058960fdfcf8680a199227af298b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_FreeRenderTarget </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__RenderTarget.html">BLZ_RenderTarget</a> *&#160;</td>
-          <td class="paramname"><em>target</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a327ba8b721f12702e2f282bf177facb0"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_FreeShader </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structBLZ__Shader.html">BLZ_Shader</a> *&#160;</td>
-          <td class="paramname"><em>program</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a0718a7ac05f149368f96a226ab3f1add"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_FreeTexture </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td>
-          <td class="paramname"><em>texture</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a053128b4460530a839301994c3986da6"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structBLZ__Shader.html">BLZ_Shader</a>* BLZ_GetDefaultShader </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a79eda0b91df6550a8ddb367cda13bf5a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_GetMaxTextureSlots </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a58bd2e537327488e4335fd5e5d7adaab"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_GetOptions </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>max_batches</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>max_sprites_per_batch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a21456941cc614455a88dbebc3fbdb697">BLZ_InitFlags</a> *&#160;</td>
-          <td class="paramname"><em>flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Reads options specified in BLZ_CreateBatch for the specified batch object. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="blaze_8h.html#ad980481c53a60d9603bdad63e2037857" title="Creates a new dynamic batch using the specified parameters. ">BLZ_CreateBatch</a> </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a7dc2c5b7801d635a308f0732acf5fb20"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_GetOptionsStatic </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>max_sprite_count</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a7bf1fca1b6f395cdfc1690548f15b45a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">GLint BLZ_GetUniformLocation </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Shader.html">BLZ_Shader</a> *&#160;</td>
-          <td class="paramname"><em>shader</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>name</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="aff332da0e837065ae78fce386c5a4d83"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_Load </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="blaze_8h.html#a15ba0aa96477fde89b4ca410f4d2a09d">glGetProcAddress</a>&#160;</td>
-          <td class="paramname"><em>loader</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads the OpenGL functions using the specified loader and initializes the library. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">loader</td><td>OpenGL function loader which accepts an 'const char *name'. If you're using SDL, pass SDL_GL_GetProcAddress as the value. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Non-zero on success, zero on failure </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a39a356a55b6ee4fc48889a50be70b7aa"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a>* BLZ_LoadTextureFromFile </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a5d9d2492b864ccb8d35f502453b2f1bc">BLZ_ImageChannels</a>&#160;</td>
-          <td class="paramname"><em>channels</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>texture_id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a5c77d85b54fdaa239bbbf94c5914f87b">BLZ_ImageFlags</a>&#160;</td>
-          <td class="paramname"><em>flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ac10829f37a4fd1f0eb1c4d0581693811"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a>* BLZ_LoadTextureFromMemory </td>
-          <td>(</td>
-          <td class="paramtype">const unsigned char *const&#160;</td>
-          <td class="paramname"><em>buffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>buffer_length</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a5d9d2492b864ccb8d35f502453b2f1bc">BLZ_ImageChannels</a>&#160;</td>
-          <td class="paramname"><em>force_channels</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>texture_id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a5c77d85b54fdaa239bbbf94c5914f87b">BLZ_ImageFlags</a>&#160;</td>
-          <td class="paramname"><em>flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a054ec57196a037d6f2a93a692b6b323b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_LowerDraw </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__SpriteQuad.html">BLZ_SpriteQuad</a> *&#160;</td>
-          <td class="paramname"><em>quad</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ae82e1149971dd16aca7f973f63745691"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_LowerDrawImmediate </td>
-          <td>(</td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__SpriteQuad.html">BLZ_SpriteQuad</a> *&#160;</td>
-          <td class="paramname"><em>quad</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ab2dfdfba62d504682139b82bed2cd752"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_LowerDrawStatic </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__SpriteQuad.html">BLZ_SpriteQuad</a> *&#160;</td>
-          <td class="paramname"><em>quad</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a4400c395faae99727bc1507a0ef89aed"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_Present </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a3b5023342e3c3addcf690fd23fbc140e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_PresentStatic </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__StaticBatch.html">BLZ_StaticBatch</a> *&#160;</td>
-          <td class="paramname"><em>batch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat *&#160;</td>
-          <td class="paramname"><em>transformMatrix4x4</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a598b2f453929739a35e7fbc218ad5282"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_SaveScreenshot </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a9acac5be984ca4d554112c3aac231aab">BLZ_SaveImageFormat</a>&#160;</td>
-          <td class="paramname"><em>format</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>y</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a9d71cd6b392e1ee8766ca8327c08de5d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_SetBlendMode </td>
-          <td>(</td>
-          <td class="paramtype">const struct <a class="el" href="structBLZ__BlendFunc.html">BLZ_BlendFunc</a>&#160;</td>
-          <td class="paramname"><em>func</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Sets the currently used blend function. </p>
-<p>Note - it will be applied when a sprite will be actually drawn using BLZ_Present, BLZ_PresentStatic or BLZ_DrawImmediate functions. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="structBLZ__BlendFunc.html" title="Defines a blending function. ">BLZ_BlendFunc</a> </dd>
-<dd>
-<a class="el" href="blaze_8h.html#a305d25c5175ca83f46053052a5cba14f">BLZ_Present</a> </dd>
-<dd>
-<a class="el" href="blaze_8h.html#ab91993d645d3b79b545072688c77d27a">BLZ_PresentStatic</a> </dd>
-<dd>
-<a class="el" href="blaze_8h.html#a02c735a30cd338a342431760ff5270d0">BLZ_DrawImmediate</a> </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a01e9dbe0346c6c70b95220ec06d726e5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_SetClearColor </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Vector4.html">BLZ_Vector4</a>&#160;</td>
-          <td class="paramname"><em>color</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Sets the background clear color. </p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="blaze_8h.html#a9ce4ffec9330218526b3aed2edad0201" title="Clears the screen with the specified color. ">BLZ_Clear</a> </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a0fcd571d5a65b0949efde12dd3df4079"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_SetTextureFiltering </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#ae25c781408f209a57349e72a706e1a01">BLZ_TextureFilter</a>&#160;</td>
-          <td class="paramname"><em>minification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#ae25c781408f209a57349e72a706e1a01">BLZ_TextureFilter</a>&#160;</td>
-          <td class="paramname"><em>magnification</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a0cc5aa2f115d4688506a6f448e494ce4"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_SetTextureWrap </td>
-          <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structBLZ__Texture.html">BLZ_Texture</a> *&#160;</td>
-          <td class="paramname"><em>texture</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a15936d0311c6341fe123909df0ed494d">BLZ_TextureWrap</a>&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">enum <a class="el" href="blaze_8h.html#a15936d0311c6341fe123909df0ed494d">BLZ_TextureWrap</a>&#160;</td>
-          <td class="paramname"><em>y</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a3aba8ca3bb2bba0c5236b86a4d53aaf3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_SetViewport </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>w</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>h</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Sets the viewport size in pixels. </p>
-<p>Used in sprite position calculations. </p>
-
-</div>
-</div>
-<a class="anchor" id="a1da02c2d68d182ce0e2ff4b24456d6f3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform1f </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v0</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af9c070fea027455653ce50ddeea87650"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform1i </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v0</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a897503f48f57e1e34e8b8fbeb8dc0450"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform1ui </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v0</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ae7bc5419af6e377fb0fc4c771006b5f0"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform2f </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v1</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a5e36618244cb2cebb3ec19272ee85215"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform2i </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v1</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ac0dfd04319f781f6293547bc810f6b1f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform2ui </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v1</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a97b5546c80654c8eec183184ba3d0f0e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform3f </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v2</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a8ceb7e790b21f47202c85478fc0a2539"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform3i </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v2</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ae1fe7db193c819dc3a5e97fa1d69a541"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform3ui </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v2</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a201bec77eacf148626b110b7aebd172e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform4f </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLfloat&#160;</td>
-          <td class="paramname"><em>v3</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a2e989822e5e182b45024e787a3b3cbc6"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform4i </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>v3</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ab568310977351a5024632c1bd6752b28"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_Uniform4ui </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v2</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>v3</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="aec77744507ce9428799b0b60fd2ea07c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_UniformMatrix2fv </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLsizei&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLboolean&#160;</td>
-          <td class="paramname"><em>transpose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const GLfloat *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a8963794d3e6a24c22b1217068bd6a9d4"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_UniformMatrix2x3fv </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLsizei&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLboolean&#160;</td>
-          <td class="paramname"><em>transpose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const GLfloat *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a4b026424820d7aff6c6cee087fdfe4c6"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_UniformMatrix2x4fv </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLsizei&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLboolean&#160;</td>
-          <td class="paramname"><em>transpose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const GLfloat *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af755efe808b7a80df128e24a68cb4ea4"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_UniformMatrix3fv </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLsizei&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLboolean&#160;</td>
-          <td class="paramname"><em>transpose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const GLfloat *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a5de14f1c0e0f654952ae182497c65dda"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_UniformMatrix3x2fv </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLsizei&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLboolean&#160;</td>
-          <td class="paramname"><em>transpose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const GLfloat *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ac74e79b473f0ab886302372fdadd5f29"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_UniformMatrix3x4fv </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLsizei&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLboolean&#160;</td>
-          <td class="paramname"><em>transpose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const GLfloat *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a6e976ce09189f238fd8e093584d0a3b4"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_UniformMatrix4fv </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLsizei&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLboolean&#160;</td>
-          <td class="paramname"><em>transpose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const GLfloat *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="ad4fdf4ea188f642380e6074a2c4b0711"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_UniformMatrix4x2fv </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLsizei&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLboolean&#160;</td>
-          <td class="paramname"><em>transpose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const GLfloat *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="af81602daa4a5a618ba8a1f8955f9f2ed"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BLZ_UniformMatrix4x3fv </td>
-          <td>(</td>
-          <td class="paramtype">GLint&#160;</td>
-          <td class="paramname"><em>location</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLsizei&#160;</td>
-          <td class="paramname"><em>count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLboolean&#160;</td>
-          <td class="paramname"><em>transpose</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const GLfloat *&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="aca4768fcbbe62556b00989680b06c0a5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int BLZ_UseShader </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structBLZ__Shader.html">BLZ_Shader</a> *&#160;</td>
-          <td class="paramname"><em>program</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a class="anchor" id="ad5f4ddb3d6d4d2e17aef24113d18b5de"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structBLZ__SpriteBatch.html">BLZ_SpriteBatch</a>* __lastBatch</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a88501546d2091eb8d4b7f07051b006f5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="structSpriteBucket.html">SpriteBucket</a>* __lastBucket</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a class="anchor" id="a092b94fb86f6f3ad1d52de9bd8ef982e"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">GLuint __lastTexture</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a class="anchor" id="a0b1ebc60cf206ae1f7d133aef76e4d29"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2766,11 +934,15 @@ Variables</h2></td></tr>
 </div>
 </div>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 1 2019 21:48:50 for blaze by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.8
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="blaze_8c.html">blaze.c</a></li>
+    <li class="footer">Generated on Sun Feb 3 2019 20:17:25 for blaze by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
+  </ul>
+</div>
 </body>
 </html>

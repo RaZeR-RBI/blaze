@@ -8,6 +8,13 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+  $(window).load(resizeHeight);
+</script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/search.js"></script>
 <script type="text/javascript">
@@ -37,6 +44,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -76,35 +84,49 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li class="current"><a href="globals.html#index__"><span>_</span></a></li>
-      <li><a href="globals_a.html#index_a"><span>a</span></a></li>
-      <li><a href="globals_b.html#index_b"><span>b</span></a></li>
-      <li><a href="globals_c.html#index_c"><span>c</span></a></li>
-      <li><a href="globals_d.html#index_d"><span>d</span></a></li>
-      <li><a href="globals_f.html#index_f"><span>f</span></a></li>
-      <li><a href="globals_g.html#index_g"><span>g</span></a></li>
-      <li><a href="globals_h.html#index_h"><span>h</span></a></li>
-      <li><a href="globals_i.html#index_i"><span>i</span></a></li>
-      <li><a href="globals_l.html#index_l"><span>l</span></a></li>
-      <li><a href="globals_m.html#index_m"><span>m</span></a></li>
-      <li><a href="globals_n.html#index_n"><span>n</span></a></li>
-      <li><a href="globals_o.html#index_o"><span>o</span></a></li>
-      <li><a href="globals_p.html#index_p"><span>p</span></a></li>
-      <li><a href="globals_r.html#index_r"><span>r</span></a></li>
-      <li><a href="globals_s.html#index_s"><span>s</span></a></li>
-      <li><a href="globals_t.html#index_t"><span>t</span></a></li>
-      <li><a href="globals_u.html#index_u"><span>u</span></a></li>
-      <li><a href="globals_v.html#index_v"><span>v</span></a></li>
-      <li><a href="globals_z.html#index_z"><span>z</span></a></li>
+      <li><a href="#index__"><span>_</span></a></li>
+      <li><a href="#index_a"><span>a</span></a></li>
+      <li><a href="#index_b"><span>b</span></a></li>
+      <li><a href="#index_c"><span>c</span></a></li>
+      <li><a href="#index_d"><span>d</span></a></li>
+      <li><a href="#index_f"><span>f</span></a></li>
+      <li><a href="#index_g"><span>g</span></a></li>
+      <li><a href="#index_h"><span>h</span></a></li>
+      <li><a href="#index_i"><span>i</span></a></li>
+      <li><a href="#index_l"><span>l</span></a></li>
+      <li><a href="#index_m"><span>m</span></a></li>
+      <li><a href="#index_n"><span>n</span></a></li>
+      <li><a href="#index_o"><span>o</span></a></li>
+      <li><a href="#index_p"><span>p</span></a></li>
+      <li><a href="#index_r"><span>r</span></a></li>
+      <li><a href="#index_s"><span>s</span></a></li>
+      <li><a href="#index_t"><span>t</span></a></li>
+      <li><a href="#index_u"><span>u</span></a></li>
+      <li><a href="#index_v"><span>v</span></a></li>
+      <li class="current"><a href="#index_z"><span>z</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('globals.html','');});
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -117,15 +139,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="textblock">Here is a list of all functions, variables, defines, enums, and typedefs with links to the files they belong to:</div>
 
 <h3><a class="anchor" id="index__"></a>- _ -</h3><ul>
-<li>__lastBatch
-: <a class="el" href="blaze_8c.html#ad5f4ddb3d6d4d2e17aef24113d18b5de">blaze.c</a>
-</li>
-<li>__lastBucket
-: <a class="el" href="blaze_8c.html#a88501546d2091eb8d4b7f07051b006f5">blaze.c</a>
-</li>
-<li>__lastTexture
-: <a class="el" href="blaze_8c.html#a092b94fb86f6f3ad1d52de9bd8ef982e">blaze.c</a>
-</li>
 <li>_impl_CASSERT_LINE
 : <a class="el" href="cassert_8h.html#aee15f58b2e7b74a7107fedda6c9e0e6f">cassert.h</a>
 </li>
@@ -133,12 +146,558 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="cassert_8h.html#ab127f5ccb9b1065a239a25c6e88a3b13">cassert.h</a>
 </li>
 </ul>
+
+
+<h3><a class="anchor" id="index_a"></a>- a -</h3><ul>
+<li>AUTO
+: <a class="el" href="group__image.html#gga5d9d2492b864ccb8d35f502453b2f1bcaeef9468d1b98bca652a04bf5063fd9d6">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_b"></a>- b -</h3><ul>
+<li>BLEND_ADDITIVE
+: <a class="el" href="blaze_8c.html#a0b1ebc60cf206ae1f7d133aef76e4d29">blaze.c</a>
+, <a class="el" href="blaze_8h.html#a0b1ebc60cf206ae1f7d133aef76e4d29">blaze.h</a>
+</li>
+<li>BLEND_MULTIPLY
+: <a class="el" href="blaze_8c.html#af0272e9c2785ec7a2f610562edc34eb6">blaze.c</a>
+, <a class="el" href="blaze_8h.html#af0272e9c2785ec7a2f610562edc34eb6">blaze.h</a>
+</li>
+<li>BLEND_NORMAL
+: <a class="el" href="blaze_8c.html#ac8c17ce344154915c905d14c6475c009">blaze.c</a>
+, <a class="el" href="blaze_8h.html#ac8c17ce344154915c905d14c6475c009">blaze.h</a>
+</li>
+<li>BLZ_BindRenderTarget()
+: <a class="el" href="group__rendertarget.html#gaf0baf3b7626acd0f72f346f599238954">blaze.c</a>
+, <a class="el" href="group__rendertarget.html#gaf0baf3b7626acd0f72f346f599238954">blaze.h</a>
+</li>
+<li>BLZ_BindTexture()
+: <a class="el" href="group__texture.html#gadfb56b50e71fae43371e4c841a012f47">blaze.c</a>
+, <a class="el" href="group__texture.html#gadfb56b50e71fae43371e4c841a012f47">blaze.h</a>
+</li>
+<li>BLZ_BlendFactor
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5">blaze.h</a>
+</li>
+<li>BLZ_Clear()
+: <a class="el" href="group__global.html#ga9ce4ffec9330218526b3aed2edad0201">blaze.c</a>
+, <a class="el" href="group__global.html#ga9ce4ffec9330218526b3aed2edad0201">blaze.h</a>
+</li>
+<li>BLZ_CompileShader()
+: <a class="el" href="group__shaders.html#ga05c18a97a7bb510b52857bab51b7df69">blaze.c</a>
+, <a class="el" href="group__shaders.html#ga05c18a97a7bb510b52857bab51b7df69">blaze.h</a>
+</li>
+<li>BLZ_CreateBatch()
+: <a class="el" href="group__dynamic.html#gad980481c53a60d9603bdad63e2037857">blaze.c</a>
+, <a class="el" href="group__dynamic.html#gad980481c53a60d9603bdad63e2037857">blaze.h</a>
+</li>
+<li>BLZ_CreateRenderTarget()
+: <a class="el" href="group__rendertarget.html#gadcb3d6f9c43d7d46f9e7fe37be998779">blaze.c</a>
+, <a class="el" href="group__rendertarget.html#gadcb3d6f9c43d7d46f9e7fe37be998779">blaze.h</a>
+</li>
+<li>BLZ_CreateStatic()
+: <a class="el" href="group__static.html#ga2776c1d72fc57bdba3a16d1843db3e29">blaze.c</a>
+, <a class="el" href="group__static.html#ga2776c1d72fc57bdba3a16d1843db3e29">blaze.h</a>
+</li>
+<li>BLZ_Draw()
+: <a class="el" href="group__dynamic.html#gaf0a5714435b5ffab9602fffe53f24fc2">blaze.c</a>
+, <a class="el" href="group__dynamic.html#gaf0a5714435b5ffab9602fffe53f24fc2">blaze.h</a>
+</li>
+<li>BLZ_DrawImmediate()
+: <a class="el" href="group__immediate.html#ga02c735a30cd338a342431760ff5270d0">blaze.c</a>
+, <a class="el" href="group__immediate.html#ga02c735a30cd338a342431760ff5270d0">blaze.h</a>
+</li>
+<li>BLZ_DrawStatic()
+: <a class="el" href="group__static.html#ga3b43eda34bfe6fcd90e36c796aa43ccd">blaze.c</a>
+, <a class="el" href="group__static.html#ga3b43eda34bfe6fcd90e36c796aa43ccd">blaze.h</a>
+</li>
+<li>BLZ_FreeBatch()
+: <a class="el" href="group__dynamic.html#gaccf79336362646bb371b7e6d2e751517">blaze.c</a>
+, <a class="el" href="group__dynamic.html#gaccf79336362646bb371b7e6d2e751517">blaze.h</a>
+</li>
+<li>BLZ_FreeBatchStatic()
+: <a class="el" href="group__static.html#ga0adf1019f4a559804a4874947923eca3">blaze.c</a>
+, <a class="el" href="group__static.html#ga0adf1019f4a559804a4874947923eca3">blaze.h</a>
+</li>
+<li>BLZ_FreeRenderTarget()
+: <a class="el" href="group__rendertarget.html#ga32d5b2274d33fab205d623ec75237493">blaze.c</a>
+, <a class="el" href="group__rendertarget.html#ga32d5b2274d33fab205d623ec75237493">blaze.h</a>
+</li>
+<li>BLZ_FreeShader()
+: <a class="el" href="group__shaders.html#ga4b289afdc26c2b13d2447931be240316">blaze.c</a>
+, <a class="el" href="group__shaders.html#ga4b289afdc26c2b13d2447931be240316">blaze.h</a>
+</li>
+<li>BLZ_FreeTexture()
+: <a class="el" href="group__image.html#gaee582b0442a8a4ac88bd9a1fa6f24d41">blaze.c</a>
+, <a class="el" href="group__image.html#gaee582b0442a8a4ac88bd9a1fa6f24d41">blaze.h</a>
+</li>
+<li>BLZ_GetDefaultShader()
+: <a class="el" href="group__shaders.html#ga36a730c084345f4020a84cae3f9ea9c8">blaze.c</a>
+, <a class="el" href="group__shaders.html#ga36a730c084345f4020a84cae3f9ea9c8">blaze.h</a>
+</li>
+<li>BLZ_GetLastError()
+: <a class="el" href="group__global.html#gaf2309c4f7a17d16c02128c4e66605daa">blaze.h</a>
+</li>
+<li>BLZ_GetMaxTextureSlots()
+: <a class="el" href="group__texture.html#gae75eea4a162b89eb3d85202c794d5900">blaze.c</a>
+, <a class="el" href="group__texture.html#gae75eea4a162b89eb3d85202c794d5900">blaze.h</a>
+</li>
+<li>BLZ_GetOptions()
+: <a class="el" href="group__dynamic.html#ga4f7139beacad5319a6b431fda16888a2">blaze.c</a>
+, <a class="el" href="group__dynamic.html#ga4f7139beacad5319a6b431fda16888a2">blaze.h</a>
+</li>
+<li>BLZ_GetOptionsStatic()
+: <a class="el" href="group__static.html#ga0187861434d1a745c83d7e347768b50d">blaze.c</a>
+, <a class="el" href="group__static.html#ga0187861434d1a745c83d7e347768b50d">blaze.h</a>
+</li>
+<li>BLZ_GetUniformLocation()
+: <a class="el" href="group__shader__params.html#ga8e930c5eb2dba60eed97c0b49517ceaa">blaze.c</a>
+, <a class="el" href="group__shader__params.html#ga8e930c5eb2dba60eed97c0b49517ceaa">blaze.h</a>
+</li>
+<li>BLZ_ImageChannels
+: <a class="el" href="group__image.html#ga5d9d2492b864ccb8d35f502453b2f1bc">blaze.h</a>
+</li>
+<li>BLZ_ImageFlags
+: <a class="el" href="group__image.html#ga5c77d85b54fdaa239bbbf94c5914f87b">blaze.h</a>
+</li>
+<li>BLZ_InitFlags
+: <a class="el" href="group__dynamic.html#ga21456941cc614455a88dbebc3fbdb697">blaze.h</a>
+</li>
+<li>BLZ_Load()
+: <a class="el" href="group__global.html#ga8c48b250f10371e5e7bf326d34d43c9b">blaze.c</a>
+, <a class="el" href="group__global.html#ga8c48b250f10371e5e7bf326d34d43c9b">blaze.h</a>
+</li>
+<li>BLZ_LoadTextureFromFile()
+: <a class="el" href="group__image.html#ga5e0e707f50226840ba93604ece1d0094">blaze.c</a>
+, <a class="el" href="group__image.html#ga5e0e707f50226840ba93604ece1d0094">blaze.h</a>
+</li>
+<li>BLZ_LoadTextureFromMemory()
+: <a class="el" href="group__image.html#ga9889c095269b72a2f01c50ab1c38ef9d">blaze.c</a>
+, <a class="el" href="group__image.html#ga9889c095269b72a2f01c50ab1c38ef9d">blaze.h</a>
+</li>
+<li>BLZ_LowerDraw()
+: <a class="el" href="group__dynamic.html#ga9b8692e8006a30f927f45fcedf4b4a75">blaze.c</a>
+, <a class="el" href="group__dynamic.html#ga9b8692e8006a30f927f45fcedf4b4a75">blaze.h</a>
+</li>
+<li>BLZ_LowerDrawImmediate()
+: <a class="el" href="group__immediate.html#ga58e9b29ccb070ca0a3df5f81db781478">blaze.c</a>
+, <a class="el" href="group__immediate.html#ga58e9b29ccb070ca0a3df5f81db781478">blaze.h</a>
+</li>
+<li>BLZ_LowerDrawStatic()
+: <a class="el" href="group__static.html#gaf6311a3da374ba8bb1730cf3d9ee1b2e">blaze.c</a>
+, <a class="el" href="group__static.html#gaf6311a3da374ba8bb1730cf3d9ee1b2e">blaze.h</a>
+</li>
+<li>BLZ_Present()
+: <a class="el" href="group__dynamic.html#ga305d25c5175ca83f46053052a5cba14f">blaze.c</a>
+, <a class="el" href="group__dynamic.html#ga305d25c5175ca83f46053052a5cba14f">blaze.h</a>
+</li>
+<li>BLZ_PresentStatic()
+: <a class="el" href="group__static.html#gab91993d645d3b79b545072688c77d27a">blaze.c</a>
+, <a class="el" href="group__static.html#gab91993d645d3b79b545072688c77d27a">blaze.h</a>
+</li>
+<li>BLZ_SaveImageFormat
+: <a class="el" href="group__image.html#ga9acac5be984ca4d554112c3aac231aab">blaze.h</a>
+</li>
+<li>BLZ_SaveScreenshot()
+: <a class="el" href="group__image.html#ga4a8393bec716305d37960c9a7963bbd8">blaze.c</a>
+, <a class="el" href="group__image.html#ga4a8393bec716305d37960c9a7963bbd8">blaze.h</a>
+</li>
+<li>BLZ_SetBlendMode()
+: <a class="el" href="group__global.html#ga0d6bd83fa591ee721ee91cb5cd0f064f">blaze.c</a>
+, <a class="el" href="group__global.html#ga0d6bd83fa591ee721ee91cb5cd0f064f">blaze.h</a>
+</li>
+<li>BLZ_SetClearColor()
+: <a class="el" href="group__global.html#gaac25f05f0933abd3d9d41a7439f609cf">blaze.c</a>
+, <a class="el" href="group__global.html#gaac25f05f0933abd3d9d41a7439f609cf">blaze.h</a>
+</li>
+<li>BLZ_SetTextureFiltering()
+: <a class="el" href="group__texture.html#ga9872f084b140ebc2fa87bf83a74b25c3">blaze.c</a>
+, <a class="el" href="group__texture.html#ga9872f084b140ebc2fa87bf83a74b25c3">blaze.h</a>
+</li>
+<li>BLZ_SetTextureWrap()
+: <a class="el" href="group__texture.html#ga00e597fb159fbfbe565d54365f9b2bc8">blaze.c</a>
+, <a class="el" href="group__texture.html#ga00e597fb159fbfbe565d54365f9b2bc8">blaze.h</a>
+</li>
+<li>BLZ_SetViewport()
+: <a class="el" href="group__global.html#ga26f9d2cd44b911e612b5bc24e620dad9">blaze.c</a>
+, <a class="el" href="group__global.html#ga26f9d2cd44b911e612b5bc24e620dad9">blaze.h</a>
+</li>
+<li>BLZ_Shader
+: <a class="el" href="blaze_8h.html#a617d2b10538570009f2a7edf4ffd153c">blaze.h</a>
+</li>
+<li>BLZ_SpriteBatch
+: <a class="el" href="blaze_8h.html#a63ca95119e2a347739cfee0900a37494">blaze.h</a>
+</li>
+<li>BLZ_SpriteFlip
+: <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741">blaze.h</a>
+</li>
+<li>BLZ_StaticBatch
+: <a class="el" href="blaze_8h.html#a7da0981acd1de6111feff2909a1735ae">blaze.h</a>
+</li>
+<li>BLZ_TextureFilter
+: <a class="el" href="group__texture.html#gae25c781408f209a57349e72a706e1a01">blaze.h</a>
+</li>
+<li>BLZ_TextureWrap
+: <a class="el" href="group__texture.html#ga15936d0311c6341fe123909df0ed494d">blaze.h</a>
+</li>
+<li>BLZ_Uniform1f()
+: <a class="el" href="group__shader__params.html#ga3d6539517b49ca5f7d517cf689ea97df">blaze.h</a>
+</li>
+<li>BLZ_Uniform1i()
+: <a class="el" href="group__shader__params.html#ga5a6401d08edd2fd9d706815b76f601ad">blaze.h</a>
+</li>
+<li>BLZ_Uniform1ui()
+: <a class="el" href="group__shader__params.html#gacd93a4b984f0a4ec4464657148207fe3">blaze.h</a>
+</li>
+<li>BLZ_Uniform2f()
+: <a class="el" href="group__shader__params.html#gada20dd90c5b55f2f51e1cf4a6c56194c">blaze.h</a>
+</li>
+<li>BLZ_Uniform2i()
+: <a class="el" href="group__shader__params.html#gacbc5efc5e6faadb7d383fcfe127e6cd1">blaze.h</a>
+</li>
+<li>BLZ_Uniform2ui()
+: <a class="el" href="group__shader__params.html#ga1a4605ba0bf2b3949bbf671407a18614">blaze.h</a>
+</li>
+<li>BLZ_Uniform3f()
+: <a class="el" href="group__shader__params.html#gae1c58554a42dd06aba32a7a86467a93a">blaze.h</a>
+</li>
+<li>BLZ_Uniform3i()
+: <a class="el" href="group__shader__params.html#gabefbf09dc4e8601835c4a4297eeaa90f">blaze.h</a>
+</li>
+<li>BLZ_Uniform3ui()
+: <a class="el" href="group__shader__params.html#gaec5a86d8affb145c11c2f9b93594d7e0">blaze.h</a>
+</li>
+<li>BLZ_Uniform4f()
+: <a class="el" href="group__shader__params.html#ga23203f1f5d0d6c83bea9263e30a6c87b">blaze.h</a>
+</li>
+<li>BLZ_Uniform4i()
+: <a class="el" href="group__shader__params.html#gaceb6e38349dfa8d381ba63a6b24f7dff">blaze.h</a>
+</li>
+<li>BLZ_Uniform4ui()
+: <a class="el" href="group__shader__params.html#gaf6cf93de37c068368bae6e04a01578e6">blaze.h</a>
+</li>
+<li>BLZ_UniformMatrix2fv()
+: <a class="el" href="group__shader__params.html#ga540c2e40c532882351fff3c2afe021fa">blaze.h</a>
+</li>
+<li>BLZ_UniformMatrix2x3fv()
+: <a class="el" href="group__shader__params.html#gaad017cadd1b236ff21ab7b59043de5db">blaze.h</a>
+</li>
+<li>BLZ_UniformMatrix2x4fv()
+: <a class="el" href="group__shader__params.html#ga23e06d7127fcfa739baa457f0112aca5">blaze.h</a>
+</li>
+<li>BLZ_UniformMatrix3fv()
+: <a class="el" href="group__shader__params.html#ga2e33195d63f5ed380037d2c53c202b62">blaze.h</a>
+</li>
+<li>BLZ_UniformMatrix3x2fv()
+: <a class="el" href="group__shader__params.html#ga69ad31591fa9352e43f832dfc262ad48">blaze.h</a>
+</li>
+<li>BLZ_UniformMatrix3x4fv()
+: <a class="el" href="group__shader__params.html#ga6383746c95f2b0ae656ac681bac43611">blaze.h</a>
+</li>
+<li>BLZ_UniformMatrix4fv()
+: <a class="el" href="group__shader__params.html#ga66ca684c30f7848eae09132716c56937">blaze.h</a>
+</li>
+<li>BLZ_UniformMatrix4x2fv()
+: <a class="el" href="group__shader__params.html#ga476bf1cf17b5c4b04e27d4b36c76a6e7">blaze.h</a>
+</li>
+<li>BLZ_UniformMatrix4x3fv()
+: <a class="el" href="group__shader__params.html#ga77a46f702b856a74dc79f5b940f1d827">blaze.h</a>
+</li>
+<li>BLZ_UseShader()
+: <a class="el" href="group__shaders.html#gab0721773206b716b18f10177aab320b8">blaze.c</a>
+, <a class="el" href="group__shaders.html#gab0721773206b716b18f10177aab320b8">blaze.h</a>
+</li>
+<li>BMP
+: <a class="el" href="group__image.html#gga9acac5be984ca4d554112c3aac231aaba472992a8061f64e53dced30fb026b3b7">blaze.h</a>
+</li>
+<li>BOTH
+: <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741a627abe5a430420baf29ebe1940a7f2fb">blaze.h</a>
+</li>
+<li>BUFFER_COUNT
+: <a class="el" href="blaze_8c.html#a56c7105b7a827ead9f36384370c90f00">blaze.c</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
+<li>calloc_one
+: <a class="el" href="blaze_8c.html#af7cd4d4989e380d131e71a5f5b77fa0b">blaze.c</a>
+</li>
+<li>CASSERT
+: <a class="el" href="cassert_8h.html#a7c0ceafdf0e0c2fbe5499cfc4a90b880">cassert.h</a>
+</li>
+<li>check_alloc
+: <a class="el" href="blaze_8c.html#a7348e1f022d614b7afa0df05e71e0e76">blaze.c</a>
+</li>
+<li>CLAMP_TO_EDGE
+: <a class="el" href="group__texture.html#gga15936d0311c6341fe123909df0ed494dac017e952a3740f4b8ba06fae64e262df">blaze.h</a>
+</li>
+<li>CoCg_Y
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87ba430527ed0a28f0526b1b9bda96259b87">blaze.h</a>
+</li>
+<li>COMPRESS_TO_DXT
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87ba1c03cfb83be02586296753b7020a1f9c">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
+<li>DDS
+: <a class="el" href="group__image.html#gga9acac5be984ca4d554112c3aac231aaba539f41b68fd1d3b17779d462aad6f8b3">blaze.h</a>
+</li>
+<li>DDS_LOAD_DIRECT
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87ba5ed37a5929a34050582a7b6c67720368">blaze.h</a>
+</li>
+<li>DEFAULT
+: <a class="el" href="group__dynamic.html#gga21456941cc614455a88dbebc3fbdb697a88ec7d5086d2469ba843c7fcceade8a6">blaze.h</a>
+</li>
+<li>DST_ALPHA
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a6ba00e36f6cbb26b70b0b0f5eed63697">blaze.h</a>
+</li>
+<li>DST_COLOR
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a3f65e4e241cac68253eaf4b38b077f2f">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_f"></a>- f -</h3><ul>
+<li>fail
+: <a class="el" href="blaze_8c.html#a05ec25e11ffdcaea9c4627c906388dd1">blaze.c</a>
+</li>
+<li>fail_cmp
+: <a class="el" href="blaze_8c.html#ae42fa39a8821f47ac81605145be8aa08">blaze.c</a>
+</li>
+<li>fail_if_false
+: <a class="el" href="blaze_8c.html#a40556734972fde4fbb5fd4287958549b">blaze.c</a>
+</li>
+<li>fail_if_null
+: <a class="el" href="blaze_8c.html#a37d697034d0b3be682701afedbd90441">blaze.c</a>
+</li>
+<li>FLIP_H
+: <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741aa02c13f8f08154ca2e58c488c922fbe5">blaze.h</a>
+</li>
+<li>FLIP_V
+: <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741a127171d15d7e5849705973e163393c71">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
+<li>glGetProcAddress
+: <a class="el" href="blaze_8h.html#a15ba0aa96477fde89b4ca410f4d2a09d">blaze.h</a>
+</li>
+<li>GRAYSCALE
+: <a class="el" href="group__image.html#gga5d9d2492b864ccb8d35f502453b2f1bca236726f13bc742b48e30da2595277194">blaze.h</a>
+</li>
+<li>GRAYSCALE_ALPHA
+: <a class="el" href="group__image.html#gga5d9d2492b864ccb8d35f502453b2f1bca12906268fc6187f7b0d69cf32464e88b">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
+<li>HAS_FLAG
+: <a class="el" href="blaze_8c.html#a631846123ba9b661138cb1f273f6edb5">blaze.c</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_i"></a>- i -</h3><ul>
+<li>INVERT_Y
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87bad49821910891bd4fe863810df1106394">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
+<li>LAYER_DEPTH
+: <a class="el" href="blaze_8c.html#a0dab7568d9aeddbbaf38a8eeaa023cd0">blaze.c</a>
+</li>
+<li>LINEAR
+: <a class="el" href="group__texture.html#ggae25c781408f209a57349e72a706e1a01adc101ebf31c49c2d4b80b7c6f59f22cb">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_m"></a>- m -</h3><ul>
+<li>MIPMAPS
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87ba393c17a67d0dfb231d365c481ed626ab">blaze.h</a>
+</li>
+<li>MIRRORED_REPEAT
+: <a class="el" href="group__texture.html#gga15936d0311c6341fe123909df0ed494dac1b32fc83f123788b14f7b244b93cb30">blaze.h</a>
+</li>
+<li>MULTIPLY_ALPHA
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87baf007005a9f5b46b669507f9ddb68929c">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
+<li>NEAREST
+: <a class="el" href="group__texture.html#ggae25c781408f209a57349e72a706e1a01a32bf899c26ebe34101c3c9d15e41b77e">blaze.h</a>
+</li>
+<li>NO_BUFFERING
+: <a class="el" href="group__dynamic.html#gga21456941cc614455a88dbebc3fbdb697ad5434cd49a3b4ac14b193dbb0086e4d4">blaze.h</a>
+</li>
+<li>NONE
+: <a class="el" href="blaze_8h.html#a15fd6d858186c0167c22474dbd67e741ac157bdf0b85a40d2619cbc8bc1ae5fe2">blaze.h</a>
+</li>
+<li>NTSC_SAFE_RGB
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87bae1a96aba6f55cc66f7d9a1ce96ef7e1b">blaze.h</a>
+</li>
+<li>null_if_false
+: <a class="el" href="blaze_8c.html#a7369a8c5c34758cd941cdeb62d4f49de">blaze.c</a>
+</li>
+<li>null_if_invalid
+: <a class="el" href="blaze_8c.html#abcd36d70f20583239b0e9df9be23712b">blaze.c</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_o"></a>- o -</h3><ul>
+<li>O
+: <a class="el" href="blaze_8c.html#a0a0a9fe3dd93bb37c1037e282b9b200b">blaze.c</a>
+</li>
+<li>ONE
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a7a725f13af144bdef532d0389ba75e0d">blaze.h</a>
+</li>
+<li>ONE_MINUS_DST_ALPHA
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5aa2b08f5fdb13dcaf99fba011576d8203">blaze.h</a>
+</li>
+<li>ONE_MINUS_DST_COLOR
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a8b2add59e722fa2a2fe27b27067b00bc">blaze.h</a>
+</li>
+<li>ONE_MINUS_SRC_ALPHA
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a37789beca7fd3d962ad8ec0dc4f7b975">blaze.h</a>
+</li>
+<li>ONE_MINUS_SRC_COLOR
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a5588864c3fc7e160ef1e20ed98ec7645">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
+<li>PARAM1
+: <a class="el" href="blaze_8c.html#aac9bc982baa751cd68e21ab797583b69">blaze.c</a>
+</li>
+<li>PARAM2
+: <a class="el" href="blaze_8c.html#af63b9fcaf454f5d182dd1ee820a0de05">blaze.c</a>
+</li>
+<li>PARAM3
+: <a class="el" href="blaze_8c.html#aaf005a55c4d9f2d3f23eb7e707842553">blaze.c</a>
+</li>
+<li>PARAM4
+: <a class="el" href="blaze_8c.html#af9021dc37120c4be00f392685f7b6b6c">blaze.c</a>
+</li>
+<li>PASS_PARAM1
+: <a class="el" href="blaze_8c.html#ab4062c4e2036f90e4027e6000e5498a9">blaze.c</a>
+</li>
+<li>PASS_PARAM2
+: <a class="el" href="blaze_8c.html#afb38c0555f9dd9de74dc34a8c64a8e4e">blaze.c</a>
+</li>
+<li>PASS_PARAM3
+: <a class="el" href="blaze_8c.html#af2ce4158f348aaf5310acd5c11296566">blaze.c</a>
+</li>
+<li>PASS_PARAM4
+: <a class="el" href="blaze_8c.html#a8d46c3f0cb7f8f05dcd3a69827b3d6e2">blaze.c</a>
+</li>
+<li>POWER_OF_TWO
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87bab2cb803efeb48db657c41a273080c8db">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
+<li>REPEAT
+: <a class="el" href="group__texture.html#gga15936d0311c6341fe123909df0ed494da972f3df9d279a3d3acc88bcbe4452d51">blaze.h</a>
+</li>
+<li>return_success
+: <a class="el" href="blaze_8c.html#afb399ad364dabe8e3a786047c3bfc3c4">blaze.c</a>
+</li>
+<li>RGB
+: <a class="el" href="group__image.html#gga5d9d2492b864ccb8d35f502453b2f1bca30447e9f6efa4afdd251f9afc1d5fb44">blaze.h</a>
+</li>
+<li>RGBA
+: <a class="el" href="group__image.html#gga5d9d2492b864ccb8d35f502453b2f1bcae75845ff0980839032f4a78a0d42753c">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
+<li>set_all_vertices
+: <a class="el" href="blaze_8c.html#aae82620a32079c136a50ee8e477e8736">blaze.c</a>
+</li>
+<li>set_vertex
+: <a class="el" href="blaze_8c.html#a262a82fbfd37cc7c22809a1e964c6ee2">blaze.c</a>
+</li>
+<li>SIZE_OF_ONE_QUAD
+: <a class="el" href="blaze_8c.html#ae68a4e9cf0316227c01143a9be5bec15">blaze.c</a>
+</li>
+<li>SRC_ALPHA
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a47f4b23bbb5e5b4d28b8485be1d861d6">blaze.h</a>
+</li>
+<li>SRC_COLOR
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a6829525124fb739767b79305811be0fc">blaze.h</a>
+</li>
+<li>success
+: <a class="el" href="blaze_8c.html#a9753903bd1cb938590e92b49bc01b7d3">blaze.c</a>
+</li>
+<li>swap
+: <a class="el" href="blaze_8c.html#a72409add7e4d67d84a009c5e35da9a8a">blaze.c</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
+<li>TEXTURE_RECTANGLE
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87ba208595f481f2c2fbb0f1ef373a48642e">blaze.h</a>
+</li>
+<li>TEXTURE_REPEATS
+: <a class="el" href="group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87ba631b6d232111de368dee88c3867689cb">blaze.h</a>
+</li>
+<li>TGA
+: <a class="el" href="group__image.html#gga9acac5be984ca4d554112c3aac231aaba6d617c1c14d4c45ef4892562fdd17e22">blaze.h</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
+<li>UNIFORM_MAT
+: <a class="el" href="blaze_8c.html#aa8d9086718af383bc32528c70740cd9e">blaze.c</a>
+</li>
+<li>UNIFORM_VEC
+: <a class="el" href="blaze_8c.html#a90cf9b25ee3e8c55bb9f172183d41403">blaze.c</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
+<li>validate
+: <a class="el" href="blaze_8c.html#a185699c7190f3b8f76a85433368d1402">blaze.c</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_z"></a>- z -</h3><ul>
+<li>Z_FAR
+: <a class="el" href="blaze_8c.html#a9d8c46bddedf35f73bd7260ac55e4d68">blaze.c</a>
+</li>
+<li>Z_NEAR
+: <a class="el" href="blaze_8c.html#a6624c90c3e3fb68280b3676dd10aec9b">blaze.c</a>
+</li>
+<li>ZERO
+: <a class="el" href="blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5ae117e3533122c80b262257b49b21cddf">blaze.h</a>
+</li>
+</ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 1 2019 21:48:50 for blaze by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.8
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated on Sun Feb 3 2019 20:17:25 for blaze by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
+  </ul>
+</div>
 </body>
 </html>
