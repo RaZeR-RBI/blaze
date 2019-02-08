@@ -60,6 +60,7 @@ glad.o: glad/src/glad.c
 	$(CC) $(OPTIMIZE) -fPIC -c $< -o $@ $(INCLUDES)
 
 clean:
+	rm -f coverage.svg
 	rm -rf *.o
 	rm -rf *.a
 	rm -rf *.gcno

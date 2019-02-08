@@ -14,3 +14,4 @@ rm -rf docs/coverage/*
 mkdir docs
 mkdir docs/coverage
 genhtml blaze.gcda.info -o docs/coverage
+python lcov-badger.py blaze.gcda.info coverage.svg

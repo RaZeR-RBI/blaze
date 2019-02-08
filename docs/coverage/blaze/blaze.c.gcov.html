@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2019-02-01 21:12:57</td>
+            <td class="headerValue">2019-02-08 20:05:42</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">47</td>
@@ -530,9 +530,9 @@
 <span class="lineNum">     468 </span>            :         }
 <span class="lineNum">     469 </span><span class="lineCov">         46 : }</span>
 <span class="lineNum">     470 </span>            : 
-<span class="lineNum">     471 </span>            : struct BLZ_SpriteBatch *__lastBatch;
-<a name="472"><span class="lineNum">     472 </span>            : struct SpriteBucket *__lastBucket;</a>
-<span class="lineNum">     473 </span>            : GLuint __lastTexture;
+<span class="lineNum">     471 </span>            : static struct BLZ_SpriteBatch *__lastBatch;
+<a name="472"><span class="lineNum">     472 </span>            : static struct SpriteBucket *__lastBucket;</a>
+<span class="lineNum">     473 </span>            : static GLuint __lastTexture;
 <span class="lineNum">     474 </span><span class="lineCov">         20 : static int flush(struct BLZ_SpriteBatch *batch)</span>
 <span class="lineNum">     475 </span>            : {
 <span class="lineNum">     476 </span>            :         unsigned char to_draw, to_fill;
@@ -665,7 +665,7 @@
 <span class="lineNum">     603 </span>            :         struct BLZ_Vector2 *origin,
 <span class="lineNum">     604 </span>            :         struct BLZ_Vector2 *scale,
 <span class="lineNum">     605 </span>            :         struct BLZ_Vector4 color,
-<span class="lineNum">     606 </span>            :         enum BLZ_SpriteEffects effects)
+<span class="lineNum">     606 </span>            :         enum BLZ_SpriteFlip effects)
 <span class="lineNum">     607 </span>            : {
 <span class="lineNum">     608 </span>            :         /* position: top-left, top-right, bottom-left, bottom-right */
 <span class="lineNum">     609 </span>            :         struct BLZ_Vector2 p_tl, p_tr, p_bl, p_br;
@@ -767,7 +767,7 @@
 <span class="lineNum">     705 </span>            :         struct BLZ_Vector2 *origin,
 <span class="lineNum">     706 </span>            :         struct BLZ_Vector2 *scale,
 <span class="lineNum">     707 </span>            :         struct BLZ_Vector4 color,
-<span class="lineNum">     708 </span>            :         enum BLZ_SpriteEffects effects)
+<span class="lineNum">     708 </span>            :         enum BLZ_SpriteFlip effects)
 <span class="lineNum">     709 </span>            : {
 <span class="lineNum">     710 </span><span class="lineCov">        680 :         if (srcRectangle == NULL &amp;&amp; rotation == 0.0f &amp;&amp; origin == NULL &amp;&amp;</span>
 <span class="lineNum">     711 </span><span class="lineCov">        260 :                 scale == NULL &amp;&amp; effects == NONE)</span>
@@ -790,7 +790,7 @@
 <span class="lineNum">     728 </span>            :         struct BLZ_Vector2 *origin,
 <span class="lineNum">     729 </span>            :         struct BLZ_Vector2 *scale,
 <span class="lineNum">     730 </span>            :         struct BLZ_Vector4 color,
-<span class="lineNum">     731 </span>            :         enum BLZ_SpriteEffects effects)
+<span class="lineNum">     731 </span>            :         enum BLZ_SpriteFlip effects)
 <span class="lineNum">     732 </span>            : {
 <span class="lineNum">     733 </span><span class="lineCov">        565 :         struct BLZ_SpriteQuad quad = transform(</span>
 <span class="lineNum">     734 </span>            :                 texture,
@@ -913,7 +913,7 @@
 <span class="lineNum">     851 </span>            :         struct BLZ_Vector2 *origin,
 <span class="lineNum">     852 </span>            :         struct BLZ_Vector2 *scale,
 <span class="lineNum">     853 </span>            :         struct BLZ_Vector4 color,
-<span class="lineNum">     854 </span>            :         enum BLZ_SpriteEffects effects)
+<span class="lineNum">     854 </span>            :         enum BLZ_SpriteFlip effects)
 <span class="lineNum">     855 </span>            : {
 <span class="lineNum">     856 </span><span class="lineCov">        104 :         struct BLZ_SpriteQuad quad = transform(</span>
 <span class="lineNum">     857 </span>            :                 batch-&gt;texture,
@@ -1003,7 +1003,7 @@
 <span class="lineNum">     941 </span>            :         struct BLZ_Vector2 *origin,
 <span class="lineNum">     942 </span>            :         struct BLZ_Vector2 *scale,
 <span class="lineNum">     943 </span>            :         struct BLZ_Vector4 color,
-<span class="lineNum">     944 </span>            :         enum BLZ_SpriteEffects effects)
+<span class="lineNum">     944 </span>            :         enum BLZ_SpriteFlip effects)
 <span class="lineNum">     945 </span>            : {
 <span class="lineNum">     946 </span><span class="lineCov">         11 :         struct BLZ_SpriteQuad quad = transform(</span>
 <span class="lineNum">     947 </span>            :                 texture,
