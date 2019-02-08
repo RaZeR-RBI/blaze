@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.8"/>
-<title>blaze: Main Page</title>
+<title>blaze: blaze - simple and fast 2D sprite C graphics library</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -43,7 +43,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -77,7 +78,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('index.html','');});
+$(document).ready(function(){initNavTree('md_README.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -85,7 +86,7 @@ $(document).ready(function(){initNavTree('index.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Modules</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -96,77 +97,40 @@ $(document).ready(function(){initNavTree('index.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">blaze Documentation</div>  </div>
+<div class="title">blaze - simple and fast 2D sprite C graphics library </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a href="https://razer-rbi.github.io/blaze/coverage/blaze/blaze.c.gcov.html">![Coverage data](coverage.svg)</a></p>
+<div class="textblock"><p><a href="https://razer-rbi.github.io/blaze/coverage/blaze/blaze.c.gcov.html">![](coverage.svg)</a></p>
+<p><a href="https://razer-rbi.github.io/blaze/api/index.html">API Documentation</a></p>
 <p>This library provides an OpenGL-based 2D sprite renderer which implements the following functionality:</p><ul>
 <li><p class="startli"><b>Dynamic batched drawing</b>. Designed for moving sprites.</p>
 <p class="startli">The sprites are batched into several configurable buckets which use VAOs (vertex array objects) and are drawn <b>sorted by their texture</b> to minimize texture state changes and increase performance. The VAOs are double-buffered by default, so they can be pushed faster without waiting for GPU to synchronize.</p>
+<p class="startli">```c batch = BLZ_CreateBatch(...); /* Put a sprite into batch (note: nothing is actually drawn yet) */ BLZ_Draw(batch, texture, position, srcRect, rotation, origin, scale, color, flip); /* Flush our batch to screen. The sprites are sorted by their texture */ BLZ_Present(batch); ```</p>
 </li>
-</ul>
-<blockquote class="doxtable">
-<p></p>
-<p></p>
-</blockquote>
-<pre class="fragment">batch = BLZ_CreateBatch(...);
-
-/* Put a sprite into batch (note: nothing is actually drawn yet) */
-BLZ_Draw(batch, texture, position, srcRect, rotation, origin, scale, color, flip);
-
-/* Flush our batch to screen. The sprites are sorted by thtexture   */
-BLZ_Present(batch);
-</pre><ul>
 <li><p class="startli"><b>Static batched drawing</b>. Designed for static geometry.</p>
 <p class="startli">The sprites are put into static VAO and use the same specified texture. Useful for static geometry like tilemaps, which do not change over time. It's possible to transform the geometry by supplying a transform matrix. The sprites are 'baked' into the GPU memory when they are first presented and cannot be modified afterwards.</p>
+<p class="startli">```c static_geom = BLZ_CreateStatic(texture, ...); /* Put a sprite into batch (note: nothing is actually drawn yet) */ BLZ_DrawStatic(batch, position, srcRect, rotation, origin, scale, color, flip); /* Flush our batch to screen. The batch is cannot be modified after that. */ BLZ_PresentStatic(batch, transform_matrix); ```</p>
 </li>
-</ul>
-<blockquote class="doxtable">
-<p></p>
-<p></p>
-</blockquote>
-<pre class="fragment">static_geom = BLZ_CreateStatic(texture, ...);
-
-/* Put a sprite into batch (note: nothing is actually drawn yet) */
-BLZ_DrawStatic(batch, position, srcRect, rotation, origin, scale, color, flip);
-
-/* Flush our batch to screen. The batch is cannot be modified after that. */
-BLZ_PresentStatic(batch, transform_matrix);
-</pre><ul>
 <li><p class="startli"><b>Immediate drawing</b>. When you need to draw a small number of sprites.</p>
 <p class="startli">The sprite is immediately drawn to the screen using the specified parameters. Can be useful for small amount of sprites where batching will not improve performance, or post-processing effects (to draw a fullscreen quad, for example).</p>
+<p class="startli">```c BLZ_DrawImmediate(texture, position, srcRect, rotation, origin, scale, color, flip); ```</p>
 </li>
-</ul>
-<blockquote class="doxtable">
-<p></p>
-<p></p>
-</blockquote>
-<pre class="fragment">BLZ_DrawImmediate(texture, position, srcRect, rotation, origin, scale, color, flip);
-</pre><ul>
-<li><b>Texture loading, binding and configuration</b>. Loading images is implemented by SOIL (Simple OpenGL Image Library). Multitexturing is supported.</li>
-<li><b>Render targets</b>. Draw to textures and use them later, e.g. post-processing effects or screen-in-screen rendering.</li>
-<li><b>Shaders</b>. Use custom GLSL shaders and pass parameters to them.</li>
+<li><b>Texture loading, binding and configuration</b>. Loading images is implemented by SOIL (Simple OpenGL Image Library).</li>
+<li><b>Render targets</b>. Allows to draw to textures and use them later, e.g. post-processing effects or screen-in-screen rendering.</li>
+<li><b>Shaders</b>. Allows to use custom GLSL shaders and pass parameters to them.</li>
 </ul>
 <p>Sprite positioning algorithm is identical to XNA/MonoGame behaviour - <a href="https://gamedev.stackexchange.com/a/127692">this SO answer has an explanation</a>.</p>
-<h1>Documentation and examples</h1>
-<p>API documentation <a href="https://razer-rbi.github.io/blaze/api/index.html">is available here.</a></p>
-<p>For examples, check out the <b>test</b> directory. It covers all implemented functionality and uses SDL for window creation.</p>
 <h1>Initializing the library</h1>
-<p>Call the <code>BLZ_Load(...)</code> function and supply an OpenGL procedure loader. For example, if you're using SDL, that would be <code>SDL_GL_GetProcAddress</code>. Basically, a loader is a function which accepts a string name of OpenGL function to load and returns a pointer to it. Or, to be more precise: </p><pre class="fragment">typedef void (*glGetProcAddress)(const char *name);
-</pre><h1>Installing</h1>
-<p>This projects uses the <a href="https://github.com/clibs/clib">clib package manager</a>. There are two ways to get the library into your project. One is to use the clib installer: </p><pre class="fragment">clib install razer-rbi/blaze
-</pre><p>Be careful - it will not download the Makefile.</p>
-<p>The second way is to clone the repo directly, installing the dependencies and building using the bundled Makefile: </p><pre class="fragment">git clone https://github.com/RaZeR-RBI/blaze
-cd blaze
-clib install
-make
-</pre><h1>Running tests and valgrind checks</h1>
-<p>Make sure you've cloned the repository. To run tests, you'll need <b>gcov</b> and <b>lcov</b>. Run the following script to execute tests and generate a report: </p><pre class="fragment">./build_and_test.sh
-</pre><p>If you have <b>valgrind</b> installed, you can run valgrind checks: </p><pre class="fragment">./valgrind.sh
-</pre><p>Note: a valgrind suppression file is included, which should suppress driver-related bugs. You can run valgrind on test executables directly - check the script to understand which parameters should be supplied.</p>
+<p>Call the <code>BLZ_Load(...)</code> function and supply an OpenGL procedure loader. For example, if you're using SDL, that would be <code>SDL_GL_GetProcAddress</code>. Basically, a loader is a function which accepts a string name of OpenGL function to load and returns a pointer to it. Or, to be more precise: ```c typedef void (*glGetProcAddress)(const char *name); ```</p>
+<h1>Examples</h1>
+<p>Check out the <b>test</b> directory. It covers all implemented functionality and uses SDL for window creation.</p>
+<h1>Installing</h1>
+<p>This projects uses the <a href="https://github.com/clibs/clib">clib package manager</a>. There are two ways to get the library into your project. One is to use the clib installer: ``` clib install razer-rbi/blaze ``` Be careful - it will not download the Makefile.</p>
+<p>The second way is to clone the repo directly, installing the dependencies and building using the bundled Makefile: ``` git clone <a href="https://github.com/RaZeR-RBI/blaze">https://github.com/RaZeR-RBI/blaze</a> cd blaze clib install make ```</p>
+<h1>Running tests and valgrind checks</h1>
+<p>Make sure you've cloned the repository. To run tests, you'll need <b>gcov</b> and <b>lcov</b>. Run the following script to execute tests and generate a report: ``` ./build_and_test.sh ``` If you have <b>valgrind</b> installed, you can run valgrind checks: ``` ./valgrind.sh ``` Note: a valgrind suppression file is included, which should suppress driver-related bugs. You can run valgrind on test executables directly - check the script to understand which parameters should be supplied.</p>
 <h1>Generating documentation</h1>
-<p>The documentation is generated by doxygen by using the following command: </p><pre class="fragment">doxygen Doxyfile
-</pre><p>Make sure that you have a version that supports Markdown (1.8+).</p>
+<p>The documentation is generated by doxygen by using the following command: ``` doxygen Doxyfile ``` Make sure that you have a version that supports Markdown (1.8+).</p>
 <h1>TODO</h1>
 <ul>
 <li>Rust bindings</li>
@@ -177,7 +141,7 @@ make
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Feb 8 2019 21:28:35 for blaze by
+    <li class="footer">Generated on Fri Feb 8 2019 21:08:07 for blaze by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

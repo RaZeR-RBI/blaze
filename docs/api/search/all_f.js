@@ -1,14 +1,7 @@
 var searchData=
 [
-  ['set_5fall_5fvertices',['set_all_vertices',['../blaze_8c.html#aae82620a32079c136a50ee8e477e8736',1,'blaze.c']]],
-  ['set_5fvertex',['set_vertex',['../blaze_8c.html#a262a82fbfd37cc7c22809a1e964c6ee2',1,'blaze.c']]],
-  ['shader_20parameters',['Shader parameters',['../group__shader__params.html',1,'']]],
-  ['shaders',['Shaders',['../group__shaders.html',1,'']]],
-  ['size_5fof_5fone_5fquad',['SIZE_OF_ONE_QUAD',['../blaze_8c.html#ae68a4e9cf0316227c01143a9be5bec15',1,'blaze.c']]],
-  ['source',['source',['../structBLZ__BlendFunc.html#a17c17793ec05d5482e3168d8d7d6ee3b',1,'BLZ_BlendFunc']]],
-  ['src_5falpha',['SRC_ALPHA',['../blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a47f4b23bbb5e5b4d28b8485be1d861d6',1,'blaze.h']]],
-  ['src_5fcolor',['SRC_COLOR',['../blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5a6829525124fb739767b79305811be0fc',1,'blaze.h']]],
-  ['static_20drawing',['Static drawing',['../group__static.html',1,'']]],
-  ['success',['success',['../blaze_8c.html#a9753903bd1cb938590e92b49bc01b7d3',1,'blaze.c']]],
-  ['swap',['swap',['../blaze_8c.html#a72409add7e4d67d84a009c5e35da9a8a',1,'blaze.c']]]
+  ['texture',['texture',['../structBLZ__RenderTarget.html#a35c1eae1310b8d694e48b8bb680c1e63',1,'BLZ_RenderTarget::texture()'],['../group__texture.html',1,'(Global Namespace)']]],
+  ['texture_5frectangle',['TEXTURE_RECTANGLE',['../group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87ba208595f481f2c2fbb0f1ef373a48642e',1,'blaze.h']]],
+  ['texture_5frepeats',['TEXTURE_REPEATS',['../group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87ba631b6d232111de368dee88c3867689cb',1,'blaze.h']]],
+  ['tga',['TGA',['../group__image.html#gga9acac5be984ca4d554112c3aac231aaba6d617c1c14d4c45ef4892562fdd17e22',1,'blaze.h']]]
 ];

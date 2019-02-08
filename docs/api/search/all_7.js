@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['h',['h',['../structBLZ__Rectangle.html#a6b2393ab580c0c8fe767df3f10e68427',1,'BLZ_Rectangle']]],
-  ['has_5fflag',['HAS_FLAG',['../blaze_8c.html#a631846123ba9b661138cb1f273f6edb5',1,'blaze.c']]],
-  ['height',['height',['../structBLZ__Texture.html#a9a21d74d7ff76ccd76292bf0b702d76b',1,'BLZ_Texture']]]
+  ['id',['id',['../structBLZ__Texture.html#aacb28e616a0c34cea14955b664fde243',1,'BLZ_Texture::id()'],['../structBLZ__RenderTarget.html#a7e2318d03dc9f871777ff78b6b8397ea',1,'BLZ_RenderTarget::id()']]],
+  ['image_20loading',['Image loading',['../group__image.html',1,'']]],
+  ['immediate_20drawing',['Immediate drawing',['../group__immediate.html',1,'']]],
+  ['invert_5fy',['INVERT_Y',['../group__image.html#gga5c77d85b54fdaa239bbbf94c5914f87bad49821910891bd4fe863810df1106394',1,'blaze.h']]]
 ];

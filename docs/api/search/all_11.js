@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['u',['u',['../structBLZ__Vertex.html#a36440fb5057baaa25f0394a7a455760b',1,'BLZ_Vertex']]],
-  ['uniform_5fmat',['UNIFORM_MAT',['../blaze_8c.html#aa8d9086718af383bc32528c70740cd9e',1,'blaze.c']]],
-  ['uniform_5fvec',['UNIFORM_VEC',['../blaze_8c.html#a90cf9b25ee3e8c55bb9f172183d41403',1,'blaze.c']]]
+  ['v',['v',['../structBLZ__Vertex.html#ac6e0c3ee31390c9eb10dea4f03f0caa2',1,'BLZ_Vertex']]],
+  ['vertices',['vertices',['../structBLZ__SpriteQuad.html#a709c503b6514ee076ae446052f81c957',1,'BLZ_SpriteQuad']]]
 ];

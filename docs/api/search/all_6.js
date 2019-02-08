@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['g',['g',['../structBLZ__Vertex.html#a7ea67b6301aa02381e4c6f6e5f5adbf7',1,'BLZ_Vertex']]],
-  ['glgetprocaddress',['glGetProcAddress',['../blaze_8h.html#a15ba0aa96477fde89b4ca410f4d2a09d',1,'blaze.h']]],
-  ['global',['Global',['../group__global.html',1,'']]],
-  ['grayscale',['GRAYSCALE',['../group__image.html#gga5d9d2492b864ccb8d35f502453b2f1bca236726f13bc742b48e30da2595277194',1,'blaze.h']]],
-  ['grayscale_5falpha',['GRAYSCALE_ALPHA',['../group__image.html#gga5d9d2492b864ccb8d35f502453b2f1bca12906268fc6187f7b0d69cf32464e88b',1,'blaze.h']]]
+  ['h',['h',['../structBLZ__Rectangle.html#a6b2393ab580c0c8fe767df3f10e68427',1,'BLZ_Rectangle']]],
+  ['height',['height',['../structBLZ__Texture.html#a9a21d74d7ff76ccd76292bf0b702d76b',1,'BLZ_Texture']]]
 ];

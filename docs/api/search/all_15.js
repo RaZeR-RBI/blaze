@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['y',['y',['../structBLZ__Vector2.html#aa7375d28ce3d45da8d5947c626f93168',1,'BLZ_Vector2::y()'],['../structBLZ__Vector4.html#a7df71614f1da4bbf0ae53083931f9355',1,'BLZ_Vector4::y()'],['../structBLZ__Rectangle.html#a40d41daddb408c96417b5f83b61b1164',1,'BLZ_Rectangle::y()'],['../structBLZ__Vertex.html#ae0eb421de52df759a53e309abb4d9a46',1,'BLZ_Vertex::y()']]]
+  ['z',['z',['../structBLZ__Vector4.html#a2ade4e4f11ac74646d77b96a64f2acf2',1,'BLZ_Vector4']]],
+  ['zero',['ZERO',['../blaze_8h.html#ac4a5efa9f4e424e26634cac7ec3fe7d5ae117e3533122c80b262257b49b21cddf',1,'blaze.h']]]
 ];
