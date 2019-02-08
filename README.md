@@ -16,7 +16,7 @@ This library provides an OpenGL-based 2D sprite renderer which implements the fo
     /* Put a sprite into batch (note: nothing is actually drawn yet) */
     BLZ_Draw(batch, texture, position, srcRect, rotation, origin, scale, color, flip);
 
-    /* Flush our batch to screen. The sprites are sorted by thtexture   */
+    /* Flush our batch to screen. The sprites are sorted by the texture */
     BLZ_Present(batch);
 
 
@@ -35,7 +35,7 @@ This library provides an OpenGL-based 2D sprite renderer which implements the fo
     /* Put a sprite into batch (note: nothing is actually drawn yet) */
     BLZ_DrawStatic(batch, position, srcRect, rotation, origin, scale, color, flip);
 
-    /* Flush our batch to screen. The batch is cannot be modified after that. */
+    /* Flush our batch to screen. The batch is cannot be modified after that */
     BLZ_PresentStatic(batch, transform_matrix);
 
 
