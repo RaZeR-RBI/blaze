@@ -1,10 +1,6 @@
 # blaze - simple and fast 2D sprite C graphics library
 [![Coverage data](coverage.svg)](https://razer-rbi.github.io/blaze/coverage/blaze/blaze.c.gcov.html)
 
-
-[TOC]
-
-
 This library provides an OpenGL-based 2D sprite renderer which implements the following functionality:
 * **Dynamic batched drawing**. Designed for moving sprites.
 
