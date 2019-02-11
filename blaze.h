@@ -177,7 +177,7 @@ typedef struct BLZ_Shader BLZ_Shader;
  * OpenGL function loader signature.
  * @see BLZ_Load
  */
-typedef void (*glGetProcAddress)(const char *name);
+typedef void* (*glGetProcAddress)(const char *name);
 
 #ifdef __cplusplus
 extern "C"

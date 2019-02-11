@@ -8,3 +8,6 @@ edition = "2018"
 
 [build-dependencies]
 bindgen = "0.47.1"
+
+[dev-dependencies]
+sdl2 = "0.32.1"

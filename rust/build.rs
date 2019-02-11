@@ -11,7 +11,8 @@ fn main() {
 
     let bindings = bindgen::Builder::default()
         .header("wrapper.h")
-        .rustfmt_bindings(false)
+        .trust_clang_mangling(false)
+        .rustfmt_bindings(true)
         .generate()
         .expect("Unable to generate bindings");
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());

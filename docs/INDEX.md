@@ -72,7 +72,7 @@ For example, if you're using SDL, that would be `SDL_GL_GetProcAddress`.
 Basically, a loader is a function which accepts a string name of OpenGL function
 to load and returns a pointer to it. Or, to be more precise:
 
-    typedef void (*glGetProcAddress)(const char *name);
+    typedef void* (*glGetProcAddress)(const char *name);
 
 
 # Installing
