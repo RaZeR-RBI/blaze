@@ -200,6 +200,11 @@ static void free_buffer(struct Buffer buffer)
 }
 
 /* Public API */
+char* BLZ_GetLastError()
+{
+	return __lastError;
+}
+
 int BLZ_Load(glGetProcAddress loader)
 {
 	int result = gladLoadGLLoader((GLADloadproc)loader);

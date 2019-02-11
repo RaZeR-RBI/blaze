@@ -2,75 +2,93 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-#[allow(dead_code)]
-mod internal {
-    include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
-}
+#[macro_use] extern crate enum_primitive;
+
+pub mod dynamic;
+mod internal;
+
+pub use internal::BLZ_Vector2 as Vector2;
+pub use internal::BLZ_Vector4 as Vector4;
+pub use internal::BLZ_Rectangle as Rectangle;
+pub use internal::BLZ_Vertex as Vertex;
+pub use internal::BLZ_SpriteQuad as Quad;
+pub use internal::BLZ_Texture as Texture;
+pub use internal::BLZ_BlendFunc as BlendFunc;
 
 use internal::*;
 use std::ffi::*;
 use std::os::raw::*;
 use std::string::*;
 
-pub type GLProcLoader = unsafe extern "C" fn(name: *const c_char) -> *mut c_void;
-
-pub fn get_last_error() -> Option<String>
+pub struct Color
 {
-    /* TODO FIXME Test runner fails for some reason
-    unsafe
-    {
+    pub r: f32,
+    pub g: f32,
+    pub b: f32,
+    pub a: f32
+}
+
+impl From<Vector4> for Color {
+    fn from(vector: Vector4) -> Self {
+        Color {
+            r: vector.x,
+            g: vector.y,
+            b: vector.z,
+            a: vector.w
+        }
+    }
+}
+
+impl From<Color> for Vector4 {
+    fn from(color: Color) -> Self {
+        Vector4 {
+            x: color.r,
+            y: color.g,
+            z: color.b,
+            w: color.a
+        }
+    }
+}
+
+pub type GLProcLoader = unsafe extern "C" fn(name: *const c_char) -> *mut c_void;
+pub type CallResult = Result<(), String>;
+
+pub fn get_last_error() -> Option<String> {
+    unsafe {
         let ptr = BLZ_GetLastError().as_ref();
         ptr.map(|val| CStr::from_ptr(val).to_str().unwrap().to_owned())
     }
-    */
-    panic!("Not implemented");
 }
 
-pub fn load(loader: GLProcLoader) -> Result<(), String>
-{
+pub fn load(loader: GLProcLoader) -> CallResult {
     unsafe {
         match BLZ_Load(Some(loader)) {
             x if x > 0 => Ok(()),
-            _ => panic!(get_last_error())
+            _ => panic!(get_last_error().unwrap_or("Unknown error".to_string())),
         }
     }
 }
 
-pub fn set_viewport(width: u32, height: u32)
-{
-    unsafe {
-        BLZ_SetViewport(width as i32, height as i32);
-    }
+pub fn set_viewport(width: u32, height: u32) -> CallResult {
+    unsafe { wrap_result(BLZ_SetViewport(width as i32, height as i32)) }
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::*;
-    use sdl2::video::GLProfile;
-    use sdl2::sys::SDL_GL_GetProcAddress;
+pub fn set_clear_color(color: Color) {
+    unsafe { BLZ_SetClearColor(color.into()); }
+}
 
-    const WINDOW_WIDTH: u32 = 512;
-    const WINDOW_HEIGHT: u32 = 512;
+pub fn clear() {
+    unsafe { BLZ_Clear(); }
+}
 
-    #[test]
-    pub fn test_all()
-    {
-        let context = sdl2::init().unwrap();
-        let video_sys = context.video().unwrap();
-        let gl_attr = video_sys.gl_attr();
-        gl_attr.set_context_profile(GLProfile::Core);
-        gl_attr.set_context_version(3, 3);
-        let window = video_sys.window("Test", WINDOW_WIDTH, WINDOW_HEIGHT)
-            .opengl()
-            .build()
-            .unwrap();
-        let _ctx = window.gl_create_context().unwrap();
-        match load(SDL_GL_GetProcAddress) {
-            Ok(_) => {},
-            Err(e) => panic!(e)
-        }
-        set_viewport(WINDOW_WIDTH, WINDOW_HEIGHT);
+pub fn set_blend_mode(mode: BlendFunc) {
+    unsafe { BLZ_SetBlendMode(mode); }
+}
 
-        assert!(true);
+#[inline]
+fn wrap_result(return_code: c_int) -> CallResult {
+    if return_code > 0 {
+        return Ok(());
     }
+    Err(get_last_error().unwrap_or("Unknown error".to_string()))
 }

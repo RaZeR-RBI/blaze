@@ -1,10 +1,11 @@
 [package]
-name = "blaze-rs"
+name = "blaze_rs"
 version = "0.1.0"
 authors = ["Adel Vilkov <vilkov.adel@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+enum_primitive = "0.1.1"
 
 [build-dependencies]
 bindgen = "0.47.1"
