@@ -5,7 +5,7 @@ mod test
 {
     use blaze_rs::*;
     use sdl2::sys::SDL_GL_GetProcAddress;
-    use sdl2::video::GLProfile;
+    use sdl2::video::{Window, GLProfile};
 
     const WINDOW_WIDTH: u32 = 512;
     const WINDOW_HEIGHT: u32 = 512;
@@ -38,7 +38,19 @@ mod test
         }
         set_viewport(WINDOW_WIDTH, WINDOW_HEIGHT).unwrap();
         set_clear_color(BLACK);
-        clear();
+
+        test_dynamic(window);
+        /* TODO: Implement tests from C version */
         assert!(true);
+    }
+
+    pub fn test_dynamic(window: Window)
+    {
+        use blaze_rs::dynamic::*;
+        clear();
+        let batch = create_batch(2, 100, InitFlags::Default);
+        assert!(batch.is_some());
+        /* TODO: Implement test_draw_dynamic.c */
+        window.gl_swap_window();
     }
 }

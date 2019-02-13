@@ -2,9 +2,13 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+#[macro_use] extern crate bitflags;
+extern crate bytes;
 #[macro_use] extern crate enum_primitive;
 
 pub mod dynamic;
+pub mod texture;
+
 mod internal;
 
 pub use internal::BLZ_Vector2 as Vector2;

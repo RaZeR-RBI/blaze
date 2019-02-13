@@ -5,6 +5,8 @@ authors = ["Adel Vilkov <vilkov.adel@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+bitflags = "1.0.4"
+bytes = "0.4.11"
 enum_primitive = "0.1.1"
 
 [build-dependencies]
