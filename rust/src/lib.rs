@@ -11,12 +11,12 @@ pub mod texture;
 
 mod internal;
 
+use crate::internal::wrap_result;
 pub use internal::BLZ_Vector2 as Vector2;
 pub use internal::BLZ_Vector4 as Vector4;
 pub use internal::BLZ_Rectangle as Rectangle;
 pub use internal::BLZ_Vertex as Vertex;
 pub use internal::BLZ_SpriteQuad as Quad;
-pub use internal::BLZ_Texture as Texture;
 pub use internal::BLZ_BlendFunc as BlendFunc;
 
 use internal::*;
@@ -87,12 +87,4 @@ pub fn clear() {
 
 pub fn set_blend_mode(mode: BlendFunc) {
     unsafe { BLZ_SetBlendMode(mode); }
-}
-
-#[inline]
-fn wrap_result(return_code: c_int) -> CallResult {
-    if return_code > 0 {
-        return Ok(());
-    }
-    Err(get_last_error().unwrap_or("Unknown error".to_string()))
 }

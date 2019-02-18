@@ -5,7 +5,10 @@ use std::ffi::*;
 use std::marker::PhantomData;
 
 pub struct Texture<'a> {
-    raw: *mut BLZ_Texture,
+    pub id: u32,
+    pub width: u32,
+    pub height: u32,
+    pub raw: *mut BLZ_Texture,
     _marker: PhantomData<&'a ()>,
 }
 
@@ -23,6 +26,7 @@ enum_from_primitive! {
 
 bitflags! {
    pub struct ImageFlags: u32 {
+        const None = 0;
         const PowerOfTwo  = BLZ_ImageFlags_POWER_OF_TWO;
         const Mipmaps = BLZ_ImageFlags_MIPMAPS;
         const Repeats = BLZ_ImageFlags_TEXTURE_REPEATS;
@@ -58,15 +62,15 @@ unsafe fn from_ptr<'a>(ptr: *mut BLZ_Texture) -> Result<Texture<'a>, String> {
     if ptr.is_null() {
         Err(get_last_error().unwrap_or("Unknown error".to_owned()))
     } else {
+        let tex = *ptr;
         Ok(Texture {
             raw: ptr,
             _marker: PhantomData,
+            id: tex.id,
+            width: tex.width as u32,
+            height: tex.height as u32,
         })
     }
-}
-
-unsafe fn path_to_ptr(path: String) -> Result<*const c_char, NulError> {
-    CString::new(path).map(|s| s.as_ptr())
 }
 
 pub fn from_memory<'a>(
@@ -88,23 +92,59 @@ pub fn from_memory<'a>(
     }
 }
 
+fn path_to_ptr(path: &str) -> Result<CString, String> {
+    CString::new(path.to_owned()).map_err(|_| "Path cannot be null".to_owned())
+}
+
 pub fn from_file<'a>(
     path: &str,
     channels: ImageChannels,
-    texture_id: u32,
+    texture_id: Option<u32>,
     flags: ImageFlags,
 ) -> Result<Texture<'a>, String> {
     unsafe {
-        let path_ptr = path_to_ptr(path.to_owned()).map_err(|_| "Path cannot be null".to_owned());
+        if let Some(i) = texture_id {
+            if i <= 0 {
+                return Err("Invalid texture ID, must be greater than zero".to_owned());
+            }
+        }
+        let path_ptr = path_to_ptr(path);
         if let Ok(p) = path_ptr {
             return from_ptr(BLZ_LoadTextureFromFile(
-                p,
+                p.as_ptr(),
                 channels as u32,
-                texture_id,
+                match texture_id {
+                    Some(i) => i,
+                    None => 0,
+                },
                 flags.bits,
             ));
         } else {
             return Err("Invalid path".to_owned());
+        }
+    }
+}
+
+pub fn save_screenshot(
+    path: &str,
+    format: SaveImageFormat,
+    x_start: u32,
+    y_start: u32,
+    width: u32,
+    height: u32,
+) -> CallResult {
+    let path_ptr = path_to_ptr(path);
+    unsafe {
+        match path_ptr {
+            Ok(p) => wrap_result(BLZ_SaveScreenshot(
+                p.as_ptr(),
+                format as u32,
+                x_start as i32,
+                y_start as i32,
+                width as i32,
+                height as i32,
+            )),
+            Err(s) => Err(s),
         }
     }
 }

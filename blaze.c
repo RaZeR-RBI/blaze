@@ -80,7 +80,7 @@ struct BLZ_StaticBatch
 	unsigned char is_uploaded;
 	struct BLZ_Vertex *vertices;
 	struct Buffer buffer;
-	struct BLZ_Texture *texture;
+	const struct BLZ_Texture *texture;
 };
 
 struct BLZ_SpriteBatch
@@ -271,10 +271,11 @@ static void bind_tex0(GLuint tex)
 	}
 }
 
-int BLZ_GetOptions(struct BLZ_SpriteBatch *batch,
+int BLZ_GetOptions(const struct BLZ_SpriteBatch *batch,
 				   int *max_buckets, int *max_sprites_per_bucket,
 				   enum BLZ_InitFlags *flags)
 {
+	validate(batch != NULL);
 	if (batch->max_buckets <= 0 || batch->max_sprites_per_bucket <= 0)
 	{
 		fail("Not initialized");
@@ -309,7 +310,7 @@ void BLZ_Clear()
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-static GLuint compile_shader(GLenum type, char *src)
+static GLuint compile_shader(GLenum type, const char *src)
 {
 	int compiled;
 	int log_length;
@@ -330,7 +331,7 @@ static GLuint compile_shader(GLenum type, char *src)
 	return shader;
 }
 
-GLint BLZ_GetUniformLocation(struct BLZ_Shader *shader, const char *name)
+GLint BLZ_GetUniformLocation(const struct BLZ_Shader *shader, const char *name)
 {
 	if (shader == NULL || name == NULL)
 	{
@@ -339,7 +340,7 @@ GLint BLZ_GetUniformLocation(struct BLZ_Shader *shader, const char *name)
 	return glGetUniformLocation(shader->program, (const GLchar *)name);
 }
 
-BLZ_Shader *BLZ_CompileShader(char *vert, char *frag)
+BLZ_Shader *BLZ_CompileShader(const char *vert, const char *frag)
 {
 	struct BLZ_Shader *shader;
 	GLuint program, vertex_shader, fragment_shader;
@@ -380,7 +381,7 @@ BLZ_Shader *BLZ_CompileShader(char *vert, char *frag)
 	return shader;
 }
 
-int BLZ_UseShader(BLZ_Shader *program)
+int BLZ_UseShader(struct BLZ_Shader *program)
 {
 	GLenum result;
 	validate(program != NULL);
@@ -430,7 +431,7 @@ int BLZ_FreeBatch(struct BLZ_SpriteBatch *batch)
 		}
 		free(batch->sprite_buckets);
 	}
-	batch->max_buckets = batch->max_sprites_per_bucket = 0;
+	free(batch);
 	success();
 }
 
@@ -565,9 +566,9 @@ int BLZ_Present(struct BLZ_SpriteBatch *batch)
 	} while (0);
 
 static struct BLZ_SpriteQuad transform_position_fastpath(
-	struct BLZ_Texture *texture,
-	struct BLZ_Vector2 position,
-	struct BLZ_Vector4 color)
+	const struct BLZ_Texture *texture,
+	const struct BLZ_Vector2 position,
+	const struct BLZ_Vector4 color)
 {
 	GLfloat x = position.x;
 	GLfloat y = position.y;
@@ -601,13 +602,13 @@ static struct BLZ_SpriteQuad transform_position_fastpath(
 }
 
 static struct BLZ_SpriteQuad transform_full(
-	struct BLZ_Texture *texture,
-	struct BLZ_Vector2 position,
-	struct BLZ_Rectangle *srcRectangle,
+	const struct BLZ_Texture *texture,
+	const struct BLZ_Vector2 position,
+	const struct BLZ_Rectangle *srcRectangle,
 	float rotation,
-	struct BLZ_Vector2 *origin,
-	struct BLZ_Vector2 *scale,
-	struct BLZ_Vector4 color,
+	const struct BLZ_Vector2 *origin,
+	const struct BLZ_Vector2 *scale,
+	const struct BLZ_Vector4 color,
 	enum BLZ_SpriteFlip effects)
 {
 	/* position: top-left, top-right, bottom-left, bottom-right */
@@ -703,13 +704,13 @@ static struct BLZ_SpriteQuad transform_full(
 }
 
 inline static struct BLZ_SpriteQuad transform(
-	struct BLZ_Texture *texture,
-	struct BLZ_Vector2 position,
-	struct BLZ_Rectangle *srcRectangle,
+	const struct BLZ_Texture *texture,
+	const struct BLZ_Vector2 position,
+	const struct BLZ_Rectangle *srcRectangle,
 	float rotation,
-	struct BLZ_Vector2 *origin,
-	struct BLZ_Vector2 *scale,
-	struct BLZ_Vector4 color,
+	const struct BLZ_Vector2 *origin,
+	const struct BLZ_Vector2 *scale,
+	const struct BLZ_Vector4 color,
 	enum BLZ_SpriteFlip effects)
 {
 	if (srcRectangle == NULL && rotation == 0.0f && origin == NULL &&
@@ -726,13 +727,13 @@ inline static struct BLZ_SpriteQuad transform(
 
 int BLZ_Draw(
 	struct BLZ_SpriteBatch *batch,
-	struct BLZ_Texture *texture,
-	struct BLZ_Vector2 position,
-	struct BLZ_Rectangle *srcRectangle,
+	const struct BLZ_Texture *texture,
+	const struct BLZ_Vector2 position,
+	const struct BLZ_Rectangle *srcRectangle,
 	float rotation,
-	struct BLZ_Vector2 *origin,
-	struct BLZ_Vector2 *scale,
-	struct BLZ_Vector4 color,
+	const struct BLZ_Vector2 *origin,
+	const struct BLZ_Vector2 *scale,
+	const struct BLZ_Vector4 color,
 	enum BLZ_SpriteFlip effects)
 {
 	struct BLZ_SpriteQuad quad = transform(
@@ -749,7 +750,7 @@ int BLZ_Draw(
 
 int BLZ_LowerDraw(
 	struct BLZ_SpriteBatch *batch,
-	GLuint texture, struct BLZ_SpriteQuad *quad)
+	GLuint texture, const struct BLZ_SpriteQuad *quad)
 {
 	struct SpriteBucket *bucket = NULL;
 	int i = 0;
@@ -814,7 +815,7 @@ static void upload_static_vertices(struct BLZ_StaticBatch *batch)
 }
 
 struct BLZ_StaticBatch *BLZ_CreateStatic(
-	struct BLZ_Texture *texture, int max_sprite_count)
+	const struct BLZ_Texture *texture, int max_sprite_count)
 {
 	struct BLZ_StaticBatch *result = malloc(sizeof(struct BLZ_StaticBatch));
 	result->texture = texture;
@@ -827,7 +828,7 @@ struct BLZ_StaticBatch *BLZ_CreateStatic(
 }
 
 int BLZ_GetOptionsStatic(
-	struct BLZ_StaticBatch *batch,
+	const struct BLZ_StaticBatch *batch,
 	int *max_sprite_count)
 {
 	validate(batch != NULL);
@@ -850,12 +851,12 @@ int BLZ_FreeBatchStatic(
 
 int BLZ_DrawStatic(
 	struct BLZ_StaticBatch *batch,
-	struct BLZ_Vector2 position,
-	struct BLZ_Rectangle *srcRectangle,
+	const struct BLZ_Vector2 position,
+	const struct BLZ_Rectangle *srcRectangle,
 	float rotation,
-	struct BLZ_Vector2 *origin,
-	struct BLZ_Vector2 *scale,
-	struct BLZ_Vector4 color,
+	const struct BLZ_Vector2 *origin,
+	const struct BLZ_Vector2 *scale,
+	const struct BLZ_Vector4 color,
 	enum BLZ_SpriteFlip effects)
 {
 	struct BLZ_SpriteQuad quad = transform(
@@ -872,7 +873,7 @@ int BLZ_DrawStatic(
 
 int BLZ_LowerDrawStatic(
 	struct BLZ_StaticBatch *batch,
-	struct BLZ_SpriteQuad *quad)
+	const struct BLZ_SpriteQuad *quad)
 {
 	if (batch->is_uploaded)
 	{
@@ -895,7 +896,7 @@ static GLfloat identityMatrix[16] = {
 	0, 0, 0, 1};
 
 #define O(y, x) (y + (x << 2))
-static void mult_4x4_matrix(GLfloat *restrict src1, GLfloat *restrict src2, GLfloat *restrict dest)
+static void mult_4x4_matrix(const GLfloat *restrict src1, const GLfloat *restrict src2, GLfloat *restrict dest)
 {
 	*(dest + O(0, 0)) = (*(src1 + O(0, 0)) * *(src2 + O(0, 0))) + (*(src1 + O(0, 1)) * *(src2 + O(1, 0))) + (*(src1 + O(0, 2)) * *(src2 + O(2, 0))) + (*(src1 + O(0, 3)) * *(src2 + O(3, 0)));
 	*(dest + O(0, 1)) = (*(src1 + O(0, 0)) * *(src2 + O(0, 1))) + (*(src1 + O(0, 1)) * *(src2 + O(1, 1))) + (*(src1 + O(0, 2)) * *(src2 + O(2, 1))) + (*(src1 + O(0, 3)) * *(src2 + O(3, 1)));
@@ -917,9 +918,9 @@ static void mult_4x4_matrix(GLfloat *restrict src1, GLfloat *restrict src2, GLfl
 
 int BLZ_PresentStatic(
 	struct BLZ_StaticBatch *batch,
-	GLfloat *transformMatrix4x4)
+	const GLfloat *transformMatrix4x4)
 {
-	GLfloat *transform = transformMatrix4x4 != NULL ? transformMatrix4x4 : (GLfloat *)&identityMatrix;
+	const GLfloat *transform = transformMatrix4x4 != NULL ? transformMatrix4x4 : (GLfloat *)&identityMatrix;
 
 	GLfloat mvpMatrix[16];
 	if (!batch->is_uploaded)
@@ -939,13 +940,13 @@ int BLZ_PresentStatic(
 
 /* Immediate drawing */
 int BLZ_DrawImmediate(
-	struct BLZ_Texture *texture,
-	struct BLZ_Vector2 position,
-	struct BLZ_Rectangle *srcRectangle,
+	const struct BLZ_Texture *texture,
+	const struct BLZ_Vector2 position,
+	const struct BLZ_Rectangle *srcRectangle,
 	float rotation,
-	struct BLZ_Vector2 *origin,
-	struct BLZ_Vector2 *scale,
-	struct BLZ_Vector4 color,
+	const struct BLZ_Vector2 *origin,
+	const struct BLZ_Vector2 *scale,
+	const struct BLZ_Vector4 color,
 	enum BLZ_SpriteFlip effects)
 {
 	struct BLZ_SpriteQuad quad = transform(
@@ -963,7 +964,7 @@ int BLZ_DrawImmediate(
 const int SIZE_OF_ONE_QUAD = sizeof(struct BLZ_SpriteQuad);
 int BLZ_LowerDrawImmediate(
 	GLuint texture,
-	struct BLZ_SpriteQuad *quad)
+	const struct BLZ_SpriteQuad *quad)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, immediateBuf.vbo);
 	glBufferData(GL_ARRAY_BUFFER, SIZE_OF_ONE_QUAD, quad, GL_STREAM_DRAW);

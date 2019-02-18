@@ -1,11 +1,11 @@
 extern crate blaze_rs;
 
 #[cfg(test)]
-mod test
-{
+mod test {
     use blaze_rs::*;
     use sdl2::sys::SDL_GL_GetProcAddress;
-    use sdl2::video::{Window, GLProfile};
+    use sdl2::video::{GLProfile, Window};
+    use std::path::PathBuf;
 
     const WINDOW_WIDTH: u32 = 512;
     const WINDOW_HEIGHT: u32 = 512;
@@ -13,7 +13,7 @@ mod test
         r: 1.0,
         g: 1.0,
         b: 1.0,
-        a: 1.0
+        a: 1.0,
     };
 
     #[test]
@@ -44,12 +44,17 @@ mod test
         assert!(true);
     }
 
-    pub fn test_dynamic(window: Window)
-    {
+    pub fn test_dynamic(window: Window) {
         use blaze_rs::dynamic::*;
+        use blaze_rs::texture::*;
         clear();
         let batch = create_batch(2, 100, InitFlags::Default);
         assert!(batch.is_some());
+        let textures: [Texture; 2] =
+            [
+                from_file("../test/test_texture.png", ImageChannels::Auto, None, ImageFlags::None).unwrap(),
+                from_file("../test/test_texture2.png", ImageChannels::Auto, None, ImageFlags::None).unwrap()
+            ];
         /* TODO: Implement test_draw_dynamic.c */
         window.gl_swap_window();
     }

@@ -211,7 +211,7 @@ extern "C"
 	 * Sets the background clear color.
 	 * @see BLZ_Clear
 	 */
-	extern BLZAPIENTRY void BLZAPICALL BLZ_SetClearColor(struct BLZ_Vector4 color);
+	extern BLZAPIENTRY void BLZAPICALL BLZ_SetClearColor(const struct BLZ_Vector4 color);
 	/**
 	 * Clears the screen with the specified color.
 	 * @see BLZ_SetClearColor
@@ -276,7 +276,7 @@ extern "C"
 	 * @see BLZ_CreateBatch
 	 */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_GetOptions(
-		struct BLZ_SpriteBatch *batch,
+		const struct BLZ_SpriteBatch *batch,
 		int *max_buckets,
 		int *max_sprites_per_bucket,
 		enum BLZ_InitFlags *flags);
@@ -306,13 +306,13 @@ extern "C"
 	 */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_Draw(
 		struct BLZ_SpriteBatch *batch,
-		struct BLZ_Texture *texture,
-		struct BLZ_Vector2 position,
-		struct BLZ_Rectangle *srcRectangle,
+		const struct BLZ_Texture *texture,
+		const struct BLZ_Vector2 position,
+		const struct BLZ_Rectangle *srcRectangle,
 		float rotation,
-		struct BLZ_Vector2 *origin,
-		struct BLZ_Vector2 *scale,
-		struct BLZ_Vector4 color,
+		const struct BLZ_Vector2 *origin,
+		const struct BLZ_Vector2 *scale,
+		const struct BLZ_Vector4 color,
 		enum BLZ_SpriteFlip effects);
 
 	/**
@@ -323,7 +323,7 @@ extern "C"
 	extern BLZAPIENTRY int BLZAPICALL BLZ_LowerDraw(
 		struct BLZ_SpriteBatch *batch,
 		GLuint texture,
-		struct BLZ_SpriteQuad *quad);
+		const struct BLZ_SpriteQuad *quad);
 
 	/**
 	 * Draws everything from the specified dynamic batch to screen.
@@ -356,7 +356,7 @@ extern "C"
 	 * @see BLZ_GetOptionsStatic
 	 */
 	extern BLZAPIENTRY struct BLZ_StaticBatch BLZAPICALL *BLZ_CreateStatic(
-		struct BLZ_Texture *texture, int max_sprite_count);
+		const struct BLZ_Texture *texture, int max_sprite_count);
 
 	/**
 	 * Reads options specified in \ref BLZ_CreateStatic for the specified static
@@ -364,7 +364,7 @@ extern "C"
 	 * @see BLZ_CreateStatic
 	 */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_GetOptionsStatic(
-		struct BLZ_StaticBatch *batch,
+		const struct BLZ_StaticBatch *batch,
 		int *max_sprite_count);
 
 	/**
@@ -392,12 +392,12 @@ extern "C"
 	 */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_DrawStatic(
 		struct BLZ_StaticBatch *batch,
-		struct BLZ_Vector2 position,
-		struct BLZ_Rectangle *srcRectangle,
+		const struct BLZ_Vector2 position,
+		const struct BLZ_Rectangle *srcRectangle,
 		float rotation,
-		struct BLZ_Vector2 *origin,
-		struct BLZ_Vector2 *scale,
-		struct BLZ_Vector4 color,
+		const struct BLZ_Vector2 *origin,
+		const struct BLZ_Vector2 *scale,
+		const struct BLZ_Vector4 color,
 		enum BLZ_SpriteFlip effects);
 
 	/**
@@ -407,7 +407,7 @@ extern "C"
 	 */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_LowerDrawStatic(
 		struct BLZ_StaticBatch *batch,
-		struct BLZ_SpriteQuad *quad);
+		const struct BLZ_SpriteQuad *quad);
 
 	/**
 	 * Draws everything from the specified static batch to screen. If it's
@@ -421,7 +421,7 @@ extern "C"
 	 */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_PresentStatic(
 		struct BLZ_StaticBatch *batch,
-		GLfloat *transformMatrix4x4);
+		const GLfloat *transformMatrix4x4);
 	/** @} */
 
 	/** \addtogroup immediate Immediate drawing
@@ -444,13 +444,13 @@ extern "C"
 	 * @see BLZ_LowerDrawImmediate
 	 */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_DrawImmediate(
-		struct BLZ_Texture *texture,
-		struct BLZ_Vector2 position,
-		struct BLZ_Rectangle *srcRectangle,
+		const struct BLZ_Texture *texture,
+		const struct BLZ_Vector2 position,
+		const struct BLZ_Rectangle *srcRectangle,
 		float rotation,
-		struct BLZ_Vector2 *origin,
-		struct BLZ_Vector2 *scale,
-		struct BLZ_Vector4 color,
+		const struct BLZ_Vector2 *origin,
+		const struct BLZ_Vector2 *scale,
+		const struct BLZ_Vector4 color,
 		enum BLZ_SpriteFlip effects);
 
 	/**
@@ -461,7 +461,7 @@ extern "C"
 	 */
 	extern BLZAPIENTRY int BLZAPICALL BLZ_LowerDrawImmediate(
 		GLuint texture,
-		struct BLZ_SpriteQuad *quad);
+		const struct BLZ_SpriteQuad *quad);
 	/** @} */
 
 	/** \addtogroup texture Textures
@@ -572,16 +572,16 @@ extern "C"
 	 * @see BLZ_FreeShader
 	 */
 	extern BLZAPIENTRY struct BLZ_Shader *BLZAPICALL BLZ_CompileShader(
-		char *vert, char *frag);
+		const char *vert, const char *frag);
 
 	/**
 	 * Sets the specified shader as the current.
 	 */
-	extern BLZAPIENTRY int BLZAPICALL BLZ_UseShader(BLZ_Shader *program);
+	extern BLZAPIENTRY int BLZAPICALL BLZ_UseShader(struct BLZ_Shader *program);
 	/**
 	 * Frees memory used by specified shader program.
 	 */
-	extern BLZAPIENTRY int BLZAPICALL BLZ_FreeShader(BLZ_Shader *program);
+	extern BLZAPIENTRY int BLZAPICALL BLZ_FreeShader(struct BLZ_Shader *program);
 
 	/**
 	 * Returns a pointer to the default shader program.
@@ -599,7 +599,7 @@ extern "C"
 	 * Returns the uniform location for the specified shader program.
 	 */
 	extern BLZAPIENTRY GLint BLZAPICALL BLZ_GetUniformLocation(
-		struct BLZ_Shader *shader,
+		const struct BLZ_Shader *shader,
 		const char *name);
 
 	extern BLZAPIENTRY void BLZAPICALL BLZ_Uniform1f(GLint location,
