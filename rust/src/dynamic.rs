@@ -16,17 +16,6 @@ bitflags! {
     }
 }
 
-enum_from_primitive! {
-    #[derive(Debug, PartialEq)]
-    pub enum SpriteFlip
-    {
-        None = BLZ_SpriteFlip_NONE as isize,
-        FlipH = BLZ_SpriteFlip_FLIP_H as isize,
-        FlipV = BLZ_SpriteFlip_FLIP_V as isize,
-        Both = BLZ_SpriteFlip_BOTH as isize
-    }
-}
-
 impl Default for InitFlags {
     fn default() -> InitFlags {
         InitFlags::Default
@@ -88,6 +77,26 @@ impl<'s> SpriteBatch<'s> {
                     color.into(),
                     flip as u32
                 )
+            )
+        }
+    }
+
+    pub fn lower_draw<'t>(&self, texture: &'t Texture, quad: &Quad) -> CallResult {
+        unsafe {
+            wrap_result(
+                BLZ_LowerDraw(
+                    self.raw,
+                    texture.id,
+                    quad
+                )
+            )
+        }
+    }
+
+    pub fn present(&self) -> CallResult {
+        unsafe {
+            wrap_result(
+                BLZ_Present(self.raw)
             )
         }
     }

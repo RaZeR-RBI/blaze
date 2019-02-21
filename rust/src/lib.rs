@@ -6,6 +6,7 @@
 extern crate bytes;
 #[macro_use] extern crate enum_primitive;
 
+pub mod blend;
 pub mod dynamic;
 pub mod texture;
 
@@ -17,13 +18,13 @@ pub use internal::BLZ_Vector4 as Vector4;
 pub use internal::BLZ_Rectangle as Rectangle;
 pub use internal::BLZ_Vertex as Vertex;
 pub use internal::BLZ_SpriteQuad as Quad;
-pub use internal::BLZ_BlendFunc as BlendFunc;
 
 use internal::*;
 use std::ffi::*;
 use std::os::raw::*;
 use std::string::*;
 
+#[derive(Debug, Copy, Clone)]
 pub struct Color
 {
     pub r: f32,
@@ -54,6 +55,18 @@ impl From<Color> for Vector4 {
     }
 }
 
+enum_from_primitive! {
+    #[derive(Debug, Copy, Clone)]
+    pub enum SpriteFlip
+    {
+        None = BLZ_SpriteFlip_NONE as isize,
+        FlipH = BLZ_SpriteFlip_FLIP_H as isize,
+        FlipV = BLZ_SpriteFlip_FLIP_V as isize,
+        Both = BLZ_SpriteFlip_BOTH as isize
+    }
+}
+
+
 pub type GLProcLoader = unsafe extern "C" fn(name: *const c_char) -> *mut c_void;
 pub type CallResult = Result<(), String>;
 
@@ -83,8 +96,4 @@ pub fn set_clear_color(color: Color) {
 
 pub fn clear() {
     unsafe { BLZ_Clear(); }
-}
-
-pub fn set_blend_mode(mode: BlendFunc) {
-    unsafe { BLZ_SetBlendMode(mode); }
 }

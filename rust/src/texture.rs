@@ -73,54 +73,56 @@ unsafe fn from_ptr<'a>(ptr: *mut BLZ_Texture) -> Result<Texture<'a>, String> {
     }
 }
 
-pub fn from_memory<'a>(
-    bytes: &Bytes,
-    channels: ImageChannels,
-    texture_id: u32,
-    flags: ImageFlags,
-) -> Result<Texture<'a>, String> {
-    unsafe {
-        let buf_ptr = bytes.as_ptr();
-        let ptr = BLZ_LoadTextureFromMemory(
-            buf_ptr,
-            bytes.len() as i32,
-            channels as u32,
-            texture_id,
-            flags.bits,
-        );
-        from_ptr(ptr)
-    }
-}
-
 fn path_to_ptr(path: &str) -> Result<CString, String> {
     CString::new(path.to_owned()).map_err(|_| "Path cannot be null".to_owned())
 }
 
-pub fn from_file<'a>(
-    path: &str,
-    channels: ImageChannels,
-    texture_id: Option<u32>,
-    flags: ImageFlags,
-) -> Result<Texture<'a>, String> {
-    unsafe {
-        if let Some(i) = texture_id {
-            if i <= 0 {
-                return Err("Invalid texture ID, must be greater than zero".to_owned());
-            }
-        }
-        let path_ptr = path_to_ptr(path);
-        if let Ok(p) = path_ptr {
-            return from_ptr(BLZ_LoadTextureFromFile(
-                p.as_ptr(),
+impl<'a> Texture<'a> {
+    pub fn from_memory(
+        bytes: &Bytes,
+        channels: ImageChannels,
+        texture_id: u32,
+        flags: ImageFlags,
+    ) -> Result<Texture<'a>, String> {
+        unsafe {
+            let buf_ptr = bytes.as_ptr();
+            let ptr = BLZ_LoadTextureFromMemory(
+                buf_ptr,
+                bytes.len() as i32,
                 channels as u32,
-                match texture_id {
-                    Some(i) => i,
-                    None => 0,
-                },
+                texture_id,
                 flags.bits,
-            ));
-        } else {
-            return Err("Invalid path".to_owned());
+            );
+            from_ptr(ptr)
+        }
+    }
+
+    pub fn from_file(
+        path: &str,
+        channels: ImageChannels,
+        texture_id: Option<u32>,
+        flags: ImageFlags,
+    ) -> Result<Texture<'a>, String> {
+        unsafe {
+            if let Some(i) = texture_id {
+                if i <= 0 {
+                    return Err("Invalid texture ID, must be greater than zero".to_owned());
+                }
+            }
+            let path_ptr = path_to_ptr(path);
+            if let Ok(p) = path_ptr {
+                return from_ptr(BLZ_LoadTextureFromFile(
+                    p.as_ptr(),
+                    channels as u32,
+                    match texture_id {
+                        Some(i) => i,
+                        None => 0,
+                    },
+                    flags.bits,
+                ));
+            } else {
+                return Err("Invalid path".to_owned());
+            }
         }
     }
 }

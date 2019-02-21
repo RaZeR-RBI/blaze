@@ -13,4 +13,4 @@ enum_primitive = "0.1.1"
 bindgen = "0.47.1"
 
 [dev-dependencies]
-sdl2 = "0.32.1"
+sdl2 = { git = "https://github.com/RaZeR-RBI/rust-sdl2.git", branch = "feature/sdl-2.0.2" }

@@ -17,6 +17,7 @@
 *.trace
 # Output screenshots
 /*.bmp
+/rust/*.bmp
 
 # Prerequisites
 *.d
