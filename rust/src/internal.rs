@@ -3,10 +3,8 @@
 #![allow(non_snake_case)]
 #![allow(dead_code)]
 
-use crate::get_last_error;
-use crate::CallResult;
+use crate::{get_last_error, CallResult};
 use std::os::raw::c_int;
-
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
@@ -16,6 +14,11 @@ pub fn wrap_result(return_code: c_int) -> CallResult {
         return Ok(());
     }
     Err(get_last_error().unwrap_or("Unknown error".to_string()))
+}
+
+#[inline]
+pub fn try_get_err() -> String {
+    get_last_error().unwrap_or("Unknown error".to_owned())
 }
 
 pub trait AsRaw<T> {

@@ -37,7 +37,8 @@ mod test {
         set_viewport(WINDOW_WIDTH, WINDOW_HEIGHT).unwrap();
         set_clear_color(BLACK);
 
-        test_dynamic(window);
+        test_init_shutdown();
+        test_draw_dynamic(&window);
         /* TODO: Implement tests from C version */
         assert!(true);
     }
@@ -52,6 +53,28 @@ mod test {
             actual_likeness >= likeness,
             format!("expected > {}, actual is {}", likeness, actual_likeness)
         );
+    }
+
+    /* ---------------------- test_init_shutdown.c -------------------------- */
+    fn test_init_shutdown() {
+        {
+            let options = SpriteBatchOpts {
+                max_buckets: 5,
+                max_sprites_per_bucket: 100,
+                flags: InitFlags::Default,
+            };
+            let batch = create_batch(options.clone());
+            assert!(batch.is_ok());
+            assert!(batch.unwrap().get_options() == &options);
+        }
+        {
+            let fail = create_batch(SpriteBatchOpts {
+                max_buckets: 0,
+                max_sprites_per_bucket: 0,
+                flags: InitFlags::Default,
+            });
+            assert!(fail.is_err());
+        }
     }
 
     /* ---------------------- test_draw_dynamic.c --------------------------- */
@@ -123,11 +146,16 @@ mod test {
         }
     }
 
-    pub fn test_dynamic(window: Window) {
+    pub fn test_draw_dynamic(window: &Window) {
         use blaze_rs::dynamic::*;
         use blaze_rs::texture::*;
 
-        let batch = create_batch(2, 100, InitFlags::Default).expect("Cannot create batch");
+        let batch = create_batch(SpriteBatchOpts {
+            max_buckets: 2,
+            max_sprites_per_bucket: 100,
+            flags: InitFlags::Default,
+        })
+        .expect("Cannot create batch");
         let textures: Vec<_> = ["../test/test_texture.png", "../test/test_texture2.png"]
             .iter()
             .map(|path| Texture::from_file(path, ImageChannels::Auto, None, ImageFlags::None))

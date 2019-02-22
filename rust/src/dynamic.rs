@@ -6,6 +6,14 @@ use std::marker::PhantomData;
 pub struct SpriteBatch<'a> {
     raw: *mut BLZ_SpriteBatch,
     _marker: PhantomData<&'a ()>,
+    options: SpriteBatchOpts,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SpriteBatchOpts {
+    pub max_buckets: u32,
+    pub max_sprites_per_bucket: u32,
+    pub flags: InitFlags,
 }
 
 bitflags! {
@@ -22,24 +30,17 @@ impl Default for InitFlags {
     }
 }
 
-pub fn create_batch<'a>(
-    max_buckets: u32,
-    max_sprites_per_bucket: u32,
-    flags: InitFlags,
-) -> Option<SpriteBatch<'a>> {
+pub fn create_batch<'a>(options: SpriteBatchOpts) -> Result<SpriteBatch<'a>, String> {
     unsafe {
         let ptr = BLZ_CreateBatch(
-            max_buckets as i32,
-            max_sprites_per_bucket as i32,
-            flags.bits(),
+            options.max_buckets as i32,
+            options.max_sprites_per_bucket as i32,
+            options.flags.bits(),
         );
         if ptr.is_null() {
-            return None;
+            return Err(try_get_err());
         } else {
-            return Some(SpriteBatch {
-                raw: ptr,
-                _marker: PhantomData,
-            });
+            return Ok(SpriteBatch { raw: ptr, _marker: PhantomData, options: options });
         }
     }
 }
@@ -65,39 +66,29 @@ impl<'s> SpriteBatch<'s> {
         flip: SpriteFlip,
     ) -> CallResult {
         unsafe {
-            wrap_result(
-                BLZ_Draw(
-                    self.raw,
-                    texture.raw,
-                    position,
-                    srcRectangle.as_raw(),
-                    rotationInRadians,
-                    origin.as_raw(),
-                    scale.as_raw(),
-                    color.into(),
-                    flip as u32
-                )
-            )
+            wrap_result(BLZ_Draw(
+                self.raw,
+                texture.raw,
+                position,
+                srcRectangle.as_raw(),
+                rotationInRadians,
+                origin.as_raw(),
+                scale.as_raw(),
+                color.into(),
+                flip as u32,
+            ))
         }
     }
 
     pub fn lower_draw<'t>(&self, texture: &'t Texture, quad: &Quad) -> CallResult {
-        unsafe {
-            wrap_result(
-                BLZ_LowerDraw(
-                    self.raw,
-                    texture.id,
-                    quad
-                )
-            )
-        }
+        unsafe { wrap_result(BLZ_LowerDraw(self.raw, texture.id, quad)) }
     }
 
     pub fn present(&self) -> CallResult {
-        unsafe {
-            wrap_result(
-                BLZ_Present(self.raw)
-            )
-        }
+        unsafe { wrap_result(BLZ_Present(self.raw)) }
+    }
+
+    pub fn get_options(&self) -> &SpriteBatchOpts {
+        &self.options
     }
 }

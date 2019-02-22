@@ -60,7 +60,7 @@ impl<'a> Drop for Texture<'a> {
 
 unsafe fn from_ptr<'a>(ptr: *mut BLZ_Texture) -> Result<Texture<'a>, String> {
     if ptr.is_null() {
-        Err(get_last_error().unwrap_or("Unknown error".to_owned()))
+        Err(try_get_err())
     } else {
         let tex = *ptr;
         Ok(Texture {
