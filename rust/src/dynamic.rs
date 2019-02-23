@@ -24,12 +24,6 @@ bitflags! {
     }
 }
 
-impl Default for InitFlags {
-    fn default() -> InitFlags {
-        InitFlags::Default
-    }
-}
-
 pub fn create_batch<'a>(options: SpriteBatchOpts) -> Result<SpriteBatch<'a>, String> {
     unsafe {
         let ptr = BLZ_CreateBatch(

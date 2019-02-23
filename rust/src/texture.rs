@@ -81,16 +81,24 @@ impl<'a> Texture<'a> {
     pub fn from_memory(
         bytes: &Bytes,
         channels: ImageChannels,
-        texture_id: u32,
+        texture_id: Option<u32>,
         flags: ImageFlags,
     ) -> Result<Texture<'a>, String> {
         unsafe {
+            if let Some(i) = texture_id {
+                if i <= 0 {
+                    return Err("Invalid texture ID, must be greater than zero".to_owned());
+                }
+            }
             let buf_ptr = bytes.as_ptr();
             let ptr = BLZ_LoadTextureFromMemory(
                 buf_ptr,
                 bytes.len() as i32,
                 channels as u32,
-                texture_id,
+                match texture_id {
+                    Some(i) => i,
+                    None => 0,
+                },
                 flags.bits,
             );
             from_ptr(ptr)
